@@ -6,7 +6,7 @@ app = FastAPI()
 # Temporary storage
 coconut_data = []
 
-# Pydantic model for POST request
+# Pydantic model
 class CoconutRequest(BaseModel):
     name: str
     coconut_qty: int
@@ -22,3 +22,8 @@ def collect_coconuts(data: CoconutRequest):
         "status": "success",
         "received_data": data
     }
+
+# 🔹 Day 5: GET endpoint
+@app.get("/all-collections")
+def get_all_collections():
+    return {"collections": coconut_data}
