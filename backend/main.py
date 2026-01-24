@@ -3,6 +3,11 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+from app.routes import waste
+
+app.include_router(waste.router)
+
+
 # Temporary storage
 coconut_data = []
 
