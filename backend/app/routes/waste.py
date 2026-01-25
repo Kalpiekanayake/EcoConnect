@@ -24,3 +24,9 @@ def create_waste_request(
         "message": "Waste request created successfully",
         "data": new_request
     }
+
+@router.get("/")
+def get_waste_requests(db: Session = Depends(get_db)):
+    requests = db.query(models.WasteRequest).all()
+    return requests
+
