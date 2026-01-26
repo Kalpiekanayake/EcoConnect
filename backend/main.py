@@ -1,41 +1,18 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List
+from app.database import engine
+from app import models
+from app.routes import waste
 
-app = FastAPI()
+# Create tables
+models.Base.metadata.create_all(bind=engine)
 
-# Categories
-categories = ["coconut_shell", "plastic", "glass", "paper"]
-category_data = {cat: [] for cat in categories}  # Temporary storage per category
+app = FastAPI(title="Waste Trading API")
 
-# Pydantic model
-class WasteRequest(BaseModel):
-    name: str
-    quantity: int
-    category: str  # Must be one of the categories
+# Routes
+app.include_router(waste.router)
 
-# Home route
 @app.get("/")
 def home():
-    return {"message": "Waste Collector API is running!"}
-
-# Collect waste
-@app.post("/collect")
-def collect_waste(data: WasteRequest):
-    if data.category not in category_data:
-        return {"status": "error", "message": f"Category '{data.category}' not supported."}
-    
-    category_data[data.category].append(data)
-    return {"status": "success", "received_data": data}
-
-# Get all collections (optionally by category)
-@app.get("/all-collections/{category}")
-def get_collections_by_category(category: str):
-    if category not in category_data:
-        return {"status": "error", "message": f"Category '{category}' not found."}
-    return {"category": category, "collections": category_data[category]}
-
-# Get all collections (all categories)
-@app.get("/all-collections")
-def get_all_collections():
-    return category_data
+    return {
+        "message": "Waste Trading API is running 🚀"
+    }
