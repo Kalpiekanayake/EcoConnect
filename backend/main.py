@@ -1,40 +1,41 @@
 from fastapi import FastAPI
-from app.database import engine
 from pydantic import BaseModel
-from app import models
-
-
-models.Base.metadata.create_all(bind=engine)
-
+from typing import List
 
 app = FastAPI()
 
-from app.routes import waste
-
-app.include_router(waste.router)
-
-
-# Temporary storage
-coconut_data = []
+# Categories
+categories = ["coconut_shell", "plastic", "glass", "paper"]
+category_data = {cat: [] for cat in categories}  # Temporary storage per category
 
 # Pydantic model
-class CoconutRequest(BaseModel):
+class WasteRequest(BaseModel):
     name: str
-    coconut_qty: int
+    quantity: int
+    category: str  # Must be one of the categories
 
+# Home route
 @app.get("/")
 def home():
-    return {"message": "Coconut Collector API is running!"}
+    return {"message": "Waste Collector API is running!"}
 
+# Collect waste
 @app.post("/collect")
-def collect_coconuts(data: CoconutRequest):
-    coconut_data.append(data)
-    return {
-        "status": "success",
-        "received_data": data
-    }
+def collect_waste(data: WasteRequest):
+    if data.category not in category_data:
+        return {"status": "error", "message": f"Category '{data.category}' not supported."}
+    
+    category_data[data.category].append(data)
+    return {"status": "success", "received_data": data}
 
-# 🔹 Day 5: GET endpoint
+# Get all collections (optionally by category)
+@app.get("/all-collections/{category}")
+def get_collections_by_category(category: str):
+    if category not in category_data:
+        return {"status": "error", "message": f"Category '{category}' not found."}
+    return {"category": category, "collections": category_data[category]}
+
+# Get all collections (all categories)
 @app.get("/all-collections")
 def get_all_collections():
-    return {"collections": coconut_data}
+    return category_data
