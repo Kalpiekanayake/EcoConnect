@@ -1,26 +1,13 @@
 from sqlalchemy.orm import Session
-from app import models, schemas
+from app.schemas.category import CategoryCreate
+from app.models.category import Category
 
-
-def create_category(db: Session, category: schemas.CategoryCreate):
-    # check duplicate
-    existing = db.query(models.Category).filter(
-        models.Category.name == category.name
-    ).first()
-
-    if existing:
-        return None
-
-    new_category = models.Category(
-        name=category.name
+def create_category(db: Session, category: CategoryCreate):
+    new_category = Category(
+        name=category.name,
+        description=category.description
     )
-
     db.add(new_category)
     db.commit()
     db.refresh(new_category)
-
     return new_category
-
-
-def get_all_categories(db: Session):
-    return db.query(models.Category).all()
