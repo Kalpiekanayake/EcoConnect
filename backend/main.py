@@ -1,12 +1,6 @@
 from fastapi import FastAPI
-from app.routes import users, waste, category
+from app.routes.users import router as user_router
 
-app = FastAPI(title="Waste Trading API")
+app = FastAPI(title="My API")
 
-@app.get("/")
-def home():
-    return {"message": "Waste Trading API is running"}
-
-app.include_router(users.router)
-app.include_router(waste.router)
-app.include_router(category.router)
+app.include_router(user_router)
