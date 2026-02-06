@@ -1,10 +1,13 @@
 from pydantic import BaseModel
 
 class WasteCreate(BaseModel):
-    name: str
+    title: str
+    quantity: int
     price: float
+    category_id: int
 
-class WasteResponse(BaseModel):
+class WasteResponse(WasteCreate):
     id: int
-    name: str
-    price: float
+
+    class Config:
+        from_attributes = True

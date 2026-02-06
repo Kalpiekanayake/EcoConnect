@@ -1,27 +1,32 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-router = APIRouter()
+from app.database import SessionLocal
+from app.models.user import User
+from app.schemas.user import UserCreate, UserResponse
 
-# -------- In-memory storage --------
-users_db = []
+router = APIRouter(
+    prefix="/users",
+    tags=["Users"]
+)
 
-# -------- Schema --------
-class UserCreate(BaseModel):
-    name: str
-    email: str
+# -------- DB Dependency --------
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # -------- Routes --------
-@router.get("/users")
-def get_users():
-    return users_db
+@router.post("/", response_model=UserResponse)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = User(name=user.name, email=user.email)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
-@router.post("/users")
-def create_user(user: UserCreate):
-    new_user = {
-        "id": len(users_db) + 1,
-        "name": user.name,
-        "email": user.email
-    }
-    users_db.append(new_user)
-    return new_user
+@router.get("/", response_model=list[UserResponse])
+def get_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
