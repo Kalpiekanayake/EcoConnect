@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-router = APIRouter(
-    prefix="/users",
-    tags=["Users"]
-)
+router = APIRouter()
+
+# -------- In-memory storage --------
+users_db = []
 
 # -------- Schema --------
 class UserCreate(BaseModel):
@@ -12,21 +12,16 @@ class UserCreate(BaseModel):
     email: str
 
 # -------- Routes --------
-@router.get("/")
+@router.get("/users")
 def get_users():
-    return {"message": "Get all users"}
+    return users_db
 
-@router.post("/")
+@router.post("/users")
 def create_user(user: UserCreate):
-    return {
-        "message": "User created",
-        "user": user
+    new_user = {
+        "id": len(users_db) + 1,
+        "name": user.name,
+        "email": user.email
     }
-
-@router.get("/{user_id}")
-def get_user(user_id: int):
-    return {"user_id": user_id}
-
-@router.delete("/{user_id}")
-def delete_user(user_id: int):
-    return {"message": f"User {user_id} deleted"}
+    users_db.append(new_user)
+    return new_user
