@@ -1,15 +1,16 @@
 from fastapi import FastAPI
 from app.database import engine
-from app.models.user import User
-from app.database import Base
-from app.routes.users import router as user_router
+from app.models import user, category
+from app.routes import users, categories
 
-Base.metadata.create_all(bind=engine)
+user.Base.metadata.create_all(bind=engine)
+category.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Waste Trading API")
+app = FastAPI()
+
+app.include_router(users.router)
+app.include_router(categories.router)
 
 @app.get("/")
-def home():
-    return {"message": "API is running"}
-
-app.include_router(user_router)
+def root():
+    return {"message": "Waste Trading API is running"}
