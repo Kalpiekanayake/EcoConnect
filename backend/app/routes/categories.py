@@ -21,3 +21,12 @@ def create_category(category: CategoryCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[CategoryResponse])
 def get_categories(db: Session = Depends(get_db)):
     return db.query(Category).all()
+
+@router.get("/", operation_id="categories_get_all")
+def get_categories():
+    return {"message": "Get all categories"}
+
+@router.post("/", operation_id="categories_create")
+def create_category(category: CategoryCreate):
+    return {"message": "Category created"}
+

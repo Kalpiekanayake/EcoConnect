@@ -30,3 +30,12 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[UserResponse])
 def get_users(db: Session = Depends(get_db)):
     return db.query(User).all()
+
+@router.get("/", operation_id="users_get_all")
+def get_users():
+    return {"message": "Get all users"}
+
+@router.post("/", operation_id="users_create")
+def create_user(user: UserCreate):
+    return {"message": "User created", "user": user}
+

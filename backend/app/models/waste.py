@@ -5,8 +5,7 @@ class Waste(Base):
     __tablename__ = "wastes"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    quantity = Column(Integer, nullable=False)
-    price = Column(Float, nullable=False)
-
+    title = Column(String(255), nullable=False)   
+    description = Column(String(500))
     category_id = Column(Integer, ForeignKey("categories.id"))
+    

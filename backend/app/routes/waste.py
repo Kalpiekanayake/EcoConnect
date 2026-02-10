@@ -20,3 +20,11 @@ def create_waste(waste: WasteCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[WasteResponse])
 def get_all_wastes(db: Session = Depends(get_db)):
     return db.query(Waste).all()
+
+@router.get("/", operation_id="wastes_get_all")
+def get_all_wastes():
+    return {"message": "All wastes"}
+
+@router.post("/", operation_id="wastes_create")
+def create_waste(waste: WasteCreate):
+    return {"message": "Waste created"}
