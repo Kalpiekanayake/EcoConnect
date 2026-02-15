@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
+from app.deps import get_db 
 from app.models.waste import Waste
 from app.schemas.waste import WasteCreate, WasteResponse
 
