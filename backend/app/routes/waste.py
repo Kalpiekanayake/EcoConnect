@@ -31,7 +31,7 @@ def create_waste(waste: WasteCreate):
 
 
 @router.put("/{waste_id}")
-def update_waste(waste_id: int, updated_waste: WasteCreate, db: Session = Depends(get_db)):
+def update_waste(waste_id: int, updated_waste:WasteCreate, db: Session = Depends(get_db)):
     waste = db.query(models.Waste).filter(models.Waste.id == waste_id).first()
 
     if not waste:

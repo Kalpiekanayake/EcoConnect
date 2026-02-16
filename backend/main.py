@@ -6,6 +6,10 @@ from app.routes import users
 from app.routes import categories
 from app.routes import waste
 
+from app.routes import auth
+app.include_router(auth.router)
+
+
 
 
 app = FastAPI()
