@@ -7,7 +7,7 @@ from app.routes import categories
 from app.routes import waste
 
 from app.routes import auth
-app.include_router(auth.router)
+
 
 
 
@@ -19,6 +19,7 @@ Base.metadata.create_all(bind=engine)
 app.include_router(users.router)
 app.include_router(categories.router)
 app.include_router(waste.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def home():
