@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from app.database import Base
 
 class Waste(Base):
@@ -9,3 +10,5 @@ class Waste(Base):
     description = Column(String(500))
     category_id = Column(Integer, ForeignKey("categories.id"))
     
+    user_id = Column (Integer, ForeignKey("user.id"))
+    owner = relationship("User")

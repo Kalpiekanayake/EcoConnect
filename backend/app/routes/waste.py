@@ -20,7 +20,7 @@ def create_waste(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    new_waste = Waste(**waste.dict())
+    new_waste = Waste(**waste.dict() , user_id=current_user.id)
     db.add(new_waste)
     db.commit()
     db.refresh(new_waste)
@@ -43,8 +43,13 @@ def update_waste(
 ):
     waste = db.query(Waste).filter(Waste.id == waste_id).first()
 
+    
     if not waste:
         raise HTTPException(status_code=404, detail="Waste not found")
+    
+    if waste.user_id != current_user.id:
+        raise HTTPException(status_code=403,detail="Not authorized")
+
 
     waste.title = updated_waste.title
     waste.description = updated_waste.description
