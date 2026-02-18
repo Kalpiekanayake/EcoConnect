@@ -1,9 +1,11 @@
-function App(){
+import Register from "./pages/Register";
+
+function App() {
   return (
     <div>
-      <h1>Waste Management</h1>
+      <Register />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
