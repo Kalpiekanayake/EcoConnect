@@ -29,8 +29,23 @@ def create_waste(
 
 # ✅ GET All Wastes (Public)
 @router.get("/", response_model=list[WasteResponse])
-def get_all_wastes(db: Session = Depends(get_db)):
-    return db.query(Waste).all()
+def get_all_wastes(
+    skip: int = 0,
+    limit: int = 10,
+    category_id: int | None = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Waste)
+
+    #  Filtering
+    if category_id is not None:
+        query = query.filter(Waste.category_id == category_id)
+
+    #  Pagination
+    wastes = query.offset(skip).limit(limit).all()
+
+    return wastes
+
 
 
 # ✅ UPDATE Waste (Protected)

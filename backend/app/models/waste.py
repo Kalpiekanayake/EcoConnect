@@ -10,5 +10,5 @@ class Waste(Base):
     description = Column(String(500))
     category_id = Column(Integer, ForeignKey("categories.id"))
     
-    user_id = Column (Integer, ForeignKey("user.id"))
+    user_id = Column (Integer, ForeignKey("users.id"))
     owner = relationship("User")
