@@ -10,11 +10,14 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await API.post("/auth/login", {
-        username: email,  // FastAPI OAuth expects username field
-        password: password,
-      });
+      const formData = new URLSearchParams();
+      formData.append("username", email);
+      formData.append("password", password);
 
+      const response = await API.post("/auth/login", formData, {
+        headers: {
+              "Content-Type": "application/x-www-form-urlencoded",},
+              });
       const token = response.data.access_token;
 
       // Save token
