@@ -1,11 +1,8 @@
-import Dashboard from "./pages/Dashboard";  
+
+ import Waste from "./pages/Waste";
 
 function App() {
-  return (
-    <div className="App">
-      <Dashboard />
-    </div>
-  );
+  return <Waste />;
 }
 
-export default App; 
+export default App;
