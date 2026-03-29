@@ -1,103 +1,91 @@
-import { useEffect, useState } from "react";
-import API from "../services/api";
+import { useEffect, useState } from 'react';
+import API from '../services/api';
+import Navbar from '../components/Navbar';
+import { Plus, Trash2, Edit2 } from 'lucide-react';
 
-function Waste() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+const Waste = () => {
   const [wastes, setWastes] = useState([]);
-
-  // Fetch wastes
-  const fetchWastes = async () => {
-    try {
-      const response = await API.get("/wastes");
-      setWastes(response.data);
-    } catch (error) {
-      console.error("Error fetching wastes", error);
-    }
-  };
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchWastes();
   }, []);
 
-  // Create waste
-  const handleCreate = async (e) => {
-    e.preventDefault();
-
+  const fetchWastes = async () => {
     try {
-      await API.post("/wastes", {
-        title,
-        description,
-        category_id: Number(categoryId),
-      });
-
-      setTitle("");
-      setDescription("");
-      setCategoryId("");
-      fetchWastes();
-    } catch (error) {
-      console.error("Error creating waste", error);
+      const response = await API.get('/wastes');
+      setWastes(response.data);
+    } catch (err) {
+      setError('Failed to fetch waste records');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Delete waste
   const handleDelete = async (id) => {
-    try {
-      await API.delete(`/wastes/${id}`);
-      fetchWastes();
-    } catch (error) {
-      console.error("Error deleting waste", error);
+    if (window.confirm('Are you sure you want to delete this record?')) {
+      try {
+        await API.delete(`/wastes/${id}`);
+        setWastes(wastes.filter(w => w.id !== id));
+      } catch (err) {
+        alert('Failed to delete waste record');
+      }
     }
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h2>My Wastes</h2>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="px-4 py-6 sm:px-0">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-900">Waste Records</h1>
+            <button className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Record
+            </button>
+          </div>
 
-      <form onSubmit={handleCreate}>
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <br />
+          {error && <div className="bg-red-50 text-red-700 p-4 rounded-md mb-6">{error}</div>}
 
-        <input
-          type="text"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-        <br />
-
-        <input
-          type="number"
-          placeholder="Category ID"
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-          required
-        />
-        <br />
-
-        <button type="submit">Add Waste</button>
-      </form>
-
-      <hr />
-
-      {wastes.map((waste) => (
-        <div key={waste.id} style={{ marginBottom: "10px" }}>
-          <strong>{waste.title}</strong> - {waste.description}
-          <button onClick={() => handleDelete(waste.id)}>
-            Delete
-          </button>
+          {loading ? (
+            <div className="text-center py-12">Loading...</div>
+          ) : (
+            <div className="bg-white shadow overflow-hidden sm:rounded-md">
+              <ul className="divide-y divide-gray-200">
+                {wastes.length === 0 ? (
+                  <li className="px-6 py-12 text-center text-gray-500">No waste records found.</li>
+                ) : (
+                  wastes.map((waste) => (
+                    <li key={waste.id} className="px-6 py-4 hover:bg-gray-50 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-medium text-gray-900">{waste.type || 'Waste Record'}</h3>
+                        <p className="text-sm text-gray-500">
+                          {waste.weight}kg - {new Date(waste.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(waste.id)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          )}
         </div>
-      ))}
+      </main>
     </div>
   );
-}
+};
 
 export default Waste;
