@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../services/api';
+import { User, Lock, Loader2, AlertCircle } from 'lucide-react';
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -18,7 +19,6 @@ const Login = () => {
     setError('');
     
     try {
-      // Create form data as backend typically expects for OAuth2 in FastAPI
       const loginData = new URLSearchParams();
       loginData.append('username', formData.username);
       loginData.append('password', formData.password);
@@ -27,73 +27,97 @@ const Login = () => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       });
       
-      localStorage.setItem('token', response.data.access_token);
-      navigate('/dashboard');
+      // Store token
+      const token = response.data.access_token;
+      if (token) {
+        localStorage.setItem('token', token);
+        navigate('/dashboard');
+      } else {
+        throw new Error('Token not received from server');
+      }
     } catch (err) {
-      setError(err.response?.data?.detail || 'Login failed. Please check your credentials.');
+      console.error(err);
+      setError(err.response?.data?.detail || 'Invalid username or password. Is the backend running?');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/register" className="font-medium text-green-600 hover:text-green-500">
-              register a new account
-            </Link>
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-gray-900">Sign In</h2>
+          <p className="mt-2 text-sm text-gray-500">Welcome back to Waste Manager</p>
         </div>
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm border border-red-200">
+            <div className="bg-red-50 text-red-700 p-4 rounded-xl text-sm flex items-center border border-red-100 animate-pulse">
+              <AlertCircle className="h-5 w-5 mr-2" />
               {error}
             </div>
           )}
-          <div className="rounded-md shadow-sm -space-y-px">
+          
+          <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-              <input
-                name="username"
-                type="text"
-                required
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
-                value={formData.username}
-                onChange={handleChange}
-              />
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Username</label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  name="username"
+                  type="text"
+                  required
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                  placeholder="Your username"
+                  value={formData.username}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+
+            <div>
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Password</label>
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  name="password"
+                  type="password"
+                  required
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                loading ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors`}
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 px-4 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 active:scale-[0.98] transition-all flex items-center justify-center shadow-lg shadow-green-100 disabled:opacity-70"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                Signing in...
+              </>
+            ) : (
+              'Login'
+            )}
+          </button>
+
+          <p className="text-center text-sm text-gray-600 pt-2">
+            Don't have an account?{' '}
+            <Link to="/register" className="font-bold text-green-600 hover:text-green-500 underline decoration-2 underline-offset-4">
+              Register here
+            </Link>
+          </p>
         </form>
       </div>
     </div>
