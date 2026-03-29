@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
-import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText } from 'lucide-react';
+import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2 } from 'lucide-react';
 
 const Waste = () => {
   const [wastes, setWastes] = useState([]);
@@ -9,20 +9,36 @@ const Waste = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   
+  // Form state
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     category_id: ''
   });
 
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+
   useEffect(() => {
     fetchInitialData();
   }, []);
 
+  // Clear messages after 3 seconds
+  useEffect(() => {
+    if (success || error) {
+      const timer = setTimeout(() => {
+        setSuccess('');
+        setError('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, error]);
+
   const fetchInitialData = async () => {
     setLoading(true);
-    setError('');
     try {
       const [wasteRes, catRes] = await Promise.all([
         API.get('/wastes'),
@@ -31,7 +47,7 @@ const Waste = () => {
       setWastes(wasteRes.data);
       setCategories(catRes.data);
     } catch (err) {
-      setError('Failed to fetch data from the server. Please try again later.');
+      setError('Failed to fetch data from the server.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -40,6 +56,25 @@ const Waste = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleEdit = (waste) => {
+    setIsEditing(true);
+    setEditId(waste.id);
+    setFormData({
+      title: waste.title,
+      description: waste.description,
+      category_id: waste.category_id.toString()
+    });
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditId(null);
+    setFormData({ title: '', description: '', category_id: '' });
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -51,18 +86,29 @@ const Waste = () => {
 
     setSubmitting(true);
     setError('');
+    
     try {
-      const response = await API.post('/wastes', {
+      const payload = {
         title: formData.title,
         description: formData.description,
         category_id: parseInt(formData.category_id)
-      });
+      };
+
+      if (isEditing) {
+        // UPDATE existing record
+        const response = await API.put(`/wastes/${editId}`, payload);
+        setWastes(wastes.map(w => w.id === editId ? response.data : w));
+        setSuccess('Waste record updated successfully!');
+      } else {
+        // CREATE new record
+        const response = await API.post('/wastes', payload);
+        setWastes([response.data, ...wastes]);
+        setSuccess('New waste record added!');
+      }
       
-      // Refresh list and clear form
-      setWastes([response.data, ...wastes]);
-      setFormData({ title: '', description: '', category_id: '' });
+      handleCancel(); // Reset form and exit edit mode
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to create waste record');
+      setError(err.response?.data?.detail || 'Something went wrong. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -73,8 +119,9 @@ const Waste = () => {
       try {
         await API.delete(`/wastes/${id}`);
         setWastes(wastes.filter(w => w.id !== id));
+        setSuccess('Record deleted successfully');
       } catch (err) {
-        alert('Failed to delete waste record');
+        setError('Failed to delete the record');
       }
     }
   };
@@ -90,136 +137,195 @@ const Waste = () => {
       
       <main className="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900">Waste Management</h1>
-          <p className="mt-2 text-sm text-gray-600">Track and manage your waste disposal records efficiently.</p>
+        <div className="mb-8 flex justify-between items-end">
+          <div>
+            <h1 className="text-3xl font-extrabold text-gray-900">Waste Management</h1>
+            <p className="mt-2 text-sm text-gray-600">Track and manage your waste disposal records.</p>
+          </div>
+          <div className="text-right hidden sm:block">
+            <span className="text-2xl font-bold text-green-600">{wastes.length}</span>
+            <p className="text-xs text-gray-400 uppercase font-semibold">Total Records</p>
+          </div>
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4 flex items-center">
-            <AlertCircle className="h-5 w-5 text-red-400 mr-3" />
-            <p className="text-sm text-red-700">{error}</p>
-          </div>
-        )}
+        {/* Feedback Messages */}
+        <div className="fixed top-20 right-4 z-50 space-y-2 max-w-sm w-full">
+          {success && (
+            <div className="bg-green-600 text-white p-4 rounded-lg shadow-xl flex items-center animate-bounce-in">
+              <CheckCircle2 className="h-5 w-5 mr-3 flex-shrink-0" />
+              <p className="text-sm font-medium">{success}</p>
+            </div>
+          )}
+          {error && (
+            <div className="bg-red-600 text-white p-4 rounded-lg shadow-xl flex items-center animate-bounce-in">
+              <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
+              <p className="text-sm font-medium">{error}</p>
+            </div>
+          )}
+        </div>
 
-        {/* Create Waste Form */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <Plus className="h-5 w-5 mr-2 text-green-600" />
-            Add New Waste Record
-          </h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">Title</label>
+        {/* Form Section */}
+        <div className={`bg-white rounded-2xl shadow-sm border ${isEditing ? 'border-blue-200 bg-blue-50/30' : 'border-gray-100'} p-6 mb-10 transition-colors duration-300`}>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+              {isEditing ? (
+                <>
+                  <Edit2 className="h-5 w-5 mr-2 text-blue-600" />
+                  Update Waste Record
+                </>
+              ) : (
+                <>
+                  <Plus className="h-5 w-5 mr-2 text-green-600" />
+                  Add New Record
+                </>
+              )}
+            </h2>
+            {isEditing && (
+              <button 
+                onClick={handleCancel}
+                className="text-sm text-gray-500 hover:text-gray-700 flex items-center font-medium"
+              >
+                <X className="h-4 w-4 mr-1" /> Cancel Edit
+              </button>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Title</label>
               <input
                 type="text"
                 name="title"
                 required
-                placeholder="e.g., Weekly Plastic Waste"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none"
+                placeholder="What waste are you tracking?"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white shadow-sm"
                 value={formData.title}
                 onChange={handleChange}
               />
             </div>
             
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">Category</label>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Category</label>
               <select
                 name="category_id"
                 required
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white shadow-sm"
                 value={formData.category_id}
                 onChange={handleChange}
               >
-                <option value="">Select a Category</option>
+                <option value="">Choose a Category</option>
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
               </select>
             </div>
 
-            <div className="md:col-span-2 space-y-1">
-              <label className="text-sm font-medium text-gray-700">Description</label>
+            <div className="md:col-span-2 space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Description</label>
               <textarea
                 name="description"
-                rows="2"
-                placeholder="Details about the waste..."
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none resize-none"
+                rows="3"
+                placeholder="Add some details about this record..."
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none resize-none bg-white shadow-sm"
                 value={formData.description}
                 onChange={handleChange}
               ></textarea>
             </div>
 
-            <div className="md:col-span-2 pt-2">
+            <div className="md:col-span-2 flex items-center gap-3">
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full md:w-auto px-6 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-200 transition-all disabled:bg-green-300 flex items-center justify-center"
+                className={`flex-1 md:flex-none px-8 py-3.5 rounded-xl font-bold text-white shadow-lg transform transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center ${
+                  isEditing ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-200' : 'bg-green-600 hover:bg-green-700 shadow-green-200'
+                }`}
               >
                 {submitting ? (
                   <>
                     <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                    Saving...
+                    Processing...
                   </>
                 ) : (
-                  'Add Waste Record'
+                  isEditing ? 'Update Waste' : 'Add Record'
                 )}
               </button>
+              
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="px-8 py-3.5 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+              )}
             </div>
           </form>
         </div>
 
-        {/* Waste Records List */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-800">Your Records</h2>
-            <span className="px-3 py-1 bg-gray-200 text-gray-700 text-xs font-bold rounded-full uppercase tracking-wider">
-              {wastes.length} Items
-            </span>
-          </div>
+        {/* List Section */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-800 border-b border-gray-200 pb-4">Record History</h2>
 
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="h-10 w-10 text-green-600 animate-spin mb-4" />
-              <p className="text-gray-500">Loading your records...</p>
+            <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+              <Loader2 className="h-12 w-12 text-green-600 animate-spin mb-4" />
+              <p className="text-gray-500 font-medium">Fetching your records...</p>
             </div>
           ) : wastes.length === 0 ? (
-            <div className="bg-white rounded-xl border border-dashed border-gray-300 p-12 text-center">
-              <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 font-medium">No waste records found yet.</p>
-              <p className="text-sm text-gray-400 mt-1">Start by adding your first record above.</p>
+            <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 py-20 text-center">
+              <div className="bg-gray-50 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <FileText className="h-10 w-10 text-gray-300" />
+              </div>
+              <p className="text-gray-600 text-lg font-semibold">No records found</p>
+              <p className="text-sm text-gray-400 mt-2">Your waste history will appear here once you add a record.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
               {wastes.map((waste) => (
                 <div 
                   key={waste.id} 
-                  className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow flex flex-col sm:flex-row sm:items-center justify-between"
+                  className={`group bg-white rounded-2xl p-6 shadow-sm border transition-all hover:shadow-md hover:border-green-100 ${editId === waste.id ? 'border-blue-400 ring-2 ring-blue-50' : 'border-gray-100'}`}
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-lg font-bold text-gray-900">{waste.title}</h3>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        <Tag className="w-3 h-3 mr-1" />
-                        {getCategoryName(waste.category_id)}
-                      </span>
-                    </div>
-                    <p className="text-gray-600 text-sm line-clamp-2 mb-2">{waste.description}</p>
-                    <div className="flex items-center text-xs text-gray-400">
-                      <Calendar className="w-3.5 h-3.5 mr-1" />
-                      {new Date(waste.created_at || Date.now()).toLocaleDateString()}
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-100 uppercase tracking-wider">
+                      <Tag className="w-3 h-3 mr-1.5" />
+                      {getCategoryName(waste.category_id)}
+                    </span>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        onClick={() => handleEdit(waste)}
+                        className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Edit"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(waste.id)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
+
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{waste.title}</h3>
+                  <p className="text-gray-600 text-sm mb-6 line-clamp-2 h-10">{waste.description || 'No description provided.'}</p>
                   
-                  <div className="mt-4 sm:mt-0 sm:ml-6 flex items-center gap-2">
-                    <button 
-                      onClick={() => handleDelete(waste.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors group"
-                      title="Delete Record"
-                    >
-                      <Trash2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                    </button>
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                    <div className="flex items-center text-xs text-gray-400 font-medium">
+                      <Calendar className="w-3.5 h-3.5 mr-1.5 text-gray-300" />
+                      {new Date(waste.created_at || Date.now()).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </div>
+                    <div className="sm:hidden flex items-center gap-2">
+                       <button onClick={() => handleEdit(waste)} className="text-blue-600 text-xs font-bold">Edit</button>
+                       <button onClick={() => handleDelete(waste.id)} className="text-red-600 text-xs font-bold">Delete</button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -227,6 +333,17 @@ const Waste = () => {
           )}
         </div>
       </main>
+
+      <style>{`
+        @keyframes bounce-in {
+          0% { transform: translateY(-20px); opacity: 0; }
+          60% { transform: translateY(5px); opacity: 1; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-bounce-in {
+          animation: bounce-in 0.4s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };
