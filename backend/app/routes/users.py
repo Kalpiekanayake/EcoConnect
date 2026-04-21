@@ -31,25 +31,8 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     
-    return UserResponse(
-        id=new_user.id,
-        full_name=new_user.full_name,
-        email=new_user.email,
-        phone=new_user.phone_number,
-        address=new_user.default_address,
-        role=new_user.role
-    )
+    return new_user
 
 @router.get("/", response_model=list[UserResponse])
 def get_users(db: Session = Depends(get_db)):
-    users = db.query(User).all()
-    return [
-        UserResponse(
-            id=u.id,
-            full_name=u.full_name,
-            email=u.email,
-            phone=u.phone_number,
-            address=u.default_address,
-            role=u.role
-        ) for u in users
-    ]
+    return db.query(User).all()

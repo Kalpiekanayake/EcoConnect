@@ -14,8 +14,8 @@ class UserResponse(BaseModel):
     id: int
     full_name: str
     email: EmailStr
-    phone: Optional[str]
-    address: Optional[str]
+    phone_number: Optional[str] = None
+    default_address: Optional[str] = None
     role: UserRole
 
     class Config:
@@ -31,4 +31,3 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
-
