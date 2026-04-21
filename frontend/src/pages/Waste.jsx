@@ -39,7 +39,7 @@ const Waste = () => {
     }
   }, [token]);
 
-  // Clear messages after 3 seconds
+  // Clear messages after 5 seconds
   useEffect(() => {
     if (success || error) {
       const timer = setTimeout(() => {
@@ -164,6 +164,26 @@ const Waste = () => {
       } catch (err) {
         setError('Failed to delete the record');
       }
+    }
+  };
+
+  const handleBookPickup = async (id) => {
+    if (!token) {
+        navigate('/login', { state: { from: { pathname: '/browse-requests' }, message: 'Please login to book pickups.' } });
+        return;
+    }
+
+    if (currentUser?.role !== 'COLLECTOR') {
+        setError("Only collectors can book pickups.");
+        return;
+    }
+
+    try {
+        const response = await API.patch(`/wastes/${id}/book`);
+        setWastes(wastes.map(w => w.id === id ? response.data : w));
+        setSuccess("Pickup booked successfully!");
+    } catch (err) {
+        setError(err.response?.data?.detail || "Failed to book pickup.");
     }
   };
 
@@ -410,7 +430,7 @@ const Waste = () => {
               <p className="text-gray-400 font-bold tracking-tight">Gathering requests...</p>
             </div>
           ) : wastes.length === 0 ? (
-            <div className="bg-white rounded-[2.5rem] border-4 border-dashed border-gray-50 py-24 text-center">
+            <div className="bg-white rounded-[2.5rem] border-4 border-dashed border-gray-100 py-24 text-center">
               <div className="bg-[#FAF9F6] h-20 w-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                 <FileText className="h-10 w-10 text-gray-200" />
               </div>
@@ -426,12 +446,12 @@ const Waste = () => {
                 >
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex flex-col gap-2">
-                        <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-widest w-fit">
+                        <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-widest w-fit text-center">
                         <Tag className="w-3 h-3 mr-2" />
                         {getCategoryName(waste.category_id)}
                         </span>
                         {waste.is_sellable && (
-                            <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-orange-50 text-orange-700 border border-orange-100 uppercase tracking-widest w-fit">
+                            <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-orange-50 text-orange-700 border border-orange-100 uppercase tracking-widest w-fit text-center">
                                 <DollarSign className="w-3 h-3 mr-1" /> Sellable
                             </span>
                         )}
@@ -449,30 +469,30 @@ const Waste = () => {
                     <p className="text-gray-600 text-sm font-medium leading-relaxed min-h-[40px]">{waste.description || 'No description provided.'}</p>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="flex items-center text-gray-900 font-black text-sm bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50">
+                      <div className="flex items-center text-gray-900 font-black text-sm bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                         <Package className="w-4 h-4 mr-2 text-emerald-500" />
                         {waste.quantity} Units
                       </div>
                       {waste.is_sellable && (
-                        <div className="flex items-center text-emerald-700 font-black text-sm bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
+                        <div className="flex items-center text-emerald-700 font-black text-sm bg-emerald-50 p-3 rounded-2xl border border-emerald-100 shadow-inner">
                           <DollarSign className="w-4 h-4 mr-1" />
                           ${waste.estimated_price}
                         </div>
                       )}
                     </div>
 
-                    <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50">
+                    <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                       <Calendar className="w-4 h-4 mr-2 text-emerald-500" />
                       {waste.pickup_date} <span className="mx-2 text-gray-200">|</span> <Clock className="w-4 h-4 mr-2 text-emerald-500" /> {waste.time_slot}
                     </div>
 
-                    <div className="flex items-start text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50">
+                    <div className="flex items-start text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                       <MapPin className="w-4 h-4 mr-2 text-emerald-500 mt-0.5 flex-shrink-0" />
                       <span className="line-clamp-1">{waste.address_line}</span>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                  <div className="flex items-center justify-between pt-6 border-t border-gray-50 mt-auto">
                     <div className="text-[10px] text-gray-300 font-black uppercase tracking-widest">
                       ID #{waste.id.toString().padStart(4, '0')}
                     </div>
@@ -499,7 +519,10 @@ const Waste = () => {
                     
                     {/* Collector Action - If collector AND logged in */}
                     {token && currentUser && currentUser.role === 'COLLECTOR' && waste.status === 'OPEN' && (
-                        <button className="px-6 py-3 bg-emerald-600 text-white font-black text-xs rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-50 transition-all active:scale-95">
+                        <button 
+                            onClick={() => handleBookPickup(waste.id)}
+                            className="px-6 py-3 bg-emerald-600 text-white font-black text-xs rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-50 transition-all active:scale-95"
+                        >
                             Book Pickup
                         </button>
                     )}
