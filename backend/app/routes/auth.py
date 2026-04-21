@@ -59,9 +59,12 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     new_user = User(
-        name=user.name,
+        full_name=user.full_name,
         email=user.email,
-        password=hash_password(user.password)
+        password_hash=hash_password(user.password),
+        phone_number=user.phone,
+        default_address=user.address,
+        role=user.role
     )
 
     db.add(new_user)
@@ -71,11 +74,9 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(login_data: UserLogin, db: Session = Depends(get_db)):
-    # Frontend sends 'username' field which we map to email in our case, 
-    # or we can assume it's actually the email.
-    user = db.query(User).filter(User.email == login_data.username).first()
+    user = db.query(User).filter(User.email == login_data.email).first()
 
-    if not user or not verify_password(login_data.password, user.password):
+    if not user or not verify_password(login_data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     access_token = create_access_token(data={"sub": user.email})
@@ -83,5 +84,12 @@ def login(login_data: UserLogin, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
-    # Map the model to schema manually if needed, but response_model does it
-    return current_user
+    # Map the model fields to schema fields manually if they don't match exactly
+    return UserResponse(
+        id=current_user.id,
+        full_name=current_user.full_name,
+        email=current_user.email,
+        phone=current_user.phone_number,
+        address=current_user.default_address,
+        role=current_user.role
+    )

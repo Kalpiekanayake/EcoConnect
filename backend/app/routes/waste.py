@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.deps import get_db
-from app.models.waste import Waste
-from app.schemas.waste import WasteCreate, WasteResponse
+from app.models.pickup_request import PickupRequest
+from app.schemas.waste import PickupRequestCreate, PickupRequestResponse
 from app.routes.auth import get_current_user
 from app.models.user import User
 
@@ -13,83 +13,91 @@ router = APIRouter(
 )
 
 
-# ✅ CREATE Waste (Protected)
-@router.post("/", response_model=WasteResponse)
-def create_waste(
-    waste: WasteCreate,
+# ✅ CREATE Pickup Request (Protected)
+@router.post("/", response_model=PickupRequestResponse)
+def create_pickup_request(
+    request: PickupRequestCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    new_waste = Waste(**waste.dict() , user_id=current_user.id)
-    db.add(new_waste)
+    new_request = PickupRequest(**request.dict(), household_id=current_user.id)
+    db.add(new_request)
     db.commit()
-    db.refresh(new_waste)
-    return new_waste
+    db.refresh(new_request)
+    return new_request
 
 
-# ✅ GET All Wastes for Current User (Protected)
-@router.get("/", response_model=list[WasteResponse])
-def get_user_wastes(
+# ✅ GET All Pickup Requests for Current User (Protected)
+@router.get("/", response_model=list[PickupRequestResponse])
+def get_user_pickup_requests(
     skip: int = 0,
     limit: int = 10,
     category_id: int | None = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    query = db.query(Waste).filter(Waste.user_id == current_user.id)
+    query = db.query(PickupRequest).filter(PickupRequest.household_id == current_user.id)
 
     #  Filtering
     if category_id is not None:
-        query = query.filter(Waste.category_id == category_id)
+        query = query.filter(PickupRequest.category_id == category_id)
 
     #  Pagination
-    wastes = query.offset(skip).limit(limit).all()
+    requests = query.offset(skip).limit(limit).all()
 
-    return wastes
+    return requests
 
 
 
-# ✅ UPDATE Waste (Protected)
-@router.put("/{waste_id}", response_model=WasteResponse)
-def update_waste(
-    waste_id: int,
-    updated_waste: WasteCreate,
+# ✅ UPDATE Pickup Request (Protected)
+@router.put("/{request_id}", response_model=PickupRequestResponse)
+def update_pickup_request(
+    request_id: int,
+    updated_request: PickupRequestCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    waste = db.query(Waste).filter(Waste.id == waste_id).first()
+    request = db.query(PickupRequest).filter(PickupRequest.id == request_id).first()
 
     
-    if not waste:
-        raise HTTPException(status_code=404, detail="Waste not found")
+    if not request:
+        raise HTTPException(status_code=404, detail="Pickup request not found")
     
-    if waste.user_id != current_user.id:
-        raise HTTPException(status_code=403,detail="Not authorized")
+    if request.household_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
 
 
-    waste.title = updated_waste.title
-    waste.description = updated_waste.description
-    waste.category_id = updated_waste.category_id
+    request.description = updated_request.description
+    request.quantity = updated_request.quantity
+    request.is_sellable = updated_request.is_sellable
+    request.estimated_price = updated_request.estimated_price
+    request.pickup_date = updated_request.pickup_date
+    request.time_slot = updated_request.time_slot
+    request.address_line = updated_request.address_line
+    request.category_id = updated_request.category_id
 
     db.commit()
-    db.refresh(waste)
+    db.refresh(request)
 
-    return waste
+    return request
 
 
-# ✅ DELETE Waste (Protected)
-@router.delete("/{waste_id}")
-def delete_waste(
-    waste_id: int,
+# ✅ DELETE Pickup Request (Protected)
+@router.delete("/{request_id}")
+def delete_pickup_request(
+    request_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    waste = db.query(Waste).filter(Waste.id == waste_id).first()
+    request = db.query(PickupRequest).filter(PickupRequest.id == request_id).first()
 
-    if not waste:
-        raise HTTPException(status_code=404, detail="Waste not found")
+    if not request:
+        raise HTTPException(status_code=404, detail="Pickup request not found")
 
-    db.delete(waste)
+    if request.household_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    db.delete(request)
     db.commit()
 
-    return {"message": "Waste deleted successfully"}
+    return {"message": "Pickup request deleted successfully"}

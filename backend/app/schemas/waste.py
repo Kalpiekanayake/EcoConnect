@@ -1,28 +1,28 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date
-from app.models.waste import WasteStatus
+from app.models.pickup_request import PickupStatus
 
-class WasteBase(BaseModel):
+class PickupRequestBase(BaseModel):
     description: Optional[str] = None
     quantity: float
     is_sellable: bool = False
     estimated_price: Optional[float] = None
     pickup_date: date
     time_slot: str
-    address: Optional[str] = None
+    address_line: str
     category_id: int
 
-class WasteCreate(WasteBase):
+class PickupRequestCreate(PickupRequestBase):
     pass
 
-class WasteUpdate(BaseModel):
-    status: Optional[WasteStatus] = None
+class PickupRequestUpdate(BaseModel):
+    status: Optional[PickupStatus] = None
     collector_id: Optional[int] = None
 
-class WasteResponse(WasteBase):
+class PickupRequestResponse(PickupRequestBase):
     id: int
-    status: WasteStatus
+    status: PickupStatus
     household_id: int
     collector_id: Optional[int] = None
 
