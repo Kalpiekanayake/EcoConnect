@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye } from 'lucide-react';
+import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database } from 'lucide-react';
 
 const Waste = () => {
   const [wastes, setWastes] = useState([]);
@@ -72,8 +72,37 @@ const Waste = () => {
     }
   };
 
+  const seedCategories = async () => {
+    setSubmitting(true);
+    try {
+        await API.post('/categories/seed');
+        const res = await API.get('/categories');
+        setCategories(res.data);
+        setSuccess('Categories initialized successfully!');
+    } catch (err) {
+        setError('Failed to initialize categories.');
+    } finally {
+        setSubmitting(false);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    // Auto-update is_sellable if category is selected
+    if (name === 'category_id' && value !== '') {
+        const selectedCat = categories.find(c => c.id === parseInt(value));
+        if (selectedCat) {
+            setFormData(prev => ({
+                ...prev,
+                category_id: value,
+                is_sellable: selectedCat.is_sellable,
+                estimated_price: selectedCat.is_sellable ? (prev.quantity ? (parseFloat(prev.quantity) * selectedCat.base_price_per_unit).toFixed(2) : '') : ''
+            }));
+            return;
+        }
+    }
+
     setFormData({ 
       ...formData, 
       [name]: type === 'checkbox' ? checked : value 
@@ -280,18 +309,30 @@ const Waste = () => {
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Waste Category</label>
-                <select
-                  name="category_id"
-                  required
-                  className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                  value={formData.category_id}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Category</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
+                {categories.length === 0 ? (
+                    <button
+                        type="button"
+                        onClick={seedCategories}
+                        disabled={submitting}
+                        className="w-full px-5 py-4 rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/50 text-emerald-600 font-bold flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all"
+                    >
+                        {submitting ? <Loader2 className="animate-spin w-4 h-4" /> : <Database className="w-4 h-4" />}
+                        Initialize Categories
+                    </button>
+                ) : (
+                    <select
+                        name="category_id"
+                        required
+                        className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
+                        value={formData.category_id}
+                        onChange={handleChange}
+                    >
+                        <option value="">Select Category</option>
+                        {categories.map(cat => (
+                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        ))}
+                    </select>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -413,7 +454,7 @@ const Waste = () => {
                 >
                   {submitting ? (
                     <>
-                      <Loader2 className="animate-spin h-5 w-5" />
+                      <Loader2 className="animate-spin h-5 w-5 mr-2" />
                       Syncing...
                     </>
                   ) : (
