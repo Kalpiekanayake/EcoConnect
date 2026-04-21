@@ -85,6 +85,34 @@ def book_pickup_request(
     return request
 
 
+# ✅ MARK AS COLLECTED (Protected - Collector Owner)
+@router.patch("/{request_id}/collect", response_model=PickupRequestResponse)
+def collect_pickup_request(
+    request_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != UserRole.COLLECTOR:
+        raise HTTPException(status_code=403, detail="Only collectors can mark requests as collected")
+        
+    request = db.query(PickupRequest).filter(PickupRequest.id == request_id).first()
+    
+    if not request:
+        raise HTTPException(status_code=404, detail="Pickup request not found")
+    
+    if request.collector_id != current_user.id:
+        raise HTTPException(status_code=403, detail="You are not assigned to this pickup")
+        
+    if request.status != PickupStatus.BOOKED:
+        raise HTTPException(status_code=400, detail="Only booked requests can be marked as collected")
+        
+    request.status = PickupStatus.COLLECTED
+    
+    db.commit()
+    db.refresh(request)
+    return request
+
+
 # ✅ UPDATE Pickup Request (Protected - Household Owner)
 @router.put("/{request_id}", response_model=PickupRequestResponse)
 def update_pickup_request(
