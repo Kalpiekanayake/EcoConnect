@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import API from '../services/api';
 import { Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 
@@ -8,9 +8,29 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get potential redirect path and message from ProtectedRoute
+  const from = location.state?.from?.pathname || "/dashboard";
+  const authMessage = location.state?.message;
+
+  useEffect(() => {
+    // If we have an auth required message, show it temporarily as an error/info
+    if (authMessage) {
+      setError(authMessage);
+    }
+  }, [authMessage]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const formatError = (detail) => {
+    if (typeof detail === 'string') return detail;
+    if (Array.isArray(detail)) {
+      return detail.map(err => `${err.loc.join('.')}: ${err.msg}`).join(', ');
+    }
+    return 'Invalid email or password.';
   };
 
   const handleSubmit = async (e) => {
@@ -19,7 +39,6 @@ const Login = () => {
     setError('');
     
     try {
-      // The backend UserLogin schema expects { "email": "...", "password": "..." }
       const response = await API.post('/auth/login', {
         email: formData.email,
         password: formData.password
@@ -28,13 +47,15 @@ const Login = () => {
       const token = response.data.access_token;
       if (token) {
         localStorage.setItem('token', token);
-        navigate('/dashboard');
+        // Redirect back to where they came from
+        navigate(from, { replace: true });
+      } else {
+        throw new Error('Token not received from server');
       }
     } catch (err) {
-      console.error('Full login error:', err);
-      // Capture the actual detail message from the 500 or 401 error
-      const message = err.response?.data?.detail || 'Server error (500). Please check backend logs.';
-      setError(message);
+      console.error('Login error:', err);
+      const detail = err.response?.data?.detail;
+      setError(formatError(detail) || 'Could not connect to server. Is the backend running?');
     } finally {
       setLoading(false);
     }
@@ -45,12 +66,12 @@ const Login = () => {
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100">
         <div className="text-center">
           <h2 className="text-3xl font-black text-gray-900">Sign In</h2>
-          <p className="mt-2 text-sm text-gray-500 font-medium">Welcome back to EcoConnect</p>
+          <p className="mt-2 text-sm text-gray-500 font-medium tracking-tight">Welcome back to EcoConnect</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 text-red-700 p-4 rounded-2xl text-sm flex items-start border border-red-100">
+            <div className={`p-4 rounded-2xl text-sm flex items-start border animate-pulse ${authMessage && !loading ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
               <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -97,13 +118,20 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 px-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center shadow-xl shadow-emerald-100 disabled:opacity-70"
+            className="w-full py-4 px-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center shadow-xl shadow-emerald-100 disabled:opacity-70 mt-4"
           >
-            {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Login'}
+            {loading ? (
+              <Loader2 className="animate-spin h-5 w-5" />
+            ) : (
+              'Login'
+            )}
           </button>
 
-          <p className="text-center text-sm text-gray-500 font-bold">
-            Don't have an account? <Link to="/register" className="text-emerald-600 underline">Register here</Link>
+          <p className="text-center text-sm text-gray-500 font-bold pt-2">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-emerald-600 hover:text-emerald-500 underline underline-offset-4 decoration-2">
+              Register here
+            </Link>
           </p>
         </form>
       </div>

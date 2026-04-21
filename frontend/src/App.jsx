@@ -4,31 +4,29 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Waste from './pages/Waste';
+import Pickups from './pages/Pickups';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
-
-// Placeholder for Pickups page until created
-const Pickups = () => (
-  <div className="min-h-screen bg-[#FDFCFB]">
-    <Navbar />
-    <div className="max-w-6xl mx-auto py-20 text-center">
-      <h1 className="text-4xl font-black text-gray-900 mb-4">Available Pickups</h1>
-      <p className="text-gray-500 font-bold italic">This view is coming soon for our Collectors!</p>
-    </div>
-  </div>
-);
-import Navbar from './components/Navbar';
 
 function App() {
   return (
     <Routes>
+      {/* Publicly accessible pages */}
       <Route path="/" element={<Landing />} />
+      <Route path="/browse-requests" element={<Waste />} />
+      <Route path="/available-pickups" element={<Pickups />} />
+      
+      {/* Auth pages */}
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
       
+      {/* Fully protected pages */}
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/waste" element={<ProtectedRoute><Waste /></ProtectedRoute>} />
-      <Route path="/pickups" element={<ProtectedRoute><Pickups /></ProtectedRoute>} />
+      
+      {/* Waste page is now dynamic: browse is public, create/edit is protected */}
+      {/* We keep /waste as an alias or redirect for backwards compatibility */}
+      <Route path="/waste" element={<Navigate to="/browse-requests" replace />} />
+      <Route path="/pickups" element={<Navigate to="/available-pickups" replace />} />
       
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

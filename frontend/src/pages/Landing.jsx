@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Leaf, Truck, Calendar, ShieldCheck, ArrowRight, MapPin, Recycle, DollarSign } from 'lucide-react';
+import { Leaf, Truck, Calendar, ShieldCheck, ArrowRight, MapPin, Recycle, DollarSign, Search } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
 const Landing = () => {
@@ -17,7 +17,7 @@ const Landing = () => {
             Connecting Households <br />
             <span className="text-emerald-600 italic">to Local Collectors.</span>
           </h1>
-          <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
             Stop waiting for collectors who never show up. Post your available times, 
             and let verified collectors book a pickup when you're actually home.
           </p>
@@ -25,9 +25,12 @@ const Landing = () => {
             <Link to="/register" className="w-full sm:w-auto px-10 py-5 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 shadow-2xl shadow-emerald-100 transition-all hover:scale-105 flex items-center justify-center gap-2">
               Start Booking Now <ArrowRight className="w-5 h-5" />
             </Link>
-            <div className="flex items-center gap-3 text-sm font-bold text-gray-400">
-              <ShieldCheck className="w-5 h-5 text-emerald-500" /> Trusted by 500+ Local Communities
-            </div>
+            <Link to="/browse-requests" className="w-full sm:w-auto px-10 py-5 bg-white text-gray-900 font-black rounded-2xl border border-gray-100 hover:bg-emerald-50 transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-sm">
+              <Search className="w-5 h-5 text-emerald-600" /> Explore Requests
+            </Link>
+          </div>
+          <div className="mt-12 flex items-center justify-center gap-3 text-sm font-bold text-gray-400">
+            <ShieldCheck className="w-5 h-5 text-emerald-500" /> Trusted by 500+ Local Communities
           </div>
         </div>
       </section>
@@ -41,21 +44,21 @@ const Landing = () => {
                 <Calendar className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-black text-gray-900 mb-4">Set Your Time</h3>
-              <p className="text-gray-500 leading-relaxed">Tell us when you're home. No more missed pickups or waste sitting on the curb for days.</p>
+              <p className="text-gray-500 leading-relaxed font-medium">Tell us when you're home. No more missed pickups or waste sitting on the curb for days.</p>
             </div>
             <div className="text-center group">
               <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:-rotate-6 transition-transform">
                 <Truck className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-black text-gray-900 mb-4">Verified Collectors</h3>
-              <p className="text-gray-500 leading-relaxed">Only verified professional collectors can browse and book your requests.</p>
+              <p className="text-gray-500 leading-relaxed font-medium">Only verified professional collectors can browse and book your requests.</p>
             </div>
             <div className="text-center group">
               <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:rotate-6 transition-transform">
                 <DollarSign className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-black text-gray-900 mb-4">Sell Recyclables</h3>
-              <p className="text-gray-500 leading-relaxed">Earn money for sellable items like coconut shells, plastic, and glass bottles.</p>
+              <p className="text-gray-500 leading-relaxed font-medium">Earn money for sellable items like coconut shells, plastic, and glass bottles.</p>
             </div>
           </div>
         </div>
@@ -70,8 +73,8 @@ const Landing = () => {
               <p className="text-gray-500 font-bold">From daily food waste to valuable recyclables.</p>
             </div>
             <div className="flex gap-4">
-               <span className="px-4 py-2 bg-white rounded-full border border-gray-100 text-xs font-black text-emerald-600 uppercase tracking-widest shadow-sm">Sellable</span>
-               <span className="px-4 py-2 bg-white rounded-full border border-gray-100 text-xs font-black text-gray-400 uppercase tracking-widest shadow-sm">Disposal</span>
+               <span className="px-4 py-2 bg-white rounded-full border border-gray-100 text-[10px] font-black text-emerald-600 uppercase tracking-widest shadow-sm">Sellable</span>
+               <span className="px-4 py-2 bg-white rounded-full border border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest shadow-sm">Disposal</span>
             </div>
           </div>
           
@@ -93,7 +96,7 @@ const Landing = () => {
 
       {/* CTA Section */}
       <section className="py-24 px-4">
-        <div className="max-w-5xl mx-auto bg-gray-900 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+        <div className="max-w-5xl mx-auto bg-gray-900 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl shadow-emerald-100">
           <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-8 leading-tight">
               Ready to simplify your <br />
@@ -107,8 +110,8 @@ const Landing = () => {
         </div>
       </section>
 
-      <footer className="py-12 border-t border-gray-100 text-center">
-        <p className="text-sm font-bold text-gray-400 tracking-widest uppercase">© 2026 EcoConnect Platform</p>
+      <footer className="py-12 border-t border-gray-100 text-center bg-white">
+        <p className="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase">© 2026 EcoConnect Platform</p>
       </footer>
     </div>
   );
