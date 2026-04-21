@@ -80,16 +80,19 @@ def login(login_data: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     access_token = create_access_token(data={"sub": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    
+    # Return user info along with token so frontend knows the role immediately
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "full_name": user.full_name,
+            "email": user.email,
+            "role": user.role
+        }
+    }
 
 @router.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
-    # Map the model fields to schema fields manually if they don't match exactly
-    return UserResponse(
-        id=current_user.id,
-        full_name=current_user.full_name,
-        email=current_user.email,
-        phone=current_user.phone_number,
-        address=current_user.default_address,
-        role=current_user.role
-    )
+    return current_user

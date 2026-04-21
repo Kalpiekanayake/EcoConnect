@@ -10,12 +10,10 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get potential redirect path and message from ProtectedRoute
   const from = location.state?.from?.pathname || "/dashboard";
   const authMessage = location.state?.message;
 
   useEffect(() => {
-    // If we have an auth required message, show it temporarily as an error/info
     if (authMessage) {
       setError(authMessage);
     }
@@ -45,12 +43,16 @@ const Login = () => {
       });
       
       const token = response.data.access_token;
-      if (token) {
+      const user = response.data.user;
+
+      if (token && user) {
         localStorage.setItem('token', token);
-        // Redirect back to where they came from
+        localStorage.setItem('user_role', user.role); // Store role for easy access
+        localStorage.setItem('user_id', user.id);
+        
         navigate(from, { replace: true });
       } else {
-        throw new Error('Token not received from server');
+        throw new Error('Login failed: Missing user data');
       }
     } catch (err) {
       console.error('Login error:', err);
@@ -79,7 +81,7 @@ const Login = () => {
           
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
@@ -97,7 +99,7 @@ const Login = () => {
             </div>
 
             <div>
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Password</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Password</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />

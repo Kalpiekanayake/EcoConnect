@@ -2,12 +2,18 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
-import { FileText, Loader2, Package, Calendar, Edit2, Trash2, PlusCircle, ChevronRight, CheckCircle2, Clock } from 'lucide-react';
+import RequestDetailsModal from '../components/RequestDetailsModal';
+import { FileText, Loader2, Package, Calendar, Edit2, Trash2, PlusCircle, ChevronRight, CheckCircle2, Clock, Eye } from 'lucide-react';
 
 const MyRequests = () => {
   const [requests, setRequests] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+
+  // Modal state
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -16,10 +22,13 @@ const MyRequests = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const userRes = await API.get('/auth/me');
+      const [userRes, catRes] = await Promise.all([
+        API.get('/auth/me'),
+        API.get('/categories')
+      ]);
       setCurrentUser(userRes.data);
+      setCategories(catRes.data);
       
-      // Fetch only requests created by this household
       const wasteRes = await API.get(`/wastes?household_id=${userRes.data.id}`);
       setRequests(wasteRes.data);
     } catch (err) {
@@ -38,6 +47,11 @@ const MyRequests = () => {
         alert("Failed to delete request.");
       }
     }
+  };
+
+  const openDetails = (req) => {
+    setSelectedRequest(req);
+    setIsModalOpen(true);
   };
 
   return (
@@ -68,7 +82,7 @@ const MyRequests = () => {
         ) : (
           <div className="grid gap-6">
             {requests.map(req => (
-              <div key={req.id} className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 hover:border-emerald-100 transition-all">
+              <div key={req.id} className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 hover:border-emerald-100 transition-all group">
                  <div className="flex items-center gap-6">
                     <div className="w-16 h-16 bg-[#FAF9F6] rounded-2xl flex items-center justify-center border border-gray-50 shadow-inner">
                         <Package className="w-7 h-7 text-emerald-500" />
@@ -91,7 +105,14 @@ const MyRequests = () => {
                     </div>
                  </div>
                  <div className="flex items-center gap-3">
-                    {req.status === 'OPEN' ? (
+                    <button 
+                        onClick={() => openDetails(req)}
+                        className="p-4 bg-white text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl border border-gray-100 transition-all shadow-sm"
+                        title="View Details"
+                    >
+                        <Eye className="w-5 h-5" />
+                    </button>
+                    {req.status === 'OPEN' && (
                         <>
                             <Link to="/browse-requests" className="p-4 bg-[#FAF9F6] text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl border border-gray-50 transition-all shadow-sm">
                                 <Edit2 className="w-5 h-5" />
@@ -103,13 +124,15 @@ const MyRequests = () => {
                                 <Trash2 className="w-5 h-5" />
                             </button>
                         </>
-                    ) : req.status === 'BOOKED' ? (
+                    )}
+                    {req.status === 'BOOKED' && (
                         <div className="flex items-center gap-2 text-amber-600 font-black text-xs bg-amber-50 px-5 py-3 rounded-2xl border border-amber-100">
-                            <Clock className="w-4 h-4" /> Collector is on the way
+                            <Clock className="w-4 h-4" /> Booked
                         </div>
-                    ) : (
+                    )}
+                    {req.status === 'COLLECTED' && (
                         <div className="flex items-center gap-2 text-emerald-600 font-black text-xs bg-emerald-50 px-5 py-3 rounded-2xl border border-emerald-100">
-                            <CheckCircle2 className="w-4 h-4" /> Successfully Collected
+                            <CheckCircle2 className="w-4 h-4" /> Collected
                         </div>
                     )}
                  </div>
@@ -118,6 +141,13 @@ const MyRequests = () => {
           </div>
         )}
       </main>
+
+      <RequestDetailsModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        request={selectedRequest}
+        categories={categories}
+      />
     </div>
   );
 };

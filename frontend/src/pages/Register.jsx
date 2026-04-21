@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../services/api';
-import { User, Mail, Lock, Loader2, AlertCircle, Phone, MapPin } from 'lucide-react';
+import { User, Mail, Lock, Loader2, AlertCircle, Phone, MapPin, Users } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({ 
@@ -10,7 +10,8 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     phone: '',
-    address: ''
+    address: '',
+    role: 'HOUSEHOLD' // Default role
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,7 +45,8 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
         phone: formData.phone,
-        address: formData.address
+        address: formData.address,
+        role: formData.role
       });
       // Redirect to login after successful registration
       navigate('/login');
@@ -61,8 +63,8 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#FDFCFB] py-12 px-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100">
         <div className="text-center">
-          <h2 className="text-3xl font-black text-gray-900">Join the Community</h2>
-          <p className="mt-2 text-sm text-gray-500 font-medium">Create your EcoConnect account</p>
+          <h2 className="text-3xl font-black text-gray-900">Join EcoConnect</h2>
+          <p className="mt-2 text-sm text-gray-500 font-medium">Create your account to start managing waste</p>
         </div>
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
@@ -74,8 +76,37 @@ const Register = () => {
           )}
           
           <div className="space-y-4">
+            {/* Role Selection */}
             <div>
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1 mb-2 block">I am a...</label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'HOUSEHOLD' })}
+                  className={`py-3 rounded-2xl font-black text-xs transition-all border-2 ${
+                    formData.role === 'HOUSEHOLD' 
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100' 
+                    : 'bg-white text-gray-400 border-gray-100 hover:border-emerald-200'
+                  }`}
+                >
+                  Household
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'COLLECTOR' })}
+                  className={`py-3 rounded-2xl font-black text-xs transition-all border-2 ${
+                    formData.role === 'COLLECTOR' 
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100' 
+                    : 'bg-white text-gray-400 border-gray-100 hover:border-emerald-200'
+                  }`}
+                >
+                  Collector
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
@@ -93,7 +124,7 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
@@ -112,7 +143,7 @@ const Register = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Phone</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone</label>
                 <div className="mt-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Phone className="h-4 w-4 text-gray-400" />
@@ -128,7 +159,7 @@ const Register = () => {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Address</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Address</label>
                 <div className="mt-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <MapPin className="h-4 w-4 text-gray-400" />
@@ -146,7 +177,7 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Password</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Password</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
@@ -164,7 +195,7 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Confirm Password</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Confirm Password</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />

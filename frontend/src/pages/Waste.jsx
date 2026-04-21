@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
-import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock } from 'lucide-react';
+import RequestDetailsModal from '../components/RequestDetailsModal';
+import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye } from 'lucide-react';
 
 const Waste = () => {
   const [wastes, setWastes] = useState([]);
@@ -13,6 +14,10 @@ const Waste = () => {
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   
+  // Modal state
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -187,6 +192,11 @@ const Waste = () => {
     }
   };
 
+  const openDetails = (waste) => {
+    setSelectedRequest(waste);
+    setIsModalOpen(true);
+  };
+
   const getCategoryName = (id) => {
     const category = categories.find(c => c.id === id);
     return category ? category.name : 'Unknown';
@@ -225,7 +235,7 @@ const Waste = () => {
           )}
         </div>
 
-        {/* Form Section - Only if Household OR Not logged in (shows CTA) */}
+        {/* Form Section */}
         {(!currentUser || currentUser.role === 'HOUSEHOLD') && (
           <div className={`bg-white rounded-[2.5rem] shadow-sm border ${isEditing ? 'border-emerald-200 bg-emerald-50/10' : 'border-gray-100'} p-8 mb-16 relative overflow-hidden`}>
             {!token && (
@@ -466,76 +476,69 @@ const Waste = () => {
                   </div>
 
                   <div className="space-y-4 mb-8">
-                    <p className="text-gray-600 text-sm font-medium leading-relaxed min-h-[40px]">{waste.description || 'No description provided.'}</p>
+                    <p className="text-gray-600 text-sm font-medium leading-relaxed min-h-[40px] line-clamp-2">{waste.description || 'No description provided.'}</p>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center text-gray-900 font-black text-sm bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                         <Package className="w-4 h-4 mr-2 text-emerald-500" />
                         {waste.quantity} Units
                       </div>
-                      {waste.is_sellable && (
-                        <div className="flex items-center text-emerald-700 font-black text-sm bg-emerald-50 p-3 rounded-2xl border border-emerald-100 shadow-inner">
-                          <DollarSign className="w-4 h-4 mr-1" />
-                          ${waste.estimated_price}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                      <Calendar className="w-4 h-4 mr-2 text-emerald-500" />
-                      {waste.pickup_date} <span className="mx-2 text-gray-200">|</span> <Clock className="w-4 h-4 mr-2 text-emerald-500" /> {waste.time_slot}
-                    </div>
-
-                    <div className="flex items-start text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                      <MapPin className="w-4 h-4 mr-2 text-emerald-500 mt-0.5 flex-shrink-0" />
-                      <span className="line-clamp-1">{waste.address_line}</span>
+                      <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
+                        <Calendar className="w-4 h-4 mr-2 text-emerald-500" />
+                        {waste.pickup_date}
+                      </div>
                     </div>
                   </div>
                   
                   <div className="flex items-center justify-between pt-6 border-t border-gray-50 mt-auto">
-                    <div className="text-[10px] text-gray-300 font-black uppercase tracking-widest">
-                      ID #{waste.id.toString().padStart(4, '0')}
-                    </div>
+                    <button 
+                        onClick={() => openDetails(waste)}
+                        className="flex items-center gap-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:text-emerald-700 transition-colors"
+                    >
+                        <Eye className="w-4 h-4" /> View Details
+                    </button>
                     
-                    {/* Actions - Only if owner AND logged in */}
-                    {token && currentUser && currentUser.id === waste.household_id && (
-                        <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                        {/* Household actions */}
+                        {token && currentUser && currentUser.id === waste.household_id && waste.status === 'OPEN' && (
+                            <>
+                                <button 
+                                    onClick={() => handleEdit(waste)}
+                                    className="p-3 bg-white text-emerald-600 border border-emerald-100 rounded-xl hover:bg-emerald-50 transition-all shadow-sm"
+                                    title="Edit"
+                                >
+                                    <Edit2 className="w-4 h-4" />
+                                </button>
+                                <button 
+                                    onClick={() => handleDelete(waste.id)}
+                                    className="p-3 bg-white text-red-500 border border-red-50 rounded-xl hover:bg-red-50 transition-all shadow-sm"
+                                    title="Delete"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </>
+                        )}
+                        
+                        {/* Collector action */}
+                        {token && currentUser && currentUser.role === 'COLLECTOR' && waste.status === 'OPEN' && (
                             <button 
-                                onClick={() => handleEdit(waste)}
-                                className="p-3 bg-white text-emerald-600 border border-emerald-100 rounded-xl hover:bg-emerald-50 transition-all shadow-sm"
-                                title="Edit Request"
+                                onClick={() => handleBookPickup(waste.id)}
+                                className="px-6 py-3 bg-emerald-600 text-white font-black text-xs rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-50 transition-all active:scale-95"
                             >
-                                <Edit2 className="w-4 h-4" />
+                                Book
                             </button>
-                            <button 
-                                onClick={() => handleDelete(waste.id)}
-                                className="p-3 bg-white text-red-500 border border-red-50 rounded-xl hover:bg-red-50 transition-all shadow-sm"
-                                title="Delete Request"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
-                        </div>
-                    )}
-                    
-                    {/* Collector Action - If collector AND logged in */}
-                    {token && currentUser && currentUser.role === 'COLLECTOR' && waste.status === 'OPEN' && (
-                        <button 
-                            onClick={() => handleBookPickup(waste.id)}
-                            className="px-6 py-3 bg-emerald-600 text-white font-black text-xs rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-50 transition-all active:scale-95"
-                        >
-                            Book Pickup
-                        </button>
-                    )}
+                        )}
 
-                    {!token && (
-                        <Link 
-                            to="/login" 
-                            state={{ from: { pathname: '/browse-requests' }, message: 'Sign in to book this pickup.' }}
-                            className="text-[10px] font-black text-emerald-600 hover:text-emerald-700 uppercase tracking-widest underline underline-offset-4"
-                        >
-                            Sign in to Book
-                        </Link>
-                    )}
+                        {!token && (
+                            <Link 
+                                to="/login" 
+                                state={{ from: { pathname: '/browse-requests' }, message: 'Sign in to book this pickup.' }}
+                                className="text-[10px] font-black text-gray-400 hover:text-emerald-600 uppercase tracking-widest underline underline-offset-4"
+                            >
+                                Sign in to Book
+                            </Link>
+                        )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -543,6 +546,13 @@ const Waste = () => {
           )}
         </div>
       </main>
+
+      <RequestDetailsModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        request={selectedRequest}
+        categories={categories}
+      />
 
       <style>{`
         @keyframes bounce-in {

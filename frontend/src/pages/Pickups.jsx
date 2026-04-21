@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
-import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2 } from 'lucide-react';
+import RequestDetailsModal from '../components/RequestDetailsModal';
+import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2, Eye } from 'lucide-react';
 
 const Pickups = () => {
   const [pickups, setPickups] = useState([]);
@@ -12,6 +13,10 @@ const Pickups = () => {
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   
+  // Modal state
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -66,6 +71,11 @@ const Pickups = () => {
     }
   };
 
+  const openDetails = (pickup) => {
+    setSelectedRequest(pickup);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
@@ -76,9 +86,9 @@ const Pickups = () => {
             <h1 className="text-4xl font-black text-gray-900 tracking-tight">Available Pickups</h1>
             <p className="mt-2 text-gray-500 font-medium">Find and book waste collection requests in your vicinity.</p>
           </div>
-          <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm">
-            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1 text-center">Open Jobs</p>
-            <p className="text-2xl font-black text-emerald-700 text-center">
+          <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center">
+            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Open Jobs</p>
+            <p className="text-2xl font-black text-emerald-700">
                 {pickups.length}
             </p>
           </div>
@@ -134,20 +144,23 @@ const Pickups = () => {
                    
                    <div className="flex items-start gap-3 text-gray-400 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                       <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700 leading-tight">{pickup.address_line}</span>
+                      <span className="text-gray-700 leading-tight line-clamp-1">{pickup.address_line}</span>
                    </div>
 
                    <div className="p-4 bg-gray-50 rounded-2xl min-h-[80px]">
-                      <p className="text-gray-500 text-sm font-medium leading-relaxed italic line-clamp-3">
+                      <p className="text-gray-500 text-sm font-medium leading-relaxed italic line-clamp-2">
                         "{pickup.description || 'No specific details provided.'}"
                       </p>
                    </div>
                 </div>
 
                 <div className="pt-6 border-t border-gray-50 flex items-center justify-between mt-auto">
-                   <div className="text-lg font-black text-gray-900">
-                      {pickup.quantity} <span className="text-[10px] text-gray-400 uppercase tracking-widest font-black">Units</span>
-                   </div>
+                   <button 
+                    onClick={() => openDetails(pickup)}
+                    className="flex items-center gap-2 text-[10px] font-black text-gray-400 hover:text-emerald-600 uppercase tracking-widest transition-colors"
+                   >
+                    <Eye className="w-4 h-4" /> View Details
+                   </button>
                    
                    <button 
                     onClick={() => handleBookPickup(pickup.id)}
@@ -175,6 +188,13 @@ const Pickups = () => {
             </div>
         )}
       </main>
+
+      <RequestDetailsModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        request={selectedRequest}
+        categories={categories}
+      />
     </div>
   );
 };

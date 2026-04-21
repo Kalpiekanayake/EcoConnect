@@ -2,14 +2,20 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
-import { Truck, Loader2, Package, Calendar, Clock, MapPin, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
+import RequestDetailsModal from '../components/RequestDetailsModal';
+import { Truck, Loader2, Package, Calendar, Clock, MapPin, CheckCircle2, ChevronRight, AlertCircle, Eye } from 'lucide-react';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
+
+  // Modal state
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -29,10 +35,13 @@ const MyBookings = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const userRes = await API.get('/auth/me');
+      const [userRes, catRes] = await Promise.all([
+        API.get('/auth/me'),
+        API.get('/categories')
+      ]);
       setCurrentUser(userRes.data);
+      setCategories(catRes.data);
       
-      // Fetch requests specifically assigned to this collector
       const wasteRes = await API.get(`/wastes?collector_id=${userRes.data.id}`);
       setBookings(wasteRes.data);
     } catch (err) {
@@ -46,12 +55,16 @@ const MyBookings = () => {
   const handleMarkCollected = async (id) => {
     try {
         const response = await API.patch(`/wastes/${id}/collect`);
-        // Update local state to reflect status change
         setBookings(bookings.map(b => b.id === id ? response.data : b));
         setSuccess("Pickup marked as Collected!");
     } catch (err) {
         setError(err.response?.data?.detail || "Failed to mark as collected.");
     }
+  };
+
+  const openDetails = (booking) => {
+    setSelectedRequest(booking);
+    setIsModalOpen(true);
   };
 
   return (
@@ -108,7 +121,7 @@ const MyBookings = () => {
                                 <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 font-black shadow-inner">
                                     #{booking.id}
                                 </div>
-                                <div>
+                                <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
                                         <span className="bg-amber-100 text-amber-700 text-[10px] font-black uppercase px-3 py-1 rounded-lg border border-amber-200 tracking-widest">Scheduled</span>
                                         <h3 className="font-black text-gray-900">Pickup Job</h3>
@@ -119,16 +132,20 @@ const MyBookings = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 bg-[#FAF9F6] px-5 py-3 rounded-2xl border border-gray-50 text-xs font-bold text-gray-500 w-full md:w-auto overflow-hidden">
-                                <MapPin className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 
-                                <span className="truncate">{booking.address_line}</span>
+                            <div className="flex items-center gap-4 w-full md:w-auto">
+                                <button 
+                                    onClick={() => openDetails(booking)}
+                                    className="p-4 bg-[#FAF9F6] text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl border border-gray-50 transition-all shadow-sm flex items-center gap-2 font-black text-[10px] uppercase tracking-widest"
+                                >
+                                    <Eye className="w-5 h-5" /> Details
+                                </button>
+                                <button 
+                                    onClick={() => handleMarkCollected(booking.id)}
+                                    className="flex-1 md:flex-none px-8 py-4 bg-gray-900 text-white font-black text-xs rounded-2xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 whitespace-nowrap"
+                                >
+                                    <CheckCircle2 className="w-4 h-4" /> Mark Collected
+                                </button>
                             </div>
-                            <button 
-                                onClick={() => handleMarkCollected(booking.id)}
-                                className="w-full md:w-auto px-10 py-4 bg-gray-900 text-white font-black text-xs rounded-2xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
-                            >
-                                <CheckCircle2 className="w-4 h-4" /> Mark Collected
-                            </button>
                         </div>
                         ))
                     )}
@@ -143,7 +160,7 @@ const MyBookings = () => {
                 </h2>
                 <div className="grid gap-4">
                     {bookings.filter(b => b.status === 'COLLECTED').map(booking => (
-                        <div key={booking.id} className="bg-white/50 rounded-2xl p-6 border border-gray-100 flex items-center justify-between opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+                        <div key={booking.id} className="bg-white/50 rounded-2xl p-6 border border-gray-100 flex items-center justify-between opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all group">
                              <div className="flex items-center gap-4">
                                 <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                                 <div>
@@ -151,8 +168,16 @@ const MyBookings = () => {
                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{booking.pickup_date}</p>
                                 </div>
                              </div>
-                             <div className="text-xs font-bold text-gray-400">
-                                {booking.quantity} Units Collected
+                             <div className="flex items-center gap-4">
+                                <button 
+                                    onClick={() => openDetails(booking)}
+                                    className="p-3 bg-white text-gray-400 hover:text-emerald-600 rounded-xl border border-gray-50 transition-all shadow-sm"
+                                >
+                                    <Eye className="w-4 h-4" />
+                                </button>
+                                <div className="text-xs font-bold text-gray-400">
+                                    {booking.quantity} Units Collected
+                                </div>
                              </div>
                         </div>
                     ))}
@@ -164,6 +189,13 @@ const MyBookings = () => {
           </div>
         )}
       </main>
+
+      <RequestDetailsModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        request={selectedRequest}
+        categories={categories}
+      />
     </div>
   );
 };
