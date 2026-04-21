@@ -49,7 +49,7 @@ const Dashboard = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Welcome back, {user?.username}!
+                Welcome back, {user?.full_name}!
               </h1>
               <p className="text-gray-500">Here's what's happening with your waste management today.</p>
             </div>

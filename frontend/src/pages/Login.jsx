@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../services/api';
-import { User, Lock, Loader2, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 
 const Login = () => {
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const Login = () => {
     
     try {
       const response = await API.post('/auth/login', {
-        username: formData.username,
+        email: formData.email,
         password: formData.password
       });
       
@@ -34,7 +34,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.detail || 'Invalid username or password. Is the backend running?');
+      setError(err.response?.data?.detail || 'Invalid email or password. Is the backend running?');
     } finally {
       setLoading(false);
     }
@@ -61,15 +61,15 @@ const Login = () => {
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Email</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  name="username"
+                  name="email"
                   type="email"
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
                   placeholder="your@email.com"
-                  value={formData.username}
+                  value={formData.email}
                   onChange={handleChange}
                 />
               </div>

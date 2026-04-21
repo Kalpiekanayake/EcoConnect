@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../services/api';
-import { User, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
+import { User, Mail, Lock, Loader2, AlertCircle, Phone, MapPin } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({ 
-    name: '', 
+    full_name: '', 
     email: '', 
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    phone: '',
+    address: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,9 +32,11 @@ const Register = () => {
     
     try {
       await API.post('/auth/register', {
-        name: formData.name,
+        full_name: formData.full_name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        phone: formData.phone,
+        address: formData.address
       });
       // Redirect to login after successful registration
       navigate('/login');
@@ -63,17 +67,17 @@ const Register = () => {
           <div className="space-y-4">
             <div>
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Full Name</label>
-              <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  name="name"
+                  name="full_name"
                   type="text"
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
                   placeholder="John Doe"
-                  value={formData.name}
+                  value={formData.full_name}
                   onChange={handleChange}
                 />
               </div>
@@ -81,7 +85,7 @@ const Register = () => {
 
             <div>
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Email</label>
-              <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
@@ -97,9 +101,44 @@ const Register = () => {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Phone</label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Phone className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    name="phone"
+                    type="text"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-sm"
+                    placeholder="0712345678"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Address</label>
+                <div className="mt-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <MapPin className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    name="address"
+                    type="text"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-sm"
+                    placeholder="Street/City"
+                    value={formData.address}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Password</label>
-              <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
@@ -117,7 +156,7 @@ const Register = () => {
 
             <div>
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Confirm Password</label>
-              <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>

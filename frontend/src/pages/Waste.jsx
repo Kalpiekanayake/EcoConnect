@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
-import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2 } from 'lucide-react';
+import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign } from 'lucide-react';
 
 const Waste = () => {
   const [wastes, setWastes] = useState([]);
@@ -13,9 +13,14 @@ const Waste = () => {
   
   // Form state
   const [formData, setFormData] = useState({
-    title: '',
     description: '',
-    category_id: ''
+    category_id: '',
+    quantity: '',
+    pickup_date: '',
+    time_slot: '',
+    address_line: '',
+    is_sellable: false,
+    estimated_price: ''
   });
 
   // Edit mode state
@@ -55,16 +60,25 @@ const Waste = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ 
+      ...formData, 
+      [name]: type === 'checkbox' ? checked : value 
+    });
   };
 
   const handleEdit = (waste) => {
     setIsEditing(true);
     setEditId(waste.id);
     setFormData({
-      title: waste.title,
-      description: waste.description,
-      category_id: waste.category_id.toString()
+      description: waste.description || '',
+      category_id: waste.category_id.toString(),
+      quantity: waste.quantity.toString(),
+      pickup_date: waste.pickup_date,
+      time_slot: waste.time_slot,
+      address_line: waste.address_line,
+      is_sellable: waste.is_sellable,
+      estimated_price: waste.estimated_price ? waste.estimated_price.toString() : ''
     });
     // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -73,7 +87,16 @@ const Waste = () => {
   const handleCancel = () => {
     setIsEditing(false);
     setEditId(null);
-    setFormData({ title: '', description: '', category_id: '' });
+    setFormData({ 
+      description: '', 
+      category_id: '', 
+      quantity: '', 
+      pickup_date: '', 
+      time_slot: '', 
+      address_line: '', 
+      is_sellable: false, 
+      estimated_price: '' 
+    });
     setError('');
   };
 
@@ -89,21 +112,26 @@ const Waste = () => {
     
     try {
       const payload = {
-        title: formData.title,
         description: formData.description,
-        category_id: parseInt(formData.category_id)
+        category_id: parseInt(formData.category_id),
+        quantity: parseFloat(formData.quantity),
+        pickup_date: formData.pickup_date,
+        time_slot: formData.time_slot,
+        address_line: formData.address_line,
+        is_sellable: formData.is_sellable,
+        estimated_price: formData.is_sellable ? parseFloat(formData.estimated_price || 0) : 0
       };
 
       if (isEditing) {
         // UPDATE existing record
         const response = await API.put(`/wastes/${editId}`, payload);
         setWastes(wastes.map(w => w.id === editId ? response.data : w));
-        setSuccess('Waste record updated successfully!');
+        setSuccess('Pickup request updated successfully!');
       } else {
         // CREATE new record
         const response = await API.post('/wastes', payload);
         setWastes([response.data, ...wastes]);
-        setSuccess('New waste record added!');
+        setSuccess('New pickup request added!');
       }
       
       handleCancel(); // Reset form and exit edit mode
@@ -139,12 +167,12 @@ const Waste = () => {
         {/* Header */}
         <div className="mb-8 flex justify-between items-end">
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Waste Management</h1>
-            <p className="mt-2 text-sm text-gray-600">Track and manage your waste disposal records.</p>
+            <h1 className="text-3xl font-extrabold text-gray-900">Pickup Requests</h1>
+            <p className="mt-2 text-sm text-gray-600">Request waste collection for your household.</p>
           </div>
           <div className="text-right hidden sm:block">
             <span className="text-2xl font-bold text-green-600">{wastes.length}</span>
-            <p className="text-xs text-gray-400 uppercase font-semibold">Total Records</p>
+            <p className="text-xs text-gray-400 uppercase font-semibold">Total Requests</p>
           </div>
         </div>
 
@@ -171,12 +199,12 @@ const Waste = () => {
               {isEditing ? (
                 <>
                   <Edit2 className="h-5 w-5 mr-2 text-blue-600" />
-                  Update Waste Record
+                  Update Pickup Request
                 </>
               ) : (
                 <>
                   <Plus className="h-5 w-5 mr-2 text-green-600" />
-                  Add New Record
+                  Create New Request
                 </>
               )}
             </h2>
@@ -192,20 +220,7 @@ const Waste = () => {
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Title</label>
-              <input
-                type="text"
-                name="title"
-                required
-                placeholder="What waste are you tracking?"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white shadow-sm"
-                value={formData.title}
-                onChange={handleChange}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Category</label>
+              <label className="text-sm font-semibold text-gray-700 ml-1">Waste Category</label>
               <select
                 name="category_id"
                 required
@@ -213,26 +228,120 @@ const Waste = () => {
                 value={formData.category_id}
                 onChange={handleChange}
               >
-                <option value="">Choose a Category</option>
+                <option value="">Select Category</option>
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
               </select>
             </div>
 
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Quantity</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.1"
+                  name="quantity"
+                  required
+                  placeholder="e.g. 5.5"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white shadow-sm"
+                  value={formData.quantity}
+                  onChange={handleChange}
+                />
+                <Package className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Pickup Date</label>
+              <div className="relative">
+                <input
+                  type="date"
+                  name="pickup_date"
+                  required
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white shadow-sm"
+                  value={formData.pickup_date}
+                  onChange={handleChange}
+                />
+                <Calendar className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Time Slot</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="time_slot"
+                  required
+                  placeholder="e.g. 09:00 AM - 12:00 PM"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white shadow-sm"
+                  value={formData.time_slot}
+                  onChange={handleChange}
+                />
+                <Clock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+
             <div className="md:col-span-2 space-y-2">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Description</label>
+              <label className="text-sm font-semibold text-gray-700 ml-1">Pickup Address</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="address_line"
+                  required
+                  placeholder="Full pickup address"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white shadow-sm"
+                  value={formData.address_line}
+                  onChange={handleChange}
+                />
+                <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+
+            <div className="md:col-span-2 space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Description (Optional)</label>
               <textarea
                 name="description"
-                rows="3"
-                placeholder="Add some details about this record..."
+                rows="2"
+                placeholder="Additional details..."
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none resize-none bg-white shadow-sm"
                 value={formData.description}
                 onChange={handleChange}
               ></textarea>
             </div>
 
-            <div className="md:col-span-2 flex items-center gap-3">
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  name="is_sellable"
+                  className="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  checked={formData.is_sellable}
+                  onChange={handleChange}
+                />
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-green-600 transition-colors">Is Sellable Waste?</span>
+              </label>
+            </div>
+
+            {formData.is_sellable && (
+              <div className="space-y-2 animate-fade-in">
+                <label className="text-sm font-semibold text-gray-700 ml-1">Estimated Price</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    name="estimated_price"
+                    placeholder="0.00"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none bg-white shadow-sm"
+                    value={formData.estimated_price}
+                    onChange={handleChange}
+                  />
+                  <DollarSign className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                </div>
+              </div>
+            )}
+
+            <div className="md:col-span-2 flex items-center gap-3 mt-4">
               <button
                 type="submit"
                 disabled={submitting}
@@ -246,7 +355,7 @@ const Waste = () => {
                     Processing...
                   </>
                 ) : (
-                  isEditing ? 'Update Waste' : 'Add Record'
+                  isEditing ? 'Update Request' : 'Post Request'
                 )}
               </button>
               
@@ -265,20 +374,20 @@ const Waste = () => {
 
         {/* List Section */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-800 border-b border-gray-200 pb-4">Record History</h2>
+          <h2 className="text-2xl font-bold text-gray-800 border-b border-gray-200 pb-4">Recent Requests</h2>
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
               <Loader2 className="h-12 w-12 text-green-600 animate-spin mb-4" />
-              <p className="text-gray-500 font-medium">Fetching your records...</p>
+              <p className="text-gray-500 font-medium">Fetching your requests...</p>
             </div>
           ) : wastes.length === 0 ? (
             <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 py-20 text-center">
               <div className="bg-gray-50 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <FileText className="h-10 w-10 text-gray-300" />
               </div>
-              <p className="text-gray-600 text-lg font-semibold">No records found</p>
-              <p className="text-sm text-gray-400 mt-2">Your waste history will appear here once you add a record.</p>
+              <p className="text-gray-600 text-lg font-semibold">No requests found</p>
+              <p className="text-sm text-gray-400 mt-2">Create your first pickup request above.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
@@ -292,39 +401,59 @@ const Waste = () => {
                       <Tag className="w-3 h-3 mr-1.5" />
                       {getCategoryName(waste.category_id)}
                     </span>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                      waste.status === 'OPEN' ? 'bg-blue-50 text-blue-700 border-blue-100' : 
+                      waste.status === 'BOOKED' ? 'bg-orange-50 text-orange-700 border-orange-100' :
+                      'bg-green-50 text-green-700 border-green-100'
+                    }`}>
+                      {waste.status}
+                    </span>
+                  </div>
+
+                  <div className="space-y-3 mb-6">
+                    <p className="text-gray-600 text-sm line-clamp-2 h-10">{waste.description || 'No description provided.'}</p>
+                    
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="flex items-center text-gray-500">
+                        <Package className="w-4 h-4 mr-2 text-gray-400" />
+                        <span className="font-semibold">{waste.quantity} Units</span>
+                      </div>
+                      {waste.is_sellable && (
+                        <div className="flex items-center text-emerald-600 font-bold">
+                          <DollarSign className="w-4 h-4 mr-1" />
+                          <span>${waste.estimated_price}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <Calendar className="w-4 h-4 mr-2 text-gray-400" />
+                      <span>{waste.pickup_date} at {waste.time_slot}</span>
+                    </div>
+
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                      <span className="line-clamp-1">{waste.address_line}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                    <div className="text-xs text-gray-400 font-medium">
+                      Posted on {new Date(waste.created_at).toLocaleDateString()}
+                    </div>
+                    <div className="flex items-center gap-1">
                       <button 
                         onClick={() => handleEdit(waste)}
                         className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Edit"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => handleDelete(waste.id)}
                         className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
-                    </div>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{waste.title}</h3>
-                  <p className="text-gray-600 text-sm mb-6 line-clamp-2 h-10">{waste.description || 'No description provided.'}</p>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                    <div className="flex items-center text-xs text-gray-400 font-medium">
-                      <Calendar className="w-3.5 h-3.5 mr-1.5 text-gray-300" />
-                      {new Date(waste.created_at || Date.now()).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </div>
-                    <div className="sm:hidden flex items-center gap-2">
-                       <button onClick={() => handleEdit(waste)} className="text-blue-600 text-xs font-bold">Edit</button>
-                       <button onClick={() => handleDelete(waste.id)} className="text-red-600 text-xs font-bold">Delete</button>
                     </div>
                   </div>
                 </div>
@@ -340,8 +469,15 @@ const Waste = () => {
           60% { transform: translateY(5px); opacity: 1; }
           100% { transform: translateY(0); opacity: 1; }
         }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         .animate-bounce-in {
           animation: bounce-in 0.4s ease-out forwards;
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out forwards;
         }
       `}</style>
     </div>
