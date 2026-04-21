@@ -19,12 +19,9 @@ const Login = () => {
     setError('');
     
     try {
-      const loginData = new URLSearchParams();
-      loginData.append('username', formData.username);
-      loginData.append('password', formData.password);
-
-      const response = await API.post('/auth/login', loginData, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      const response = await API.post('/auth/login', {
+        username: formData.username,
+        password: formData.password
       });
       
       // Store token
@@ -61,17 +58,17 @@ const Login = () => {
           
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Username</label>
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Email</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   name="username"
-                  type="text"
+                  type="email"
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
-                  placeholder="Your username"
+                  placeholder="your@email.com"
                   value={formData.username}
                   onChange={handleChange}
                 />

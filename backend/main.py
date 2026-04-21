@@ -30,9 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
     )
 
-from app.models.user import User
-from app.models.waste import Waste
-from app.models.category import Category
+from app.models import User, WasteCategory, PickupRequest
 
 Base.metadata.create_all(bind=engine)
 

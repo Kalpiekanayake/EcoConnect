@@ -5,7 +5,7 @@ import { User, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({ 
-    username: '', 
+    name: '', 
     email: '', 
     password: '',
     confirmPassword: ''
@@ -30,7 +30,7 @@ const Register = () => {
     
     try {
       await API.post('/auth/register', {
-        username: formData.username,
+        name: formData.name,
         email: formData.email,
         password: formData.password
       });
@@ -62,18 +62,18 @@ const Register = () => {
           
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Username</label>
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Full Name</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  name="username"
+                  name="name"
                   type="text"
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
-                  placeholder="johndoe"
-                  value={formData.username}
+                  placeholder="John Doe"
+                  value={formData.name}
                   onChange={handleChange}
                 />
               </div>

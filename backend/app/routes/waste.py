@@ -27,15 +27,16 @@ def create_waste(
     return new_waste
 
 
-# ✅ GET All Wastes (Public)
+# ✅ GET All Wastes for Current User (Protected)
 @router.get("/", response_model=list[WasteResponse])
-def get_all_wastes(
+def get_user_wastes(
     skip: int = 0,
     limit: int = 10,
     category_id: int | None = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    query = db.query(Waste)
+    query = db.query(Waste).filter(Waste.user_id == current_user.id)
 
     #  Filtering
     if category_id is not None:
