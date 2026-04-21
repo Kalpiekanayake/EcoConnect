@@ -13,37 +13,28 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const formatError = (detail) => {
-    if (typeof detail === 'string') return detail;
-    if (Array.isArray(detail)) {
-      return detail.map(err => `${err.loc.join('.')}: ${err.msg}`).join(', ');
-    }
-    return 'Invalid email or password.';
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     
     try {
+      // The backend UserLogin schema expects { "email": "...", "password": "..." }
       const response = await API.post('/auth/login', {
         email: formData.email,
         password: formData.password
       });
       
-      // Store token
       const token = response.data.access_token;
       if (token) {
         localStorage.setItem('token', token);
         navigate('/dashboard');
-      } else {
-        throw new Error('Token not received from server');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      const detail = err.response?.data?.detail;
-      setError(formatError(detail) || 'Could not connect to server. Is the backend running?');
+      console.error('Full login error:', err);
+      // Capture the actual detail message from the 500 or 401 error
+      const message = err.response?.data?.detail || 'Server error (500). Please check backend logs.';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -59,7 +50,7 @@ const Login = () => {
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 text-red-700 p-4 rounded-2xl text-sm flex items-start border border-red-100 animate-pulse">
+            <div className="bg-red-50 text-red-700 p-4 rounded-2xl text-sm flex items-start border border-red-100">
               <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -106,23 +97,13 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 px-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center shadow-xl shadow-emerald-100 disabled:opacity-70 mt-4"
+            className="w-full py-4 px-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center shadow-xl shadow-emerald-100 disabled:opacity-70"
           >
-            {loading ? (
-              <>
-                <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                Signing in...
-              </>
-            ) : (
-              'Login'
-            )}
+            {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Login'}
           </button>
 
-          <p className="text-center text-sm text-gray-500 font-bold pt-2">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-emerald-600 hover:text-emerald-500 underline underline-offset-4 decoration-2">
-              Register here
-            </Link>
+          <p className="text-center text-sm text-gray-500 font-bold">
+            Don't have an account? <Link to="/register" className="text-emerald-600 underline">Register here</Link>
           </p>
         </form>
       </div>
