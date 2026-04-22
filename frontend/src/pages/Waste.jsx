@@ -71,6 +71,7 @@ const Waste = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   
   // Modal state
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -399,20 +400,32 @@ const Waste = () => {
     return category ? category.name : 'Unknown';
   };
 
+  // Filtering Logic
+  const filteredWastes = selectedCategory === 'All' 
+    ? wastes 
+    : wastes.filter(w => getCategoryName(w.category_id) === selectedCategory);
+
+  const getCountForCategory = (catName) => {
+    if (catName === 'All') return wastes.length;
+    return wastes.filter(w => getCategoryName(w.category_id) === catName).length;
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
       
-      <main className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      <main className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-12 flex justify-between items-end">
+        <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <h1 className="text-4xl font-black text-gray-900 tracking-tight">Browse Requests</h1>
             <p className="mt-2 text-gray-500 font-medium">Explore active pickup requests in your area.</p>
           </div>
-          <div className="text-right hidden sm:block">
-            <span className="text-3xl font-black text-emerald-600">{wastes.length}</span>
-            <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">Active Requests</p>
+          <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center min-w-[120px]">
+            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Matches</p>
+            <p className="text-2xl font-black text-emerald-700">
+                {filteredWastes.length}
+            </p>
           </div>
         </div>
 
@@ -430,6 +443,74 @@ const Waste = () => {
               <p className="text-sm font-bold">{error}</p>
             </div>
           )}
+        </div>
+
+        {/* Category Filter Boxes */}
+        <div className="mb-12 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 min-w-[600px] md:min-w-0">
+                {/* All Requests Card */}
+                <button
+                    onClick={() => setSelectedCategory('All')}
+                    className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 group relative overflow-hidden ${
+                        selectedCategory === 'All' 
+                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' 
+                        : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'
+                    }`}
+                >
+                    <div className="flex justify-between items-start relative z-10">
+                        <div className={`p-2.5 rounded-xl ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'}`}>
+                            <Truck className="w-5 h-5" />
+                        </div>
+                        <span className={`text-xl font-black ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>
+                            {wastes.length}
+                        </span>
+                    </div>
+                    <div className="relative z-10">
+                        <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Browse</p>
+                        <h3 className={`text-sm font-black leading-tight ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>
+                            All Requests
+                        </h3>
+                    </div>
+                    {selectedCategory === 'All' && (
+                        <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
+                    )}
+                </button>
+
+                {/* Individual Category Cards */}
+                {categories.map((cat) => {
+                    const count = getCountForCategory(cat.name);
+                    const isActive = selectedCategory === cat.name;
+                    return (
+                        <button
+                            key={cat.id}
+                            onClick={() => setSelectedCategory(cat.name)}
+                            className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 group relative overflow-hidden ${
+                                isActive 
+                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' 
+                                : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'
+                            }`}
+                        >
+                            <div className="flex justify-between items-start relative z-10">
+                                <div className={`p-2.5 rounded-xl ${isActive ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'}`}>
+                                    <Package className="w-5 h-5" />
+                                </div>
+                                <span className={`text-xl font-black ${isActive ? 'text-white' : 'text-gray-900'}`}>
+                                    {count}
+                                </span>
+                            </div>
+                            <div className="relative z-10">
+                                <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Category</p>
+                                <h3 className={`text-sm font-black leading-tight ${isActive ? 'text-white' : 'text-gray-900'} line-clamp-1`}>
+                                    {cat.name}
+                                </h3>
+                            </div>
+                            {isActive && (
+                                <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
+                            )}
+                        </button>
+                    );
+                })}
+            </div>
         </div>
 
         {/* Form Section */}

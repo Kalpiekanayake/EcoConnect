@@ -105,38 +105,67 @@ const Pickups = () => {
           </div>
         </div>
 
-        {/* Category Filter Chips */}
-        <div className="mb-10 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
-            <div className="flex items-center gap-3 min-w-max">
+        {/* Category Filter Boxes */}
+        <div className="mb-12 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 min-w-[600px] md:min-w-0">
+                {/* All Requests Card */}
                 <button
                     onClick={() => setSelectedCategory('All')}
-                    className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border-2 active:scale-95 ${
+                    className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 group relative overflow-hidden ${
                         selectedCategory === 'All' 
-                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100' 
-                        : 'bg-white text-gray-400 border-gray-100 hover:border-emerald-200 hover:text-emerald-600'
+                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' 
+                        : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'
                     }`}
                 >
-                    All {pickups.length > 0 && <span className={`ml-2 opacity-60`}>({pickups.length})</span>}
+                    <div className="flex justify-between items-start relative z-10">
+                        <div className={`p-2.5 rounded-xl ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'}`}>
+                            <Truck className="w-5 h-5" />
+                        </div>
+                        <span className={`text-xl font-black ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>
+                            {pickups.length}
+                        </span>
+                    </div>
+                    <div className="relative z-10">
+                        <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Browse</p>
+                        <h3 className={`text-sm font-black leading-tight ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>
+                            All Categories
+                        </h3>
+                    </div>
+                    {selectedCategory === 'All' && (
+                        <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
+                    )}
                 </button>
+
+                {/* Individual Category Cards */}
                 {categories.map((cat) => {
                     const count = getCountForCategory(cat.name);
+                    const isActive = selectedCategory === cat.name;
                     return (
                         <button
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.name)}
-                            className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border-2 active:scale-95 flex items-center gap-2 ${
-                                selectedCategory === cat.name 
-                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100' 
-                                : 'bg-white text-gray-400 border-gray-100 hover:border-emerald-200 hover:text-emerald-600'
+                            className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 group relative overflow-hidden ${
+                                isActive 
+                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' 
+                                : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'
                             }`}
                         >
-                            {cat.name}
-                            {count > 0 && (
-                                <span className={`px-2 py-0.5 rounded-lg text-[9px] ${
-                                    selectedCategory === cat.name ? 'bg-white text-emerald-600' : 'bg-gray-50 text-gray-400'
-                                }`}>
+                            <div className="flex justify-between items-start relative z-10">
+                                <div className={`p-2.5 rounded-xl ${isActive ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'}`}>
+                                    <Package className="w-5 h-5" />
+                                </div>
+                                <span className={`text-xl font-black ${isActive ? 'text-white' : 'text-gray-900'}`}>
                                     {count}
                                 </span>
+                            </div>
+                            <div className="relative z-10">
+                                <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Category</p>
+                                <h3 className={`text-sm font-black leading-tight ${isActive ? 'text-white' : 'text-gray-900'} line-clamp-1`}>
+                                    {cat.name}
+                                </h3>
+                            </div>
+                            {isActive && (
+                                <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
                             )}
                         </button>
                     );
@@ -165,15 +194,15 @@ const Pickups = () => {
             <Loader2 className="h-12 w-12 text-emerald-600 animate-spin mb-4" />
             <p className="text-gray-400 font-bold">Scanning for pickups...</p>
           </div>
-        ) : pickups.length === 0 ? (
+        ) : filteredPickups.length === 0 ? (
           <div className="bg-white rounded-[3rem] border-4 border-dashed border-gray-100 py-32 text-center shadow-sm">
             <Truck className="h-16 w-16 text-gray-100 mx-auto mb-6" />
             <h3 className="text-2xl font-black text-gray-900">No pickups available</h3>
-            <p className="text-gray-400 font-medium mt-2">All requests have been booked or the area is currently clear.</p>
+            <p className="text-gray-400 font-medium mt-2">There are no "{selectedCategory}" requests currently open.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {pickups.map((pickup) => (
+            {filteredPickups.map((pickup) => (
               <div key={pickup.id} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
                 <div className="flex justify-between items-start mb-6">
                   <span className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">
