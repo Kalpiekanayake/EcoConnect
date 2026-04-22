@@ -12,6 +12,7 @@ const Pickups = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   
   // Modal state
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -76,22 +77,71 @@ const Pickups = () => {
     setIsModalOpen(true);
   };
 
+  // Filtering Logic
+  const filteredPickups = selectedCategory === 'All' 
+    ? pickups 
+    : pickups.filter(p => getCategoryName(p.category_id) === selectedCategory);
+
+  const getCountForCategory = (catName) => {
+    if (catName === 'All') return pickups.length;
+    return pickups.filter(p => getCategoryName(p.category_id) === catName).length;
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
       
       <main className="max-w-6xl mx-auto py-12 px-4">
-        <div className="mb-12 flex justify-between items-end">
+        <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <h1 className="text-4xl font-black text-gray-900 tracking-tight">Available Pickups</h1>
             <p className="mt-2 text-gray-500 font-medium">Find and book waste collection requests in your vicinity.</p>
           </div>
-          <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center">
-            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Open Jobs</p>
+          <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 shadow-sm text-center min-w-[120px]">
+            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Matching Jobs</p>
             <p className="text-2xl font-black text-emerald-700">
-                {pickups.length}
+                {filteredPickups.length}
             </p>
           </div>
+        </div>
+
+        {/* Category Filter Chips */}
+        <div className="mb-10 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+            <div className="flex items-center gap-3 min-w-max">
+                <button
+                    onClick={() => setSelectedCategory('All')}
+                    className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border-2 active:scale-95 ${
+                        selectedCategory === 'All' 
+                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100' 
+                        : 'bg-white text-gray-400 border-gray-100 hover:border-emerald-200 hover:text-emerald-600'
+                    }`}
+                >
+                    All {pickups.length > 0 && <span className={`ml-2 opacity-60`}>({pickups.length})</span>}
+                </button>
+                {categories.map((cat) => {
+                    const count = getCountForCategory(cat.name);
+                    return (
+                        <button
+                            key={cat.id}
+                            onClick={() => setSelectedCategory(cat.name)}
+                            className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border-2 active:scale-95 flex items-center gap-2 ${
+                                selectedCategory === cat.name 
+                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100' 
+                                : 'bg-white text-gray-400 border-gray-100 hover:border-emerald-200 hover:text-emerald-600'
+                            }`}
+                        >
+                            {cat.name}
+                            {count > 0 && (
+                                <span className={`px-2 py-0.5 rounded-lg text-[9px] ${
+                                    selectedCategory === cat.name ? 'bg-white text-emerald-600' : 'bg-gray-50 text-gray-400'
+                                }`}>
+                                    {count}
+                                </span>
+                            )}
+                        </button>
+                    );
+                })}
+            </div>
         </div>
 
         {/* Feedback Messages */}
