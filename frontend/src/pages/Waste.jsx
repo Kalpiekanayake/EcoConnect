@@ -3,7 +3,27 @@ import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database } from 'lucide-react';
+import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database, ArrowRight } from 'lucide-react';
+
+// --- Time Selector Helpers ---
+const timeOptions = [
+  "06:00 AM", "06:30 AM", "07:00 AM", "07:30 AM", "08:00 AM", "08:30 AM",
+  "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
+  "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM",
+  "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM",
+  "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM"
+];
+
+const timeToMinutes = (timeStr) => {
+  if (!timeStr) return 0;
+  const parts = timeStr.split(' ');
+  if (parts.length !== 2) return 0;
+  const [time, period] = parts;
+  let [hours, minutes] = time.split(':').map(Number);
+  if (period === 'PM' && hours !== 12) hours += 12;
+  if (period === 'AM' && hours === 12) hours = 0;
+  return hours * 60 + minutes;
+};
 
 const Waste = () => {
   const [wastes, setWastes] = useState([]);
@@ -27,6 +47,8 @@ const Waste = () => {
     category_id: '',
     quantity: '',
     pickup_date: '',
+    startTime: '',
+    endTime: '',
     time_slot: '',
     address_line: '',
     is_sellable: false,
@@ -103,6 +125,28 @@ const Waste = () => {
         }
     }
 
+    // Time range handling
+    if (name === 'startTime' || name === 'endTime') {
+        const newStart = name === 'startTime' ? value : formData.startTime;
+        const newEnd = name === 'endTime' ? value : formData.endTime;
+        
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+            time_slot: newStart && newEnd ? `${newStart} - ${newEnd}` : ''
+        }));
+
+        // Validation
+        if (newStart && newEnd) {
+            if (timeToMinutes(newStart) >= timeToMinutes(newEnd)) {
+                setError("End time must be later than start time");
+            } else {
+                setError("");
+            }
+        }
+        return;
+    }
+
     setFormData({ 
       ...formData, 
       [name]: type === 'checkbox' ? checked : value 
@@ -112,11 +156,17 @@ const Waste = () => {
   const handleEdit = (waste) => {
     setIsEditing(true);
     setEditId(waste.id);
+    
+    // Parse time_slot back to startTime and endTime
+    const [start, end] = (waste.time_slot || "").split(" - ");
+    
     setFormData({
       description: waste.description || '',
       category_id: waste.category_id.toString(),
       quantity: waste.quantity.toString(),
       pickup_date: waste.pickup_date,
+      startTime: start || '',
+      endTime: end || '',
       time_slot: waste.time_slot,
       address_line: waste.address_line,
       is_sellable: waste.is_sellable,
@@ -134,6 +184,8 @@ const Waste = () => {
       category_id: '', 
       quantity: '', 
       pickup_date: '', 
+      startTime: '',
+      endTime: '',
       time_slot: '', 
       address_line: '', 
       is_sellable: false, 
@@ -152,6 +204,11 @@ const Waste = () => {
 
     if (!formData.category_id) {
       setError('Please select a category');
+      return;
+    }
+
+    if (timeToMinutes(formData.startTime) >= timeToMinutes(formData.endTime)) {
+      setError('End time must be later than start time');
       return;
     }
 
@@ -377,19 +434,47 @@ const Waste = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Time Slot</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="time_slot"
-                    required
-                    placeholder="e.g. 09:00 AM - 12:00 PM"
-                    className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                    value={formData.time_slot}
-                    onChange={handleChange}
-                  />
-                  <Clock className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Time Range</label>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="relative">
+                        <select
+                            name="startTime"
+                            required
+                            className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner appearance-none"
+                            value={formData.startTime}
+                            onChange={handleChange}
+                        >
+                            <option value="">Start</option>
+                            {timeOptions.map(time => (
+                                <option key={time} value={time}>{time}</option>
+                            ))}
+                        </select>
+                        <Clock className="absolute left-4 top-4.5 h-5 w-5 text-gray-300 pointer-events-none" />
+                    </div>
+                    <div className="relative">
+                        <select
+                            name="endTime"
+                            required
+                            className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner appearance-none"
+                            value={formData.endTime}
+                            onChange={handleChange}
+                        >
+                            <option value="">End</option>
+                            {timeOptions.map(time => (
+                                <option key={time} value={time}>{time}</option>
+                            ))}
+                        </select>
+                        <Clock className="absolute left-4 top-4.5 h-5 w-5 text-gray-300 pointer-events-none" />
+                        <div className="absolute right-4 top-4.5 text-[10px] font-black text-gray-300 pointer-events-none">
+                            <ArrowRight className="w-4 h-4" />
+                        </div>
+                    </div>
                 </div>
+                {formData.time_slot && !error && (
+                    <p className="text-[10px] font-bold text-emerald-600 mt-1 ml-1 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> Selected Slot: {formData.time_slot}
+                    </p>
+                )}
               </div>
 
               <div className="md:col-span-2 space-y-2">
