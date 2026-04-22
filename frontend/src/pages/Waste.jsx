@@ -3,7 +3,23 @@ import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database, ArrowRight } from 'lucide-react';
+import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database, ArrowRight, Navigation } from 'lucide-react';
+
+// Map imports
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+
+// Fix Leaflet marker icon issue
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+});
+L.Marker.prototype.options.icon = DefaultIcon;
 
 // --- Time Selector Helpers ---
 const timeOptions = [
@@ -25,6 +41,17 @@ const timeToMinutes = (timeStr) => {
   return hours * 60 + minutes;
 };
 
+// --- Map Marker Component ---
+const LocationMarker = ({ position, setPosition }) => {
+    useMapEvents({
+        click(e) {
+            setPosition([e.latlng.lat, e.latlng.lng]);
+        },
+    });
+
+    return position ? <Marker position={position} /> : null;
+};
+
 const Waste = () => {
   const [wastes, setWastes] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -41,6 +68,9 @@ const Waste = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  // Map state (default to Colombo, Sri Lanka or similar center)
+  const [markerPos, setMarkerPos] = useState([6.9271, 79.8612]);
+
   // Form state
   const [formData, setFormData] = useState({
     description: '',
@@ -51,6 +81,8 @@ const Waste = () => {
     endTime: '',
     time_slot: '',
     address_line: '',
+    latitude: 6.9271,
+    longitude: 79.8612,
     is_sellable: false,
     estimated_price: ''
   });
@@ -65,6 +97,17 @@ const Waste = () => {
         API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
     }
   }, [token]);
+
+  // Sync markerPos to formData
+  useEffect(() => {
+    if (markerPos) {
+        setFormData(prev => ({
+            ...prev,
+            latitude: markerPos[0],
+            longitude: markerPos[1]
+        }));
+    }
+  }, [markerPos]);
 
   // Clear messages after 5 seconds
   useEffect(() => {
@@ -160,6 +203,8 @@ const Waste = () => {
     // Parse time_slot back to startTime and endTime
     const [start, end] = (waste.time_slot || "").split(" - ");
     
+    setMarkerPos([waste.latitude || 6.9271, waste.longitude || 79.8612]);
+
     setFormData({
       description: waste.description || '',
       category_id: waste.category_id.toString(),
@@ -169,6 +214,8 @@ const Waste = () => {
       endTime: end || '',
       time_slot: waste.time_slot,
       address_line: waste.address_line,
+      latitude: waste.latitude || 6.9271,
+      longitude: waste.longitude || 79.8612,
       is_sellable: waste.is_sellable,
       estimated_price: waste.estimated_price ? waste.estimated_price.toString() : ''
     });
@@ -179,6 +226,7 @@ const Waste = () => {
   const handleCancel = () => {
     setIsEditing(false);
     setEditId(null);
+    setMarkerPos([6.9271, 79.8612]);
     setFormData({ 
       description: '', 
       category_id: '', 
@@ -188,6 +236,8 @@ const Waste = () => {
       endTime: '',
       time_slot: '', 
       address_line: '', 
+      latitude: 6.9271,
+      longitude: 79.8612,
       is_sellable: false, 
       estimated_price: '' 
     });
@@ -223,6 +273,8 @@ const Waste = () => {
         pickup_date: formData.pickup_date,
         time_slot: formData.time_slot,
         address_line: formData.address_line,
+        latitude: parseFloat(formData.latitude),
+        longitude: parseFloat(formData.longitude),
         is_sellable: formData.is_sellable,
         estimated_price: formData.is_sellable ? parseFloat(formData.estimated_price || 0) : 0
       };
@@ -477,19 +529,46 @@ const Waste = () => {
                 )}
               </div>
 
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pickup Address</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="address_line"
-                    required
-                    placeholder="Enter your street, city and house number"
-                    className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                    value={formData.address_line}
-                    onChange={handleChange}
-                  />
-                  <MapPin className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+              <div className="md:col-span-2 space-y-4">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pickup Address & Location</label>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            name="address_line"
+                            required
+                            placeholder="Enter your street, city and house number"
+                            className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
+                            value={formData.address_line}
+                            onChange={handleChange}
+                        />
+                        <MapPin className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+                    </div>
+                </div>
+
+                {/* Map Picker */}
+                <div className="space-y-2">
+                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 flex items-center gap-2">
+                        <Navigation className="w-3 h-3" /> Pin location on map (Optional but Recommended)
+                    </p>
+                    <div className="h-[300px] w-full rounded-[2rem] overflow-hidden border-4 border-white shadow-sm ring-1 ring-gray-100 relative z-0">
+                        <MapContainer 
+                            center={markerPos} 
+                            zoom={13} 
+                            style={{ height: '100%', width: '100%' }}
+                            scrollWheelZoom={false}
+                        >
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <LocationMarker position={markerPos} setPosition={setMarkerPos} />
+                        </MapContainer>
+                    </div>
+                    <div className="flex gap-4 px-2">
+                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 px-3 py-1 rounded-lg">Lat: {formData.latitude.toFixed(6)}</div>
+                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 px-3 py-1 rounded-lg">Lng: {formData.longitude.toFixed(6)}</div>
+                    </div>
                 </div>
               </div>
 
