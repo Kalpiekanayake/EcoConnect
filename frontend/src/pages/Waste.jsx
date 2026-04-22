@@ -41,15 +41,15 @@ const timeToMinutes = (timeStr) => {
   return hours * 60 + minutes;
 };
 
-// --- Map Marker Component ---
-const LocationMarker = ({ position, setPosition }) => {
-    useMapEvents({
-        click(e) {
-            setPosition([e.latlng.lat, e.latlng.lng]);
+// --- Map Interaction Component ---
+const MapController = ({ setPosition, isConfirming }) => {
+    const map = useMapEvents({
+        moveend() {
+            const center = map.getCenter();
+            setPosition([center.lat, center.lng]);
         },
     });
-
-    return position ? <Marker position={position} /> : null;
+    return null;
 };
 
 const Waste = () => {
@@ -57,6 +57,7 @@ const Waste = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [fetchingAddress, setFetchingAddress] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
@@ -68,8 +69,8 @@ const Waste = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  // Map state (default to Colombo, Sri Lanka or similar center)
-  const [markerPos, setMarkerPos] = useState([6.9271, 79.8612]);
+  // Map state (default to Colombo, Sri Lanka)
+  const [mapCenter, setMapCenter] = useState([6.9271, 79.8612]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -98,16 +99,33 @@ const Waste = () => {
     }
   }, [token]);
 
-  // Sync markerPos to formData
-  useEffect(() => {
-    if (markerPos) {
+  // Reverse Geocoding: Get address from Lat/Lng
+  const handleConfirmLocation = async () => {
+    setFetchingAddress(true);
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${mapCenter[0]}&lon=${mapCenter[1]}`);
+        const data = await response.json();
+        if (data && data.display_name) {
+            setFormData(prev => ({
+                ...prev,
+                address_line: data.display_name,
+                latitude: mapCenter[0],
+                longitude: mapCenter[1]
+            }));
+            setSuccess("Location confirmed and address updated!");
+        }
+    } catch (err) {
+        console.error("Failed to fetch address", err);
         setFormData(prev => ({
             ...prev,
-            latitude: markerPos[0],
-            longitude: markerPos[1]
+            latitude: mapCenter[0],
+            longitude: mapCenter[1]
         }));
+        setError("Could not fetch address, but coordinates are saved.");
+    } finally {
+        setFetchingAddress(false);
     }
-  }, [markerPos]);
+  };
 
   // Clear messages after 5 seconds
   useEffect(() => {
@@ -549,25 +567,75 @@ const Waste = () => {
                 {/* Map Picker */}
                 <div className="space-y-2">
                     <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 flex items-center gap-2">
-                        <Navigation className="w-3 h-3" /> Pin location on map (Optional but Recommended)
+                        <Navigation className="w-3 h-3" /> Move map to your location and confirm
                     </p>
-                    <div className="h-[300px] w-full rounded-[2rem] overflow-hidden border-4 border-white shadow-sm ring-1 ring-gray-100 relative z-0">
+                    <div className="h-[350px] w-full rounded-[2.5rem] overflow-hidden border-4 border-white shadow-xl ring-1 ring-gray-100 relative group">
                         <MapContainer 
-                            center={markerPos} 
+                            center={mapCenter} 
                             zoom={13} 
                             style={{ height: '100%', width: '100%' }}
-                            scrollWheelZoom={false}
+                            scrollWheelZoom={true}
                         >
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            <LocationMarker position={markerPos} setPosition={setMarkerPos} />
+                            <MapController setPosition={setMapCenter} />
                         </MapContainer>
+
+                        {/* Fixed Center Crosshair */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[400]">
+                            <div className="relative flex items-center justify-center">
+                                <div className="w-8 h-8 border-2 border-emerald-600 rounded-full flex items-center justify-center">
+                                    <div className="w-1 h-1 bg-emerald-600 rounded-full"></div>
+                                </div>
+                                <div className="absolute w-12 h-[2px] bg-emerald-600/30"></div>
+                                <div className="absolute h-12 w-[2px] bg-emerald-600/30"></div>
+                                {/* Floating Marker Shadow */}
+                                <div className="absolute -bottom-10 flex flex-col items-center">
+                                    <div className="bg-emerald-900 text-white text-[8px] font-black px-2 py-1 rounded shadow-lg uppercase tracking-tighter whitespace-nowrap">
+                                        Pickup Point
+                                    </div>
+                                    <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-emerald-900"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Confirm Button Overlay */}
+                        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-[400] px-4">
+                            <button
+                                type="button"
+                                onClick={handleConfirmLocation}
+                                disabled={fetchingAddress}
+                                className="bg-emerald-900 text-white px-8 py-3 rounded-2xl font-black text-xs shadow-2xl hover:bg-emerald-800 transition-all active:scale-95 flex items-center gap-2 disabled:opacity-80"
+                            >
+                                {fetchingAddress ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        Identifying Address...
+                                    </>
+                                ) : (
+                                    <>
+                                        <MapPin className="w-4 h-4" />
+                                        Confirm Location
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex gap-4 px-2">
-                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 px-3 py-1 rounded-lg">Lat: {formData.latitude.toFixed(6)}</div>
-                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 px-3 py-1 rounded-lg">Lng: {formData.longitude.toFixed(6)}</div>
+                    
+                    <div className="flex flex-wrap gap-4 px-2">
+                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">
+                            Lat: {mapCenter[0].toFixed(6)}
+                        </div>
+                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">
+                            Lng: {mapCenter[1].toFixed(6)}
+                        </div>
+                        {formData.latitude === mapCenter[0] && (
+                            <div className="text-[9px] font-black text-emerald-600 uppercase tracking-tighter bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100 animate-fade-in flex items-center gap-1">
+                                <CheckCircle2 className="w-3 h-3" /> Position Saved
+                            </div>
+                        )}
                     </div>
                 </div>
               </div>
