@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Waste from './pages/Waste';
 import Pickups from './pages/Pickups';
+import CategoryRequests from './pages/CategoryRequests';
 import MyRequests from './pages/MyRequests';
 import MyBookings from './pages/MyBookings';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -16,6 +17,7 @@ function App() {
       {/* Public Pages */}
       <Route path="/" element={<Landing />} />
       <Route path="/browse-requests" element={<Waste />} />
+      <Route path="/browse-requests/:categoryId" element={<CategoryRequests />} />
       <Route path="/available-pickups" element={<Pickups />} />
       
       {/* Auth Pages */}

@@ -71,12 +71,7 @@ const Waste = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('All');
   
-  // Modal state
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -121,7 +116,6 @@ const Waste = () => {
       setCategories(catRes.data);
     } catch (err) {
       setError('Failed to fetch data from the server.');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -206,7 +200,6 @@ const Waste = () => {
             setError("Could not find that address on the map.");
         }
     } catch (err) {
-        console.error("Geocoding error", err);
         setError("Search failed. Please try again.");
     } finally {
         setSearchingMap(false);
@@ -225,42 +218,14 @@ const Waste = () => {
                 latitude: mapCenter[0],
                 longitude: mapCenter[1]
             }));
-            setSuccess("Location confirmed and address updated!");
+            setSuccess("Location confirmed!");
         }
     } catch (err) {
-        console.error("Failed to fetch address", err);
-        setFormData(prev => ({
-            ...prev,
-            latitude: mapCenter[0],
-            longitude: mapCenter[1]
-        }));
-        setError("Could not fetch address, but coordinates are saved.");
+        setFormData(prev => ({ ...prev, latitude: mapCenter[0], longitude: mapCenter[1] }));
+        setError("Location saved without address lookup.");
     } finally {
         setFetchingAddress(false);
     }
-  };
-
-  const handleEdit = (waste) => {
-    setIsEditing(true);
-    setEditId(waste.id);
-    const [start, end] = (waste.time_slot || "").split(" - ");
-    const newPos = [waste.latitude || 6.9271, waste.longitude || 79.8612];
-    setMapCenter(newPos);
-    setFormData({
-      description: waste.description || '',
-      category_id: waste.category_id.toString(),
-      quantity: waste.quantity.toString(),
-      pickup_date: waste.pickup_date,
-      startTime: start || '',
-      endTime: end || '',
-      time_slot: waste.time_slot,
-      address_line: waste.address_line,
-      latitude: waste.latitude || 6.9271,
-      longitude: waste.longitude || 79.8612,
-      is_sellable: waste.is_sellable,
-      estimated_price: waste.estimated_price ? waste.estimated_price.toString() : ''
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCancel = () => {
@@ -287,7 +252,7 @@ const Waste = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!token) {
-        navigate('/login', { state: { from: { pathname: '/browse-requests' }, message: 'Please login to post a pickup request.' } });
+        navigate('/login', { state: { from: { pathname: '/browse-requests' } } });
         return;
     }
     if (!formData.category_id) {
@@ -301,26 +266,22 @@ const Waste = () => {
     setSubmitting(true);
     try {
       const payload = {
-        description: formData.description,
+        ...formData,
         category_id: parseInt(formData.category_id),
         quantity: parseFloat(formData.quantity),
-        pickup_date: formData.pickup_date,
-        time_slot: formData.time_slot,
-        address_line: formData.address_line,
-        latitude: parseFloat(formData.latitude),
-        longitude: parseFloat(formData.longitude),
-        is_sellable: formData.is_sellable,
         estimated_price: formData.is_sellable ? parseFloat(formData.estimated_price || 0) : 0
       };
+      delete payload.startTime;
+      delete payload.endTime;
+
       if (isEditing) {
-        const response = await API.put(`/wastes/${editId}`, payload);
-        setWastes(wastes.map(w => w.id === editId ? response.data : w));
-        setSuccess('Pickup request updated successfully!');
+        await API.put(`/wastes/${editId}`, payload);
+        setSuccess('Request updated successfully!');
       } else {
-        const response = await API.post('/wastes', payload);
-        setWastes([response.data, ...wastes]);
+        await API.post('/wastes', payload);
         setSuccess('New pickup request added!');
       }
+      fetchInitialData();
       handleCancel();
     } catch (err) {
       setError(err.response?.data?.detail || 'Something went wrong.');
@@ -329,56 +290,14 @@ const Waste = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!token) return;
-    if (window.confirm('Are you sure you want to delete this record?')) {
-      try {
-        await API.delete(`/wastes/${id}`);
-        setWastes(wastes.filter(w => w.id !== id));
-        setSuccess('Record deleted successfully');
-      } catch (err) {
-        setError('Failed to delete the record');
-      }
-    }
-  };
-
-  const handleBookPickup = async (id) => {
-    if (!token) {
-        navigate('/login', { state: { from: { pathname: '/browse-requests' }, message: 'Please login to book pickups.' } });
-        return;
-    }
-    if (currentUser?.role !== 'COLLECTOR') {
-        setError("Only collectors can book pickups.");
-        return;
-    }
-    try {
-        const response = await API.patch(`/wastes/${id}/book`);
-        setWastes(wastes.map(w => w.id === id ? response.data : w));
-        setSuccess("Pickup booked successfully!");
-    } catch (err) {
-        setError(err.response?.data?.detail || "Failed to book pickup.");
-    }
-  };
-
-  const openDetails = (waste) => {
-    setSelectedRequest(waste);
-    setIsModalOpen(true);
-  };
-
-  const getCategoryName = (id) => {
-    const category = categories.find(c => c.id === id);
-    return category ? category.name : 'Unknown';
-  };
-
-  // Filtering Logic
-  const filteredWastes = selectedCategory === 'All' 
-    ? wastes 
-    : wastes.filter(w => getCategoryName(w.category_id) === selectedCategory);
-
-  const getCountForCategory = (catName) => {
-    if (catName === 'All') return wastes.length;
-    return wastes.filter(w => getCategoryName(w.category_id) === catName).length;
-  };
+  if (loading) {
+    return (
+        <div className="min-h-screen bg-[#FDFCFB] flex flex-col items-center justify-center">
+            <Loader2 className="h-12 w-12 text-emerald-600 animate-spin mb-4" />
+            <p className="text-gray-400 font-bold">Loading Categories...</p>
+        </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
@@ -388,11 +307,11 @@ const Waste = () => {
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <h1 className="text-4xl font-black text-gray-900 tracking-tight">Browse Requests</h1>
-            <p className="mt-2 text-gray-500 font-medium">Explore active pickup requests in your area.</p>
+            <p className="mt-2 text-gray-500 font-medium">Select a category to view active pickup requests.</p>
           </div>
           <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center min-w-[120px]">
-            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Matches</p>
-            <p className="text-2xl font-black text-emerald-700">{filteredWastes.length}</p>
+            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Total Jobs</p>
+            <p className="text-2xl font-black text-emerald-700">{wastes.length}</p>
           </div>
         </div>
 
@@ -412,6 +331,47 @@ const Waste = () => {
           )}
         </div>
 
+        {/* Category Selection Grid */}
+        <div className="mb-20">
+            <h2 className="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                <div className="w-8 h-1 bg-emerald-600 rounded-full"></div>
+                Waste Categories
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {categories.map((cat) => {
+                    const count = wastes.filter(w => w.category_id === cat.id && w.status === 'OPEN').length;
+                    return (
+                        <Link 
+                            key={cat.id} 
+                            to={`/browse-requests/${cat.id}`}
+                            className="p-8 rounded-[2.5rem] border-2 border-white bg-white shadow-sm transition-all hover:shadow-xl hover:border-emerald-100 hover:-translate-y-1 active:scale-95 group flex flex-col justify-between h-52 relative overflow-hidden"
+                        >
+                            <div className="flex justify-between items-start relative z-10">
+                                <div className="p-4 bg-emerald-50 text-emerald-600 rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-inner">
+                                    <Package className="w-7 h-7" />
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-3xl font-black text-gray-900 group-hover:text-emerald-600 transition-colors">
+                                        {count}
+                                    </span>
+                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Active</p>
+                                </div>
+                            </div>
+                            <div className="relative z-10">
+                                <h3 className="text-xl font-black text-gray-900 leading-tight group-hover:text-emerald-700 transition-colors">
+                                    {cat.name}
+                                </h3>
+                                <p className="text-xs font-bold text-gray-400 mt-1 flex items-center gap-1">
+                                    Browse listings <ArrowRight className="w-3 h-3" />
+                                </p>
+                            </div>
+                            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
+                        </Link>
+                    );
+                })}
+            </div>
+        </div>
+
         {/* Form Section */}
         {(!currentUser || currentUser.role === 'HOUSEHOLD') && (
           <div className={`bg-white rounded-[2.5rem] shadow-sm border ${isEditing ? 'border-emerald-200 bg-emerald-50/10' : 'border-gray-100'} p-8 mb-16 relative overflow-hidden`}>
@@ -423,7 +383,7 @@ const Waste = () => {
                     </div>
                     <h3 className="text-xl font-black text-gray-900 mb-2">Want to post waste?</h3>
                     <p className="text-gray-500 text-sm font-medium mb-6">Create an account as a Household to publish your available pickups.</p>
-                    <Link to="/login" state={{ from: { pathname: '/browse-requests' }, message: 'Sign in to create your first pickup request.' }} className="block w-full py-3 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-700 transition-all">
+                    <Link to="/login" className="block w-full py-3 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-700 transition-all">
                         Login to Continue
                     </Link>
                  </div>
@@ -438,17 +398,15 @@ const Waste = () => {
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Waste Category</label>
-                {categories.length === 0 ? <button type="button" onClick={seedCategories} disabled={submitting} className="w-full px-5 py-4 rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/50 text-emerald-600 font-bold flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all">{submitting ? <Loader2 className="animate-spin w-4 h-4" /> : <Database className="w-4 h-4" />}Initialize Categories</button> : (
-                    <select name="category_id" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.category_id} onChange={handleChange}>
-                        <option value="">Select Category</option>
-                        {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-                    </select>
-                )}
+                <select name="category_id" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.category_id} onChange={handleChange}>
+                    <option value="">Select Category</option>
+                    {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                </select>
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Quantity {formData.category_id ? `(${categories.find(c => c.id === parseInt(formData.category_id))?.unit || 'Units'})` : ''}</label>
                 <div className="relative">
-                  <input type="number" step="0.1" name="quantity" required placeholder={formData.category_id ? (categories.find(c => c.id === parseInt(formData.category_id))?.unit === 'kg' ? "e.g. 5.5" : "e.g. 10") : "e.g. 5"} className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.quantity} onChange={handleChange} />
+                  <input type="number" step="0.1" name="quantity" required placeholder="e.g. 5.5" className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.quantity} onChange={handleChange} />
                   <Package className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
                 </div>
               </div>
@@ -500,53 +458,18 @@ const Waste = () => {
             </form>
           </div>
         )}
-
-        {/* List Section */}
-        <div className="space-y-8">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-6">
-            <h2 className="text-2xl font-black text-gray-900">Active Listings</h2>
-          </div>
-          
-          {/* Category Filter Boxes */}
-          <div className="mb-12 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 min-w-[600px] md:min-w-0">
-                  <button onClick={() => setSelectedCategory('All')} className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 relative overflow-hidden ${selectedCategory === 'All' ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'}`}>
-                      <div className="flex justify-between items-start relative z-10"><div className={`p-2.5 rounded-xl ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600'}`}><Truck className="w-5 h-5" /></div><span className={`text-xl font-black ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>{wastes.length}</span></div>
-                      <div className="relative z-10"><p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Browse</p><h3 className={`text-sm font-black leading-tight ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>All Requests</h3></div>
-                  </button>
-                  {categories.map((cat) => {
-                      const count = getCountForCategory(cat.name);
-                      const isActive = selectedCategory === cat.name;
-                      return (
-                          <button key={cat.id} onClick={() => setSelectedCategory(cat.name)} className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 relative overflow-hidden ${isActive ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'}`}>
-                              <div className="flex justify-between items-start relative z-10"><div className={`p-2.5 rounded-xl ${isActive ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600'}`}><Package className="w-5 h-5" /></div><span className={`text-xl font-black ${isActive ? 'text-white' : 'text-gray-900'}`}>{count}</span></div>
-                              <div className="relative z-10"><p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Category</p><h3 className={`text-sm font-black leading-tight ${isActive ? 'text-white' : 'text-gray-900'} line-clamp-1`}>{cat.name}</h3></div>
-                          </button>
-                      );
-                  })}
-              </div>
-          </div>
-
-          {loading ? <div className="py-24 text-center text-gray-400 font-bold">Gathering requests...</div> : filteredWastes.length === 0 ? <div className="bg-white rounded-[2.5rem] border-4 border-dashed border-gray-100 py-24 text-center font-black text-gray-300 uppercase tracking-widest">No matching requests</div> : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {filteredWastes.map((waste) => (
-                <div key={waste.id} className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all flex flex-col">
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest">{getCategoryName(waste.category_id)}</span>
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{waste.status}</span>
-                  </div>
-                  <p className="text-gray-600 text-sm font-medium mb-6 line-clamp-2">{waste.description || "No description"}</p>
-                  <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
-                    <button onClick={() => openDetails(waste)} className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">View Details</button>
-                    {token && currentUser?.role === 'COLLECTOR' && waste.status === 'OPEN' && <button onClick={() => handleBookPickup(waste.id)} className="px-6 py-2 bg-gray-900 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-emerald-600 transition-all">Book</button>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </main>
-      <RequestDetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} request={selectedRequest} categories={categories} />
+
+      <style>{`
+        @keyframes bounce-in {
+          0% { transform: translateY(-20px); opacity: 0; }
+          60% { transform: translateY(5px); opacity: 1; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-bounce-in {
+          animation: bounce-in 0.4s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };
