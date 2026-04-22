@@ -15,8 +15,97 @@ import {
   Calendar, 
   Package,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  X,
+  Info
 } from 'lucide-react';
+
+// --- Local Summary Modal Component ---
+const SummaryModal = ({ isOpen, onClose, title, requests, categories, onSelectRequest }) => {
+  if (!isOpen) return null;
+
+  const getCategoryName = (id) => {
+    const category = categories.find(c => c.id === id);
+    return category ? category.name : 'Waste';
+  };
+
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'OPEN': return 'bg-blue-50 text-blue-700 border-blue-100';
+      case 'BOOKED': return 'bg-amber-50 text-amber-700 border-amber-100';
+      case 'COLLECTED': return 'bg-emerald-50 text-emerald-700 border-emerald-100';
+      case 'CANCELLED': return 'bg-red-50 text-red-700 border-red-100';
+      default: return 'bg-gray-50 text-gray-700 border-gray-100';
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
+      <div className="relative bg-white rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="bg-emerald-600 px-8 py-6 text-white flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 p-2 rounded-xl">
+              <ListChecks className="w-6 h-6" />
+            </div>
+            <h2 className="text-2xl font-black tracking-tight">{title}</h2>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-xl transition-all">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="p-6 max-h-[60vh] overflow-y-auto">
+          {requests.length > 0 ? (
+            <div className="space-y-4">
+              {requests.map(req => (
+                <div 
+                  key={req.id} 
+                  onClick={() => { onSelectRequest(req); onClose(); }}
+                  className="flex items-center justify-between p-5 bg-[#FAF9F6] rounded-2xl border border-gray-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-all cursor-pointer group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm border border-gray-50">
+                      <Package className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="font-black text-gray-900 text-sm">{getCategoryName(req.category_id)}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="flex items-center gap-1 text-[10px] font-bold text-gray-400">
+                          <Calendar className="w-3 h-3" /> {req.pickup_date}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border ${getStatusStyle(req.status)}`}>
+                          {req.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition-colors" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-12 text-center">
+              <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-gray-200">
+                <Info className="w-8 h-8" />
+              </div>
+              <p className="text-gray-500 font-bold">No requests found for this status.</p>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-gray-50 px-8 py-6 flex justify-between items-center">
+          <Link to="/my-requests" className="text-sm font-black text-emerald-600 hover:underline">
+            View All My Requests
+          </Link>
+          <button onClick={onClose} className="px-6 py-2 bg-gray-900 text-white font-black text-xs rounded-xl hover:bg-emerald-600 transition-all">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -32,9 +121,13 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Modal state
+  // Modal states
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [summaryTitle, setSummaryTitle] = useState("");
+  const [filteredRequests, setFilteredRequests] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +141,6 @@ const Dashboard = () => {
         
         setUser(userRes.data);
         const allRequests = wasteRes.data;
-        // Sort by created_at descending if available, or just take the latest
         setRequests(allRequests.sort((a, b) => b.id - a.id));
         setCategories(catRes.data);
 
@@ -86,7 +178,38 @@ const Dashboard = () => {
 
   const openDetails = (req) => {
     setSelectedRequest(req);
-    setIsModalOpen(true);
+    setIsDetailsOpen(true);
+  };
+
+  const handleSummaryClick = (type) => {
+    let filtered = [];
+    let title = "";
+
+    switch(type) {
+      case 'OPEN':
+        filtered = requests.filter(r => r.status === 'OPEN');
+        title = "Awaiting Booking";
+        break;
+      case 'BOOKED':
+        filtered = requests.filter(r => r.status === 'BOOKED');
+        title = "Scheduled Pickups";
+        break;
+      case 'COLLECTED':
+        filtered = requests.filter(r => r.status === 'COLLECTED');
+        title = "Completed Requests";
+        break;
+      case 'TOTAL':
+        filtered = requests;
+        title = "All Pickup Requests";
+        break;
+      default:
+        filtered = requests;
+        title = "Requests";
+    }
+
+    setFilteredRequests(filtered);
+    setSummaryTitle(title);
+    setIsSummaryOpen(true);
   };
 
   if (loading) {
@@ -153,7 +276,10 @@ const Dashboard = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
+          <div 
+            onClick={() => handleSummaryClick('OPEN')}
+            className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all group cursor-pointer active:scale-[0.98]"
+          >
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-blue-50 text-blue-500 rounded-2xl group-hover:bg-blue-100 transition-colors">
                 <Clock className="w-6 h-6" />
@@ -163,7 +289,10 @@ const Dashboard = () => {
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Awaiting Booking</p>
           </div>
           
-          <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
+          <div 
+            onClick={() => handleSummaryClick('BOOKED')}
+            className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-100 transition-all group cursor-pointer active:scale-[0.98]"
+          >
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-amber-50 text-amber-500 rounded-2xl group-hover:bg-amber-100 transition-colors">
                 <Truck className="w-6 h-6" />
@@ -173,7 +302,10 @@ const Dashboard = () => {
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Scheduled Pickups</p>
           </div>
 
-          <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
+          <div 
+            onClick={() => handleSummaryClick('COLLECTED')}
+            className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all group cursor-pointer active:scale-[0.98]"
+          >
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-emerald-50 text-emerald-500 rounded-2xl group-hover:bg-emerald-100 transition-colors">
                 <CheckCircle className="w-6 h-6" />
@@ -183,7 +315,10 @@ const Dashboard = () => {
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Completed</p>
           </div>
 
-          <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
+          <div 
+            onClick={() => handleSummaryClick('TOTAL')}
+            className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all group cursor-pointer active:scale-[0.98]"
+          >
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-gray-50 text-gray-400 rounded-2xl group-hover:bg-gray-100 transition-colors">
                 <ListChecks className="w-6 h-6" />
@@ -300,9 +435,20 @@ const Dashboard = () => {
         </div>
       </main>
 
+      {/* Summary Modal */}
+      <SummaryModal 
+        isOpen={isSummaryOpen}
+        onClose={() => setIsSummaryOpen(false)}
+        title={summaryTitle}
+        requests={filteredRequests}
+        categories={categories}
+        onSelectRequest={openDetails}
+      />
+
+      {/* Full Details Modal */}
       <RequestDetailsModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isDetailsOpen}
+        onClose={() => setIsDetailsOpen(false)}
         request={selectedRequest}
         categories={categories}
       />
@@ -311,4 +457,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
 
