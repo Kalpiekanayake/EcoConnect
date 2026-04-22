@@ -12,7 +12,6 @@ const Pickups = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('All');
   
   // Modal state
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -77,100 +76,22 @@ const Pickups = () => {
     setIsModalOpen(true);
   };
 
-  // Filtering Logic
-  const filteredPickups = selectedCategory === 'All' 
-    ? pickups 
-    : pickups.filter(p => getCategoryName(p.category_id) === selectedCategory);
-
-  const getCountForCategory = (catName) => {
-    if (catName === 'All') return pickups.length;
-    return pickups.filter(p => getCategoryName(p.category_id) === catName).length;
-  };
-
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
       
       <main className="max-w-6xl mx-auto py-12 px-4">
-        <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="mb-12 flex justify-between items-end">
           <div>
             <h1 className="text-4xl font-black text-gray-900 tracking-tight">Available Pickups</h1>
             <p className="mt-2 text-gray-500 font-medium">Find and book waste collection requests in your vicinity.</p>
           </div>
-          <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 shadow-sm text-center min-w-[120px]">
-            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Matching Jobs</p>
+          <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center">
+            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Open Jobs</p>
             <p className="text-2xl font-black text-emerald-700">
-                {filteredPickups.length}
+                {pickups.length}
             </p>
           </div>
-        </div>
-
-        {/* Category Filter Boxes */}
-        <div className="mb-12 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 min-w-[600px] md:min-w-0">
-                {/* All Requests Card */}
-                <button
-                    onClick={() => setSelectedCategory('All')}
-                    className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 group relative overflow-hidden ${
-                        selectedCategory === 'All' 
-                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' 
-                        : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'
-                    }`}
-                >
-                    <div className="flex justify-between items-start relative z-10">
-                        <div className={`p-2.5 rounded-xl ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'}`}>
-                            <Truck className="w-5 h-5" />
-                        </div>
-                        <span className={`text-xl font-black ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>
-                            {pickups.length}
-                        </span>
-                    </div>
-                    <div className="relative z-10">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Browse</p>
-                        <h3 className={`text-sm font-black leading-tight ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>
-                            All Categories
-                        </h3>
-                    </div>
-                    {selectedCategory === 'All' && (
-                        <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
-                    )}
-                </button>
-
-                {/* Individual Category Cards */}
-                {categories.map((cat) => {
-                    const count = getCountForCategory(cat.name);
-                    const isActive = selectedCategory === cat.name;
-                    return (
-                        <button
-                            key={cat.id}
-                            onClick={() => setSelectedCategory(cat.name)}
-                            className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 group relative overflow-hidden ${
-                                isActive 
-                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' 
-                                : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'
-                            }`}
-                        >
-                            <div className="flex justify-between items-start relative z-10">
-                                <div className={`p-2.5 rounded-xl ${isActive ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'}`}>
-                                    <Package className="w-5 h-5" />
-                                </div>
-                                <span className={`text-xl font-black ${isActive ? 'text-white' : 'text-gray-900'}`}>
-                                    {count}
-                                </span>
-                            </div>
-                            <div className="relative z-10">
-                                <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Category</p>
-                                <h3 className={`text-sm font-black leading-tight ${isActive ? 'text-white' : 'text-gray-900'} line-clamp-1`}>
-                                    {cat.name}
-                                </h3>
-                            </div>
-                            {isActive && (
-                                <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
-                            )}
-                        </button>
-                    );
-                })}
-            </div>
         </div>
 
         {/* Feedback Messages */}
@@ -194,15 +115,15 @@ const Pickups = () => {
             <Loader2 className="h-12 w-12 text-emerald-600 animate-spin mb-4" />
             <p className="text-gray-400 font-bold">Scanning for pickups...</p>
           </div>
-        ) : filteredPickups.length === 0 ? (
+        ) : pickups.length === 0 ? (
           <div className="bg-white rounded-[3rem] border-4 border-dashed border-gray-100 py-32 text-center shadow-sm">
             <Truck className="h-16 w-16 text-gray-100 mx-auto mb-6" />
             <h3 className="text-2xl font-black text-gray-900">No pickups available</h3>
-            <p className="text-gray-400 font-medium mt-2">There are no "{selectedCategory}" requests currently open.</p>
+            <p className="text-gray-400 font-medium mt-2">All requests have been booked or the area is currently clear.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPickups.map((pickup) => (
+            {pickups.map((pickup) => (
               <div key={pickup.id} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
                 <div className="flex justify-between items-start mb-6">
                   <span className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">

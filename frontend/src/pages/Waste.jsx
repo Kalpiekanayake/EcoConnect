@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database, ArrowRight, Navigation } from 'lucide-react';
+import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database, ArrowRight, Navigation, Truck } from 'lucide-react';
 
 // Map imports
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 // Fix Leaflet marker icon issue
@@ -110,76 +110,6 @@ const Waste = () => {
     }
   }, [token]);
 
-  // Geocoding: Get Lat/Lng from Address
-  const handleFindOnMap = async () => {
-    if (!formData.address_line) {
-        setError("Please type an address first.");
-        return;
-    }
-    setSearchingMap(true);
-    try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formData.address_line)}`);
-        const data = await response.json();
-        if (data && data.length > 0) {
-            const { lat, lon } = data[0];
-            const newPos = [parseFloat(lat), parseFloat(lon)];
-            setMapCenter(newPos);
-            setFormData(prev => ({
-                ...prev,
-                latitude: newPos[0],
-                longitude: newPos[1]
-            }));
-            setSuccess("Address found on map!");
-        } else {
-            setError("Could not find that address on the map.");
-        }
-    } catch (err) {
-        console.error("Geocoding error", err);
-        setError("Search failed. Please try again.");
-    } finally {
-        setSearchingMap(false);
-    }
-  };
-
-  // Reverse Geocoding: Get address from Lat/Lng
-  const handleConfirmLocation = async () => {
-    setFetchingAddress(true);
-    try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${mapCenter[0]}&lon=${mapCenter[1]}`);
-        const data = await response.json();
-        if (data && data.display_name) {
-            setFormData(prev => ({
-                ...prev,
-                address_line: data.display_name,
-                latitude: mapCenter[0],
-                longitude: mapCenter[1]
-            }));
-            setSuccess("Location confirmed and address updated!");
-        }
-    } catch (err) {
-        console.error("Failed to fetch address", err);
-        setFormData(prev => ({
-            ...prev,
-            latitude: mapCenter[0],
-            longitude: mapCenter[1]
-        }));
-        setError("Could not fetch address, but coordinates are saved.");
-    } finally {
-        setFetchingAddress(false);
-    }
-  };
-
-  // Clear messages after 5 seconds
-  useEffect(() => {
-    if (success || error) {
-      const timer = setTimeout(() => {
-        setSuccess('');
-        setError('');
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [success, error]);
-
   const fetchInitialData = async () => {
     setLoading(true);
     try {
@@ -214,7 +144,6 @@ const Waste = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     
-    // Auto-update is_sellable if category is selected
     if (name === 'category_id' && value !== '') {
         const selectedCat = categories.find(c => c.id === parseInt(value));
         if (selectedCat) {
@@ -228,7 +157,6 @@ const Waste = () => {
         }
     }
 
-    // Time range handling
     if (name === 'startTime' || name === 'endTime') {
         const newStart = name === 'startTime' ? value : formData.startTime;
         const newEnd = name === 'endTime' ? value : formData.endTime;
@@ -239,7 +167,6 @@ const Waste = () => {
             time_slot: newStart && newEnd ? `${newStart} - ${newEnd}` : ''
         }));
 
-        // Validation
         if (newStart && newEnd) {
             if (timeToMinutes(newStart) >= timeToMinutes(newEnd)) {
                 setError("End time must be later than start time");
@@ -256,15 +183,69 @@ const Waste = () => {
     });
   };
 
+  const handleFindOnMap = async () => {
+    if (!formData.address_line) {
+        setError("Please type an address first.");
+        return;
+    }
+    setSearchingMap(true);
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formData.address_line)}`);
+        const data = await response.json();
+        if (data && data.length > 0) {
+            const { lat, lon } = data[0];
+            const newPos = [parseFloat(lat), parseFloat(lon)];
+            setMapCenter(newPos);
+            setFormData(prev => ({
+                ...prev,
+                latitude: newPos[0],
+                longitude: newPos[1]
+            }));
+            setSuccess("Address found on map!");
+        } else {
+            setError("Could not find that address on the map.");
+        }
+    } catch (err) {
+        console.error("Geocoding error", err);
+        setError("Search failed. Please try again.");
+    } finally {
+        setSearchingMap(false);
+    }
+  };
+
+  const handleConfirmLocation = async () => {
+    setFetchingAddress(true);
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${mapCenter[0]}&lon=${mapCenter[1]}`);
+        const data = await response.json();
+        if (data && data.display_name) {
+            setFormData(prev => ({
+                ...prev,
+                address_line: data.display_name,
+                latitude: mapCenter[0],
+                longitude: mapCenter[1]
+            }));
+            setSuccess("Location confirmed and address updated!");
+        }
+    } catch (err) {
+        console.error("Failed to fetch address", err);
+        setFormData(prev => ({
+            ...prev,
+            latitude: mapCenter[0],
+            longitude: mapCenter[1]
+        }));
+        setError("Could not fetch address, but coordinates are saved.");
+    } finally {
+        setFetchingAddress(false);
+    }
+  };
+
   const handleEdit = (waste) => {
     setIsEditing(true);
     setEditId(waste.id);
-    
-    // Parse time_slot back to startTime and endTime
     const [start, end] = (waste.time_slot || "").split(" - ");
-    
-    setMarkerPos([waste.latitude || 6.9271, waste.longitude || 79.8612]);
-
+    const newPos = [waste.latitude || 6.9271, waste.longitude || 79.8612];
+    setMapCenter(newPos);
     setFormData({
       description: waste.description || '',
       category_id: waste.category_id.toString(),
@@ -279,14 +260,13 @@ const Waste = () => {
       is_sellable: waste.is_sellable,
       estimated_price: waste.estimated_price ? waste.estimated_price.toString() : ''
     });
-    // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCancel = () => {
     setIsEditing(false);
     setEditId(null);
-    setMarkerPos([6.9271, 79.8612]);
+    setMapCenter([6.9271, 79.8612]);
     setFormData({ 
       description: '', 
       category_id: '', 
@@ -306,25 +286,19 @@ const Waste = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!token) {
         navigate('/login', { state: { from: { pathname: '/browse-requests' }, message: 'Please login to post a pickup request.' } });
         return;
     }
-
     if (!formData.category_id) {
       setError('Please select a category');
       return;
     }
-
     if (timeToMinutes(formData.startTime) >= timeToMinutes(formData.endTime)) {
       setError('End time must be later than start time');
       return;
     }
-
     setSubmitting(true);
-    setError('');
-    
     try {
       const payload = {
         description: formData.description,
@@ -338,7 +312,6 @@ const Waste = () => {
         is_sellable: formData.is_sellable,
         estimated_price: formData.is_sellable ? parseFloat(formData.estimated_price || 0) : 0
       };
-
       if (isEditing) {
         const response = await API.put(`/wastes/${editId}`, payload);
         setWastes(wastes.map(w => w.id === editId ? response.data : w));
@@ -348,10 +321,9 @@ const Waste = () => {
         setWastes([response.data, ...wastes]);
         setSuccess('New pickup request added!');
       }
-      
       handleCancel();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Something went wrong. Please try again.');
+      setError(err.response?.data?.detail || 'Something went wrong.');
     } finally {
       setSubmitting(false);
     }
@@ -375,12 +347,10 @@ const Waste = () => {
         navigate('/login', { state: { from: { pathname: '/browse-requests' }, message: 'Please login to book pickups.' } });
         return;
     }
-
     if (currentUser?.role !== 'COLLECTOR') {
         setError("Only collectors can book pickups.");
         return;
     }
-
     try {
         const response = await API.patch(`/wastes/${id}/book`);
         setWastes(wastes.map(w => w.id === id ? response.data : w));
@@ -415,7 +385,6 @@ const Waste = () => {
       <Navbar />
       
       <main className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <h1 className="text-4xl font-black text-gray-900 tracking-tight">Browse Requests</h1>
@@ -423,9 +392,7 @@ const Waste = () => {
           </div>
           <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center min-w-[120px]">
             <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Matches</p>
-            <p className="text-2xl font-black text-emerald-700">
-                {filteredWastes.length}
-            </p>
+            <p className="text-2xl font-black text-emerald-700">{filteredWastes.length}</p>
           </div>
         </div>
 
@@ -445,74 +412,6 @@ const Waste = () => {
           )}
         </div>
 
-        {/* Category Filter Boxes */}
-        <div className="mb-12 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 min-w-[600px] md:min-w-0">
-                {/* All Requests Card */}
-                <button
-                    onClick={() => setSelectedCategory('All')}
-                    className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 group relative overflow-hidden ${
-                        selectedCategory === 'All' 
-                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' 
-                        : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'
-                    }`}
-                >
-                    <div className="flex justify-between items-start relative z-10">
-                        <div className={`p-2.5 rounded-xl ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'}`}>
-                            <Truck className="w-5 h-5" />
-                        </div>
-                        <span className={`text-xl font-black ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>
-                            {wastes.length}
-                        </span>
-                    </div>
-                    <div className="relative z-10">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Browse</p>
-                        <h3 className={`text-sm font-black leading-tight ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>
-                            All Requests
-                        </h3>
-                    </div>
-                    {selectedCategory === 'All' && (
-                        <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
-                    )}
-                </button>
-
-                {/* Individual Category Cards */}
-                {categories.map((cat) => {
-                    const count = getCountForCategory(cat.name);
-                    const isActive = selectedCategory === cat.name;
-                    return (
-                        <button
-                            key={cat.id}
-                            onClick={() => setSelectedCategory(cat.name)}
-                            className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 group relative overflow-hidden ${
-                                isActive 
-                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' 
-                                : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'
-                            }`}
-                        >
-                            <div className="flex justify-between items-start relative z-10">
-                                <div className={`p-2.5 rounded-xl ${isActive ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'}`}>
-                                    <Package className="w-5 h-5" />
-                                </div>
-                                <span className={`text-xl font-black ${isActive ? 'text-white' : 'text-gray-900'}`}>
-                                    {count}
-                                </span>
-                            </div>
-                            <div className="relative z-10">
-                                <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Category</p>
-                                <h3 className={`text-sm font-black leading-tight ${isActive ? 'text-white' : 'text-gray-900'} line-clamp-1`}>
-                                    {cat.name}
-                                </h3>
-                            </div>
-                            {isActive && (
-                                <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
-                            )}
-                        </button>
-                    );
-                })}
-            </div>
-        </div>
-
         {/* Form Section */}
         {(!currentUser || currentUser.role === 'HOUSEHOLD') && (
           <div className={`bg-white rounded-[2.5rem] shadow-sm border ${isEditing ? 'border-emerald-200 bg-emerald-50/10' : 'border-gray-100'} p-8 mb-16 relative overflow-hidden`}>
@@ -530,313 +429,74 @@ const Waste = () => {
                  </div>
               </div>
             )}
-
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-black text-gray-900 flex items-center">
-                {isEditing ? (
-                  <>
-                    <Edit2 className="h-6 w-6 mr-3 text-emerald-600" />
-                    Update Your Request
-                  </>
-                ) : (
-                  <>
-                    <Plus className="h-6 w-6 mr-3 text-emerald-600" />
-                    New Pickup Request
-                  </>
-                )}
+                {isEditing ? <><Edit2 className="h-6 w-6 mr-3 text-emerald-600" />Update Request</> : <><Plus className="h-6 w-6 mr-3 text-emerald-600" />New Pickup Request</>}
               </h2>
-              {isEditing && (
-                <button 
-                  onClick={handleCancel}
-                  className="text-sm text-gray-400 hover:text-gray-600 flex items-center font-bold uppercase tracking-widest"
-                >
-                  <X className="h-4 w-4 mr-1" /> Cancel
-                </button>
-              )}
+              {isEditing && <button onClick={handleCancel} className="text-sm text-gray-400 hover:text-gray-600 flex items-center font-bold uppercase tracking-widest"><X className="h-4 w-4 mr-1" /> Cancel</button>}
             </div>
-
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Waste Category</label>
-                {categories.length === 0 ? (
-                    <button
-                        type="button"
-                        onClick={seedCategories}
-                        disabled={submitting}
-                        className="w-full px-5 py-4 rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/50 text-emerald-600 font-bold flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all"
-                    >
-                        {submitting ? <Loader2 className="animate-spin w-4 h-4" /> : <Database className="w-4 h-4" />}
-                        Initialize Categories
-                    </button>
-                ) : (
-                    <select
-                        name="category_id"
-                        required
-                        className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                        value={formData.category_id}
-                        onChange={handleChange}
-                    >
+                {categories.length === 0 ? <button type="button" onClick={seedCategories} disabled={submitting} className="w-full px-5 py-4 rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/50 text-emerald-600 font-bold flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all">{submitting ? <Loader2 className="animate-spin w-4 h-4" /> : <Database className="w-4 h-4" />}Initialize Categories</button> : (
+                    <select name="category_id" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.category_id} onChange={handleChange}>
                         <option value="">Select Category</option>
-                        {categories.map(cat => (
-                            <option key={cat.id} value={cat.id}>{cat.name}</option>
-                        ))}
+                        {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                     </select>
                 )}
               </div>
-
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                  Quantity {formData.category_id ? `(${categories.find(c => c.id === parseInt(formData.category_id))?.unit || 'Units'})` : ''}
-                </label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Quantity {formData.category_id ? `(${categories.find(c => c.id === parseInt(formData.category_id))?.unit || 'Units'})` : ''}</label>
                 <div className="relative">
-                  <input
-                    type="number"
-                    step="0.1"
-                    name="quantity"
-                    required
-                    placeholder={formData.category_id ? (categories.find(c => c.id === parseInt(formData.category_id))?.unit === 'kg' ? "e.g. 5.5" : "e.g. 10") : "e.g. 5"}
-                    className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                    value={formData.quantity}
-                    onChange={handleChange}
-                  />
+                  <input type="number" step="0.1" name="quantity" required placeholder={formData.category_id ? (categories.find(c => c.id === parseInt(formData.category_id))?.unit === 'kg' ? "e.g. 5.5" : "e.g. 10") : "e.g. 5"} className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.quantity} onChange={handleChange} />
                   <Package className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
                 </div>
-                {formData.category_id && (
-                  <p className="text-[10px] font-bold text-gray-400 mt-1 ml-1 italic">
-                    {categories.find(c => c.id === parseInt(formData.category_id))?.unit === 'kg' 
-                      ? 'Enter weight in kilograms' 
-                      : 'Enter number of items'}
-                  </p>
-                )}
               </div>
-
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Date</label>
                 <div className="relative">
-                  <input
-                    type="date"
-                    name="pickup_date"
-                    required
-                    className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                    value={formData.pickup_date}
-                    onChange={handleChange}
-                  />
+                  <input type="date" name="pickup_date" required className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.pickup_date} onChange={handleChange} />
                   <Calendar className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
                 </div>
               </div>
-
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Time Range</label>
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="relative">
-                        <select
-                            name="startTime"
-                            required
-                            className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner appearance-none"
-                            value={formData.startTime}
-                            onChange={handleChange}
-                        >
-                            <option value="">Start</option>
-                            {timeOptions.map(time => (
-                                <option key={time} value={time}>{time}</option>
-                            ))}
-                        </select>
-                        <Clock className="absolute left-4 top-4.5 h-5 w-5 text-gray-300 pointer-events-none" />
-                    </div>
-                    <div className="relative">
-                        <select
-                            name="endTime"
-                            required
-                            className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner appearance-none"
-                            value={formData.endTime}
-                            onChange={handleChange}
-                        >
-                            <option value="">End</option>
-                            {timeOptions.map(time => (
-                                <option key={time} value={time}>{time}</option>
-                            ))}
-                        </select>
-                        <Clock className="absolute left-4 top-4.5 h-5 w-5 text-gray-300 pointer-events-none" />
-                        <div className="absolute right-4 top-4.5 text-[10px] font-black text-gray-300 pointer-events-none">
-                            <ArrowRight className="w-4 h-4" />
-                        </div>
-                    </div>
+                    <select name="startTime" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.startTime} onChange={handleChange}>
+                        <option value="">Start</option>
+                        {timeOptions.map(time => <option key={time} value={time}>{time}</option>)}
+                    </select>
+                    <select name="endTime" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.endTime} onChange={handleChange}>
+                        <option value="">End</option>
+                        {timeOptions.map(time => <option key={time} value={time}>{time}</option>)}
+                    </select>
                 </div>
-                {formData.time_slot && !error && (
-                    <p className="text-[10px] font-bold text-emerald-600 mt-1 ml-1 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" /> Selected Slot: {formData.time_slot}
-                    </p>
-                )}
               </div>
-
               <div className="md:col-span-2 space-y-4">
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pickup Address & Location</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pickup Address</label>
                     <div className="flex gap-2">
-                        <div className="relative flex-1">
-                            <input
-                                type="text"
-                                name="address_line"
-                                required
-                                placeholder="Enter your street, city and house number"
-                                className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                                value={formData.address_line}
-                                onChange={handleChange}
-                            />
-                            <MapPin className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
-                        </div>
-                        <button
-                            type="button"
-                            onClick={handleFindOnMap}
-                            disabled={searchingMap}
-                            className="px-6 py-4 bg-emerald-100 text-emerald-700 font-black rounded-2xl hover:bg-emerald-200 transition-all flex items-center gap-2 whitespace-nowrap active:scale-95 disabled:opacity-50"
-                        >
-                            {searchingMap ? <Loader2 className="w-5 h-5 animate-spin" /> : <Eye className="w-5 h-5" />}
-                            Find on Map
-                        </button>
+                        <input type="text" name="address_line" required className="flex-1 px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.address_line} onChange={handleChange} />
+                        <button type="button" onClick={handleFindOnMap} disabled={searchingMap} className="px-6 py-4 bg-emerald-100 text-emerald-700 font-black rounded-2xl hover:bg-emerald-200 transition-all flex items-center gap-2 whitespace-nowrap active:scale-95 disabled:opacity-50">{searchingMap ? <Loader2 className="w-5 h-5 animate-spin" /> : <Eye className="w-5 h-5" />}Find on Map</button>
                     </div>
                 </div>
-
-                {/* Map Picker */}
-                <div className="space-y-2">
-                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 flex items-center gap-2">
-                        <Navigation className="w-3 h-3" /> Move map to your location and confirm
-                    </p>
-                    <div className="h-[350px] w-full rounded-[2.5rem] overflow-hidden border-4 border-white shadow-xl ring-1 ring-gray-100 relative group">
-                        <MapContainer 
-                            center={mapCenter} 
-                            zoom={13} 
-                            style={{ height: '100%', width: '100%' }}
-                            scrollWheelZoom={true}
-                        >
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            <ChangeView center={mapCenter} />
-                            <MapController setPosition={setMapCenter} />
-                        </MapContainer>
-
-                        {/* Fixed Center Crosshair */}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[400]">
-                            <div className="relative flex items-center justify-center">
-                                <div className="w-8 h-8 border-2 border-emerald-600 rounded-full flex items-center justify-center">
-                                    <div className="w-1 h-1 bg-emerald-600 rounded-full"></div>
-                                </div>
-                                <div className="absolute w-12 h-[2px] bg-emerald-600/30"></div>
-                                <div className="absolute h-12 w-[2px] bg-emerald-600/30"></div>
-                                {/* Floating Marker Shadow */}
-                                <div className="absolute -bottom-10 flex flex-col items-center">
-                                    <div className="bg-emerald-900 text-white text-[8px] font-black px-2 py-1 rounded shadow-lg uppercase tracking-tighter whitespace-nowrap">
-                                        Pickup Point
-                                    </div>
-                                    <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-emerald-900"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Confirm Button Overlay */}
-                        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-[400] px-4">
-                            <button
-                                type="button"
-                                onClick={handleConfirmLocation}
-                                disabled={fetchingAddress}
-                                className="bg-emerald-900 text-white px-8 py-3 rounded-2xl font-black text-xs shadow-2xl hover:bg-emerald-800 transition-all active:scale-95 flex items-center gap-2 disabled:opacity-80"
-                            >
-                                {fetchingAddress ? (
-                                    <>
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                        Identifying Address...
-                                    </>
-                                ) : (
-                                    <>
-                                        <MapPin className="w-4 h-4" />
-                                        Confirm Location
-                                    </>
-                                )}
-                            </button>
-                        </div>
+                <div className="h-[300px] w-full rounded-[2.5rem] overflow-hidden border-4 border-white shadow-xl relative z-0">
+                    <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }}>
+                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                        <ChangeView center={mapCenter} />
+                        <MapController setPosition={setMapCenter} />
+                    </MapContainer>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[400]">
+                        <div className="w-8 h-8 border-2 border-emerald-600 rounded-full flex items-center justify-center"><div className="w-1 h-1 bg-emerald-600 rounded-full"></div></div>
                     </div>
-                    
-                    <div className="flex flex-wrap gap-4 px-2">
-                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">
-                            Lat: {mapCenter[0].toFixed(6)}
-                        </div>
-                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">
-                            Lng: {mapCenter[1].toFixed(6)}
-                        </div>
-                        {formData.latitude === mapCenter[0] && (
-                            <div className="text-[9px] font-black text-emerald-600 uppercase tracking-tighter bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100 animate-fade-in flex items-center gap-1">
-                                <CheckCircle2 className="w-3 h-3" /> Position Saved
-                            </div>
-                        )}
-                    </div>
+                    <div className="absolute bottom-4 left-0 right-0 flex justify-center z-[400]"><button type="button" onClick={handleConfirmLocation} disabled={fetchingAddress} className="bg-emerald-900 text-white px-8 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-2xl hover:bg-emerald-800 transition-all active:scale-95">{fetchingAddress ? "Identifying..." : "Confirm Map Point"}</button></div>
                 </div>
               </div>
-
               <div className="md:col-span-2 space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Short Description</label>
-                <textarea
-                  name="description"
-                  rows="2"
-                  placeholder="Describe the items..."
-                  className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none resize-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                  value={formData.description}
-                  onChange={handleChange}
-                ></textarea>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Description</label>
+                <textarea name="description" rows="2" className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner resize-none" value={formData.description} onChange={handleChange}></textarea>
               </div>
-
-              <div className="flex items-center gap-6">
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      name="is_sellable"
-                      className="sr-only peer"
-                      checked={formData.is_sellable}
-                      onChange={handleChange}
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                  </div>
-                  <span className="text-sm font-bold text-gray-600 group-hover:text-emerald-600 transition-colors">Mark as Sellable Waste</span>
-                </label>
-              </div>
-
-              {formData.is_sellable && (
-                <div className="space-y-2 animate-fade-in">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Estimated Price ($)</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      name="estimated_price"
-                      placeholder="0.00"
-                      className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                      value={formData.estimated_price}
-                      onChange={handleChange}
-                    />
-                    <DollarSign className="absolute left-4 top-4.5 h-5 w-5 text-emerald-500" />
-                  </div>
-                </div>
-              )}
-
-              <div className="md:col-span-2 flex items-center gap-4 pt-4">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={`flex-1 md:flex-none px-12 py-4 rounded-2xl font-black text-white shadow-xl transform transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-3 ${
-                    isEditing ? 'bg-emerald-700 shadow-emerald-100' : 'bg-emerald-600 shadow-emerald-100'
-                  }`}
-                >
-                  {submitting ? (
-                    <>
-                      <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                      Syncing...
-                    </>
-                  ) : (
-                    isEditing ? 'Update Request' : 'Post My Request'
-                  )}
-                </button>
-              </div>
+              <div className="md:col-span-2 flex gap-4"><button type="submit" disabled={submitting} className="px-12 py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 shadow-xl active:scale-95 disabled:opacity-70">{submitting ? "Processing..." : (isEditing ? "Update" : "Post Request")}</button></div>
             </form>
           </div>
         )}
@@ -845,116 +505,40 @@ const Waste = () => {
         <div className="space-y-8">
           <div className="flex items-center justify-between border-b border-gray-100 pb-6">
             <h2 className="text-2xl font-black text-gray-900">Active Listings</h2>
-            <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
-               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Feed
-            </div>
+          </div>
+          
+          {/* Category Filter Boxes */}
+          <div className="mb-12 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 min-w-[600px] md:min-w-0">
+                  <button onClick={() => setSelectedCategory('All')} className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 relative overflow-hidden ${selectedCategory === 'All' ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'}`}>
+                      <div className="flex justify-between items-start relative z-10"><div className={`p-2.5 rounded-xl ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600'}`}><Truck className="w-5 h-5" /></div><span className={`text-xl font-black ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>{wastes.length}</span></div>
+                      <div className="relative z-10"><p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Browse</p><h3 className={`text-sm font-black leading-tight ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900'}`}>All Requests</h3></div>
+                  </button>
+                  {categories.map((cat) => {
+                      const count = getCountForCategory(cat.name);
+                      const isActive = selectedCategory === cat.name;
+                      return (
+                          <button key={cat.id} onClick={() => setSelectedCategory(cat.name)} className={`p-6 rounded-[2rem] border-2 transition-all text-left flex flex-col justify-between h-36 active:scale-95 relative overflow-hidden ${isActive ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-100' : 'bg-white border-gray-100 text-gray-400 hover:border-emerald-200'}`}>
+                              <div className="flex justify-between items-start relative z-10"><div className={`p-2.5 rounded-xl ${isActive ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600'}`}><Package className="w-5 h-5" /></div><span className={`text-xl font-black ${isActive ? 'text-white' : 'text-gray-900'}`}>{count}</span></div>
+                              <div className="relative z-10"><p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60 mb-1">Category</p><h3 className={`text-sm font-black leading-tight ${isActive ? 'text-white' : 'text-gray-900'} line-clamp-1`}>{cat.name}</h3></div>
+                          </button>
+                      );
+                  })}
+              </div>
           </div>
 
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-24 bg-white rounded-[2.5rem] border border-gray-50">
-              <Loader2 className="h-12 w-12 text-emerald-600 animate-spin mb-4" />
-              <p className="text-gray-400 font-bold tracking-tight">Gathering requests...</p>
-            </div>
-          ) : wastes.length === 0 ? (
-            <div className="bg-white rounded-[2.5rem] border-4 border-dashed border-gray-100 py-24 text-center">
-              <div className="bg-[#FAF9F6] h-20 w-20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                <FileText className="h-10 w-10 text-gray-200" />
-              </div>
-              <p className="text-gray-900 text-xl font-black">Nothing to see here yet</p>
-              <p className="text-sm text-gray-400 mt-2 font-medium">Be the first to post a pickup request in your area!</p>
-            </div>
-          ) : (
+          {loading ? <div className="py-24 text-center text-gray-400 font-bold">Gathering requests...</div> : filteredWastes.length === 0 ? <div className="bg-white rounded-[2.5rem] border-4 border-dashed border-gray-100 py-24 text-center font-black text-gray-300 uppercase tracking-widest">No matching requests</div> : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {wastes.map((waste) => (
-                <div 
-                  key={waste.id} 
-                  className={`group bg-white rounded-[2rem] p-8 shadow-sm border-2 transition-all hover:shadow-xl hover:-translate-y-1 ${editId === waste.id ? 'border-emerald-500 bg-emerald-50/5' : 'border-white hover:border-emerald-50'}`}
-                >
+              {filteredWastes.map((waste) => (
+                <div key={waste.id} className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all flex flex-col">
                   <div className="flex justify-between items-start mb-6">
-                    <div className="flex flex-col gap-2">
-                        <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-widest w-fit text-center">
-                        <Tag className="w-3 h-3 mr-2" />
-                        {getCategoryName(waste.category_id)}
-                        </span>
-                        {waste.is_sellable && (
-                            <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-orange-50 text-orange-700 border border-orange-100 uppercase tracking-widest w-fit text-center">
-                                <DollarSign className="w-3 h-3 mr-1" /> Sellable
-                            </span>
-                        )}
-                    </div>
-                    <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border shadow-sm ${
-                      waste.status === 'OPEN' ? 'bg-white text-emerald-600 border-emerald-50' : 
-                      waste.status === 'BOOKED' ? 'bg-amber-50 text-amber-700 border-amber-100' :
-                      'bg-gray-50 text-gray-400 border-gray-100'
-                    }`}>
-                      {waste.status}
-                    </span>
+                    <span className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest">{getCategoryName(waste.category_id)}</span>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{waste.status}</span>
                   </div>
-
-                  <div className="space-y-4 mb-8">
-                    <p className="text-gray-600 text-sm font-medium leading-relaxed min-h-[40px] line-clamp-2">{waste.description || 'No description provided.'}</p>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex items-center text-gray-900 font-black text-sm bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                        <Package className="w-4 h-4 mr-2 text-emerald-500" />
-                        {waste.quantity} {categories.find(c => c.id === waste.category_id)?.unit || 'Units'}
-                      </div>
-                      <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                        <Calendar className="w-4 h-4 mr-2 text-emerald-500" />
-                        {waste.pickup_date}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-6 border-t border-gray-50 mt-auto">
-                    <button 
-                        onClick={() => openDetails(waste)}
-                        className="flex items-center gap-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:text-emerald-700 transition-colors"
-                    >
-                        <Eye className="w-4 h-4" /> View Details
-                    </button>
-                    
-                    <div className="flex items-center gap-2">
-                        {/* Household actions */}
-                        {token && currentUser && currentUser.id === waste.household_id && waste.status === 'OPEN' && (
-                            <>
-                                <button 
-                                    onClick={() => handleEdit(waste)}
-                                    className="p-3 bg-white text-emerald-600 border border-emerald-100 rounded-xl hover:bg-emerald-50 transition-all shadow-sm"
-                                    title="Edit"
-                                >
-                                    <Edit2 className="w-4 h-4" />
-                                </button>
-                                <button 
-                                    onClick={() => handleDelete(waste.id)}
-                                    className="p-3 bg-white text-red-500 border border-red-50 rounded-xl hover:bg-red-50 transition-all shadow-sm"
-                                    title="Delete"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </>
-                        )}
-                        
-                        {/* Collector action */}
-                        {token && currentUser && currentUser.role === 'COLLECTOR' && waste.status === 'OPEN' && (
-                            <button 
-                                onClick={() => handleBookPickup(waste.id)}
-                                className="px-6 py-3 bg-emerald-600 text-white font-black text-xs rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-50 transition-all active:scale-95"
-                            >
-                                Book
-                            </button>
-                        )}
-
-                        {!token && (
-                            <Link 
-                                to="/login" 
-                                state={{ from: { pathname: '/browse-requests' }, message: 'Sign in to book this pickup.' }}
-                                className="text-[10px] font-black text-gray-400 hover:text-emerald-600 uppercase tracking-widest underline underline-offset-4"
-                            >
-                                Sign in to Book
-                            </Link>
-                        )}
-                    </div>
+                  <p className="text-gray-600 text-sm font-medium mb-6 line-clamp-2">{waste.description || "No description"}</p>
+                  <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
+                    <button onClick={() => openDetails(waste)} className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">View Details</button>
+                    {token && currentUser?.role === 'COLLECTOR' && waste.status === 'OPEN' && <button onClick={() => handleBookPickup(waste.id)} className="px-6 py-2 bg-gray-900 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-emerald-600 transition-all">Book</button>}
                   </div>
                 </div>
               ))}
@@ -962,31 +546,7 @@ const Waste = () => {
           )}
         </div>
       </main>
-
-      <RequestDetailsModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        request={selectedRequest}
-        categories={categories}
-      />
-
-      <style>{`
-        @keyframes bounce-in {
-          0% { transform: translateY(-20px); opacity: 0; }
-          60% { transform: translateY(5px); opacity: 1; }
-          100% { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-bounce-in {
-          animation: bounce-in 0.4s ease-out forwards;
-        }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out forwards;
-        }
-      `}</style>
+      <RequestDetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} request={selectedRequest} categories={categories} />
     </div>
   );
 };
