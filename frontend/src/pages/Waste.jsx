@@ -6,7 +6,7 @@ import RequestDetailsModal from '../components/RequestDetailsModal';
 import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database, ArrowRight, Navigation } from 'lucide-react';
 
 // Map imports
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 // Fix Leaflet marker icon issue
@@ -42,7 +42,7 @@ const timeToMinutes = (timeStr) => {
 };
 
 // --- Map Interaction Component ---
-const MapController = ({ setPosition, isConfirming }) => {
+const MapController = ({ setPosition }) => {
     const map = useMapEvents({
         moveend() {
             const center = map.getCenter();
@@ -52,12 +52,22 @@ const MapController = ({ setPosition, isConfirming }) => {
     return null;
 };
 
+// --- Component to Move Map ---
+const ChangeView = ({ center }) => {
+    const map = useMap();
+    useEffect(() => {
+        map.setView(center, 16);
+    }, [center, map]);
+    return null;
+};
+
 const Waste = () => {
   const [wastes, setWastes] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [fetchingAddress, setFetchingAddress] = useState(false);
+  const [searchingMap, setSearchingMap] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
@@ -98,6 +108,37 @@ const Waste = () => {
         API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
     }
   }, [token]);
+
+  // Geocoding: Get Lat/Lng from Address
+  const handleFindOnMap = async () => {
+    if (!formData.address_line) {
+        setError("Please type an address first.");
+        return;
+    }
+    setSearchingMap(true);
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formData.address_line)}`);
+        const data = await response.json();
+        if (data && data.length > 0) {
+            const { lat, lon } = data[0];
+            const newPos = [parseFloat(lat), parseFloat(lon)];
+            setMapCenter(newPos);
+            setFormData(prev => ({
+                ...prev,
+                latitude: newPos[0],
+                longitude: newPos[1]
+            }));
+            setSuccess("Address found on map!");
+        } else {
+            setError("Could not find that address on the map.");
+        }
+    } catch (err) {
+        console.error("Geocoding error", err);
+        setError("Search failed. Please try again.");
+    } finally {
+        setSearchingMap(false);
+    }
+  };
 
   // Reverse Geocoding: Get address from Lat/Lng
   const handleConfirmLocation = async () => {
@@ -550,17 +591,28 @@ const Waste = () => {
               <div className="md:col-span-2 space-y-4">
                 <div className="space-y-2">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pickup Address & Location</label>
-                    <div className="relative">
-                        <input
-                            type="text"
-                            name="address_line"
-                            required
-                            placeholder="Enter your street, city and house number"
-                            className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
-                            value={formData.address_line}
-                            onChange={handleChange}
-                        />
-                        <MapPin className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+                    <div className="flex gap-2">
+                        <div className="relative flex-1">
+                            <input
+                                type="text"
+                                name="address_line"
+                                required
+                                placeholder="Enter your street, city and house number"
+                                className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
+                                value={formData.address_line}
+                                onChange={handleChange}
+                            />
+                            <MapPin className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleFindOnMap}
+                            disabled={searchingMap}
+                            className="px-6 py-4 bg-emerald-100 text-emerald-700 font-black rounded-2xl hover:bg-emerald-200 transition-all flex items-center gap-2 whitespace-nowrap active:scale-95 disabled:opacity-50"
+                        >
+                            {searchingMap ? <Loader2 className="w-5 h-5 animate-spin" /> : <Eye className="w-5 h-5" />}
+                            Find on Map
+                        </button>
                     </div>
                 </div>
 
@@ -580,6 +632,7 @@ const Waste = () => {
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
+                            <ChangeView center={mapCenter} />
                             <MapController setPosition={setMapCenter} />
                         </MapContainer>
 
