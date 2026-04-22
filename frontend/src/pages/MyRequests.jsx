@@ -99,7 +99,7 @@ const MyRequests = () => {
                             <h3 className="font-black text-gray-900 line-clamp-1">{req.description || 'Waste Pickup'}</h3>
                         </div>
                         <div className="text-xs text-gray-400 font-bold flex items-center gap-4">
-                            <span className="flex items-center gap-1"><Package className="w-3 h-3" /> {req.quantity} Units</span>
+                            <span className="flex items-center gap-1"><Package className="w-3 h-3" /> {req.quantity} {categories.find(c => c.id === req.category_id)?.unit || 'Units'}</span>
                             <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {req.pickup_date}</span>
                         </div>
                     </div>

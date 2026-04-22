@@ -67,7 +67,7 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Quantity</p>
-                            <p className="text-sm font-black text-gray-900">{request.quantity} Units</p>
+                            <p className="text-sm font-black text-gray-900">{request.quantity} {categories.find(c => c.id === request.category_id)?.unit || 'Units'}</p>
                         </div>
                     </div>
 

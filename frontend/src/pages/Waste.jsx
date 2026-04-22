@@ -336,20 +336,29 @@ const Waste = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Quantity</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                  Quantity {formData.category_id ? `(${categories.find(c => c.id === parseInt(formData.category_id))?.unit || 'Units'})` : ''}
+                </label>
                 <div className="relative">
                   <input
                     type="number"
                     step="0.1"
                     name="quantity"
                     required
-                    placeholder="e.g. 5.5"
+                    placeholder={formData.category_id ? (categories.find(c => c.id === parseInt(formData.category_id))?.unit === 'kg' ? "e.g. 5.5" : "e.g. 10") : "e.g. 5"}
                     className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner"
                     value={formData.quantity}
                     onChange={handleChange}
                   />
                   <Package className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
                 </div>
+                {formData.category_id && (
+                  <p className="text-[10px] font-bold text-gray-400 mt-1 ml-1 italic">
+                    {categories.find(c => c.id === parseInt(formData.category_id))?.unit === 'kg' 
+                      ? 'Enter weight in kilograms' 
+                      : 'Enter number of items'}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -522,7 +531,7 @@ const Waste = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center text-gray-900 font-black text-sm bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                         <Package className="w-4 h-4 mr-2 text-emerald-500" />
-                        {waste.quantity} Units
+                        {waste.quantity} {categories.find(c => c.id === waste.category_id)?.unit || 'Units'}
                       </div>
                       <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                         <Calendar className="w-4 h-4 mr-2 text-emerald-500" />
