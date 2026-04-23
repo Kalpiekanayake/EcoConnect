@@ -61,6 +61,20 @@ const ChangeView = ({ center }) => {
     return null;
 };
 
+// --- Category Visual Mapping ---
+const getCategoryStyles = (name) => {
+  const styles = {
+    'Coconut Shells': { icon: '🥥', color: 'bg-orange-50', border: 'border-orange-100', text: 'text-orange-700' },
+    'Coconut Husks': { icon: '🌴', color: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-700' },
+    'Plastic': { icon: '🥤', color: 'bg-blue-50', border: 'border-blue-100', text: 'text-blue-700' },
+    'Glass': { icon: '🍾', color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' },
+    'Paper/Cardboard': { icon: '📦', color: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-700' },
+    'Food Waste': { icon: '🍎', color: 'bg-red-50', border: 'border-red-100', text: 'text-red-700' },
+    'General Disposal': { icon: '🗑️', color: 'bg-gray-50', border: 'border-gray-100', text: 'text-gray-700' },
+  };
+  return styles[name] || { icon: '♻️', color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' };
+};
+
 const Waste = () => {
   const [wastes, setWastes] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -367,6 +381,7 @@ const Waste = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {categories.map((cat) => {
                     const count = wastes.filter(w => w.category_id === cat.id && w.status === 'OPEN').length;
+                    const style = getCategoryStyles(cat.name);
                     return (
                         <Link 
                             key={cat.id} 
@@ -374,8 +389,8 @@ const Waste = () => {
                             className="p-8 rounded-[2.5rem] border-2 border-white bg-white shadow-sm transition-all hover:shadow-xl hover:border-emerald-100 hover:-translate-y-1 active:scale-95 group flex flex-col justify-between h-52 relative overflow-hidden"
                         >
                             <div className="flex justify-between items-start relative z-10">
-                                <div className="p-4 bg-emerald-50 text-emerald-600 rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-inner">
-                                    <Package className="w-7 h-7" />
+                                <div className={`p-4 ${style.color} ${style.text} rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-inner text-2xl flex items-center justify-center w-14 h-14`}>
+                                    {style.icon}
                                 </div>
                                 <div className="text-right">
                                     <span className="text-3xl font-black text-gray-900 group-hover:text-emerald-600 transition-colors">
@@ -392,7 +407,7 @@ const Waste = () => {
                                     Browse listings <ArrowRight className="w-3 h-3" />
                                 </p>
                             </div>
-                            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
+                            <div className={`absolute -bottom-10 -right-10 w-32 h-32 ${style.color.replace('bg-', 'bg-')}/20 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors`}></div>
                         </Link>
                     );
                 })}

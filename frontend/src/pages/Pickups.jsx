@@ -5,6 +5,20 @@ import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
 import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2, Eye, Package } from 'lucide-react';
 
+// --- Category Visual Mapping ---
+const getCategoryStyles = (name) => {
+  const styles = {
+    'Coconut Shells': { icon: '🥥', color: 'bg-orange-50', border: 'border-orange-100', text: 'text-orange-700' },
+    'Coconut Husks': { icon: '🌴', color: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-700' },
+    'Plastic': { icon: '🥤', color: 'bg-blue-50', border: 'border-blue-100', text: 'text-blue-700' },
+    'Glass': { icon: '🍾', color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' },
+    'Paper/Cardboard': { icon: '📦', color: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-700' },
+    'Food Waste': { icon: '🍎', color: 'bg-red-50', border: 'border-red-100', text: 'text-red-700' },
+    'General Disposal': { icon: '🗑️', color: 'bg-gray-50', border: 'border-gray-100', text: 'text-gray-700' },
+  };
+  return styles[name] || { icon: '♻️', color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' };
+};
+
 const Pickups = () => {
   const [pickups, setPickups] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -52,7 +66,6 @@ const Pickups = () => {
           .then(res => setCurrentUser(res.data))
           .catch(err => {
             console.error('User fetch error:', err);
-            // Don't crash the page if auth/me fails, just continue as guest
           });
     }
   }, [token]);
@@ -76,7 +89,6 @@ const Pickups = () => {
     try {
         await API.patch(`/wastes/${id}/book`);
         setSuccess("Pickup booked successfully! You can find it in 'My Bookings'.");
-        // Remove the booked pickup from the list
         setPickups(pickups.filter(p => p.id !== id));
     } catch (err) {
         setError(err.response?.data?.detail || "Failed to book pickup.");
@@ -100,9 +112,7 @@ const Pickups = () => {
           </div>
           <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center">
             <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Open Jobs</p>
-            <p className="text-2xl font-black text-emerald-700">
-                {pickups.length}
-            </p>
+            <p className="text-2xl font-black text-emerald-700">{pickups.length}</p>
           </div>
         </div>
 
@@ -135,71 +145,75 @@ const Pickups = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {pickups.map((pickup) => (
-              <div key={pickup.id} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
-                <div className="flex justify-between items-start mb-6">
-                  <span className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                    {getCategoryName(pickup.category_id)}
-                  </span>
-                  {pickup.is_sellable ? (
-                    <div className="bg-emerald-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase flex items-center shadow-sm">
-                        <DollarSign className="w-3 h-3 mr-1" /> SELLABLE
-                    </div>
-                  ) : (
-                    <div className="bg-gray-100 text-gray-500 px-3 py-1 rounded-lg text-[10px] font-black uppercase flex items-center">
-                        FREE PICKUP
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 space-y-4 mb-8">
-                   <div className="grid grid-cols-2 gap-4">
-                      <div className="flex items-center gap-3 text-gray-900 text-xs font-black bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                        <Package className="w-4 h-4 text-emerald-500" />
-                        {pickup.quantity} {pickup.unit || 'kg'}
+            {pickups.map((pickup) => {
+              const catName = getCategoryName(pickup.category_id);
+              const style = getCategoryStyles(catName);
+              return (
+                <div key={pickup.id} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
+                  <div className="flex justify-between items-start mb-6">
+                    <span className={`flex items-center gap-2 ${style.color} ${style.text} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border ${style.border}`}>
+                      <span>{style.icon}</span> {catName}
+                    </span>
+                    {pickup.is_sellable ? (
+                      <div className="bg-emerald-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase flex items-center shadow-sm">
+                          <DollarSign className="w-3 h-3 mr-1" /> SELLABLE
                       </div>
-                      {pickup.is_sellable && (
-                        <div className="flex items-center gap-2 text-emerald-700 text-xs font-black bg-emerald-50 p-3 rounded-2xl border border-emerald-100 shadow-sm">
-                          <DollarSign className="w-4 h-4" />
-                          Rs. {pickup.price || 0}
+                    ) : (
+                      <div className="bg-gray-100 text-gray-500 px-3 py-1 rounded-lg text-[10px] font-black uppercase flex items-center">
+                          FREE PICKUP
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 space-y-4 mb-8">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center gap-3 text-gray-900 text-xs font-black bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
+                          <Package className="w-4 h-4 text-emerald-500" />
+                          {pickup.quantity} {pickup.unit || 'kg'}
                         </div>
-                      )}
-                   </div>
-                   
-                   <div className="flex items-center gap-3 text-gray-400 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                      <Calendar className="w-4 h-4 text-emerald-500" />
-                      {pickup.pickup_date} <span className="opacity-20">|</span> <Clock className="w-4 h-4 text-emerald-500" /> {pickup.time_slot}
-                   </div>
-                   
-                   <div className="flex items-start gap-3 text-gray-400 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                      <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700 leading-tight line-clamp-1">{pickup.address_line}</span>
-                   </div>
+                        {pickup.is_sellable && (
+                          <div className="flex items-center gap-2 text-emerald-700 text-xs font-black bg-emerald-50 p-3 rounded-2xl border border-emerald-100 shadow-sm">
+                            <DollarSign className="w-4 h-4" />
+                            Rs. {pickup.price || 0}
+                          </div>
+                        )}
+                    </div>
+                    
+                    <div className="flex items-center gap-3 text-gray-400 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
+                        <Calendar className="w-4 h-4 text-emerald-500" />
+                        {pickup.pickup_date} <span className="opacity-20">|</span> <Clock className="w-4 h-4 text-emerald-500" /> {pickup.time_slot}
+                    </div>
+                    
+                    <div className="flex items-start gap-3 text-gray-400 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
+                        <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700 leading-tight line-clamp-1">{pickup.address_line}</span>
+                    </div>
 
-                   <div className="p-4 bg-gray-50 rounded-2xl min-h-[80px]">
-                      <p className="text-gray-500 text-sm font-medium leading-relaxed italic line-clamp-2">
-                        "{pickup.description || 'No specific details provided.'}"
-                      </p>
-                   </div>
-                </div>
+                    <div className="p-4 bg-gray-50 rounded-2xl min-h-[80px]">
+                        <p className="text-gray-500 text-sm font-medium leading-relaxed italic line-clamp-2">
+                          "{pickup.description || 'No specific details provided.'}"
+                        </p>
+                    </div>
+                  </div>
 
-                <div className="pt-6 border-t border-gray-50 flex items-center justify-between mt-auto">
-                   <button 
-                    onClick={() => openDetails(pickup)}
-                    className="flex items-center gap-2 text-[10px] font-black text-gray-400 hover:text-emerald-600 uppercase tracking-widest transition-colors"
-                   >
-                    <Eye className="w-4 h-4" /> View Details
-                   </button>
-                   
-                   <button 
-                    onClick={() => handleBookPickup(pickup.id)}
-                    className="px-6 py-3 bg-gray-900 text-white font-black text-xs rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-2 active:scale-95 shadow-lg"
-                   >
-                     {token && currentUser?.role === 'COLLECTOR' ? 'Book Now' : <><Lock className="w-3 h-3" /> Login to Book</>}
-                   </button>
+                  <div className="pt-6 border-t border-gray-50 flex items-center justify-between mt-auto">
+                    <button 
+                      onClick={() => openDetails(pickup)}
+                      className="flex items-center gap-2 text-[10px] font-black text-gray-400 hover:text-emerald-600 uppercase tracking-widest transition-colors"
+                    >
+                      <Eye className="w-4 h-4" /> View Details
+                    </button>
+                    
+                    <button 
+                      onClick={() => handleBookPickup(pickup.id)}
+                      className="px-6 py-3 bg-gray-900 text-white font-black text-xs rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-2 active:scale-95 shadow-lg"
+                    >
+                      {token && currentUser?.role === 'COLLECTOR' ? 'Book Now' : <><Lock className="w-3 h-3" /> Login to Book</>}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -209,7 +223,7 @@ const Pickups = () => {
                 <div className="relative z-10">
                     <h2 className="text-3xl font-black mb-4">Are you a Waste Collector?</h2>
                     <p className="text-emerald-100 font-medium mb-8 max-w-lg mx-auto">Register as a collector to start booking these pickups and help keep our community clean while earning.</p>
-                    <Link to="/register" className="inline-block px-10 py-4 bg-white text-emerald-900 font-black rounded-2xl hover:bg-emerald-50 transition-all active:scale-95">
+                    <Link to="/register" className="inline-block px-10 py-4 bg-white text-emerald-900 font-black rounded-2xl hover:bg-emerald-800 transition-all active:scale-95">
                         Join as Collector
                     </Link>
                 </div>
