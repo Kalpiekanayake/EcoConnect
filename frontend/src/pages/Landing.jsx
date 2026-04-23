@@ -78,9 +78,10 @@ const Landing = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             {[
               { name: 'Coconut Shells', icon: '🥥', color: 'bg-orange-50' },
+              { name: 'Coconut Husks', icon: '🌴', color: 'bg-amber-50' },
               { name: 'Recyclable Plastic', icon: '🥤', color: 'bg-blue-50' },
               { name: 'Glass Bottles', icon: '🍾', color: 'bg-emerald-50' },
               { name: 'General Waste', icon: '🗑️', color: 'bg-gray-50' },

@@ -410,6 +410,45 @@ const Waste = () => {
                   <Package className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
                 </div>
               </div>
+
+              {/* Sellable / Price Logic */}
+              <div className="md:col-span-2">
+                {formData.category_id && (
+                  <div className={`p-6 rounded-2xl border flex items-center justify-between transition-all ${formData.is_sellable ? 'bg-orange-50 border-orange-100' : 'bg-gray-50 border-gray-100'}`}>
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-xl ${formData.is_sellable ? 'bg-orange-100 text-orange-600' : 'bg-gray-200 text-gray-400'}`}>
+                        <DollarSign className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-black text-gray-900">{formData.is_sellable ? 'Sellable Item' : 'Non-Sellable Item'}</h4>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{formData.is_sellable ? 'You will be paid for this waste' : 'This category is for disposal only'}</p>
+                      </div>
+                    </div>
+                    {formData.is_sellable ? (
+                      <div className="text-right">
+                        <label className="text-[9px] font-black text-orange-600 uppercase tracking-[0.2em] block mb-1">Expected Price (Rs)</label>
+                        <div className="flex items-center gap-2">
+                           <span className="text-xl font-black text-gray-900">Rs.</span>
+                           <input 
+                            type="number" 
+                            name="estimated_price" 
+                            step="0.01"
+                            className="w-32 bg-white border-2 border-orange-200 rounded-xl px-4 py-2 font-black text-gray-900 focus:ring-2 focus:ring-orange-500 outline-none"
+                            value={formData.estimated_price}
+                            onChange={handleChange}
+                            required
+                           />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="px-4 py-2 bg-white rounded-xl border border-gray-200 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        Disposal Only
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Date</label>
                 <div className="relative">

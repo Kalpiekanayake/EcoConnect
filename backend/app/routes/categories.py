@@ -35,11 +35,11 @@ def seed_categories(db: Session = Depends(get_db)):
         return {"message": "Categories already exist"}
         
     default_categories = [
-        {"name": "Coconut Shells", "is_sellable": True, "unit": "pieces", "base_price_per_unit": 0.5},
-        {"name": "Coconut Husks", "is_sellable": True, "unit": "pieces", "base_price_per_unit": 0.3},
-        {"name": "Plastic Bottles", "is_sellable": True, "unit": "kg", "base_price_per_unit": 0.2},
-        {"name": "Glass", "is_sellable": True, "unit": "kg", "base_price_per_unit": 0.1},
-        {"name": "Paper/Cardboard", "is_sellable": True, "unit": "kg", "base_price_per_unit": 0.3},
+        {"name": "Coconut Shells", "is_sellable": True, "unit": "pieces", "base_price_per_unit": 5.0},
+        {"name": "Coconut Husks", "is_sellable": True, "unit": "pieces", "base_price_per_unit": 3.0},
+        {"name": "Plastic Bottles", "is_sellable": True, "unit": "kg", "base_price_per_unit": 20.0},
+        {"name": "Glass", "is_sellable": True, "unit": "kg", "base_price_per_unit": 15.0},
+        {"name": "Paper/Cardboard", "is_sellable": True, "unit": "kg", "base_price_per_unit": 10.0},
         {"name": "Food Waste", "is_sellable": False, "unit": "kg", "base_price_per_unit": 0},
         {"name": "General Disposal", "is_sellable": False, "unit": "kg", "base_price_per_unit": 0},
     ]

@@ -99,7 +99,7 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Estimated Value</p>
-                            <p className="text-sm font-black text-gray-900">{request.is_sellable ? `$${request.estimated_price}` : 'Non-Sellable'}</p>
+                            <p className="text-sm font-black text-gray-900">{request.is_sellable ? `Rs. ${request.estimated_price}` : 'Non-Sellable'}</p>
                         </div>
                     </div>
 
