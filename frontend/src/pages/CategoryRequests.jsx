@@ -176,10 +176,14 @@ const CategoryRequests = () => {
                       <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase tracking-widest w-fit">
                         {category?.name}
                       </span>
-                      {waste.is_sellable && (
-                          <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-orange-50 text-orange-700 border border-orange-100 uppercase tracking-widest w-fit">
-                              <DollarSign className="w-3 h-3 mr-1" /> Sellable
+                      {waste.is_sellable ? (
+                          <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-emerald-600 text-white border border-emerald-700 uppercase tracking-widest w-fit shadow-sm">
+                              <DollarSign className="w-3 h-3 mr-1" /> SELLABLE
                           </span>
+                      ) : (
+                        <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-gray-100 text-gray-500 border border-gray-200 uppercase tracking-widest w-fit">
+                            FREE PICKUP
+                        </span>
                       )}
                   </div>
                   <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border shadow-sm ${
@@ -199,12 +203,19 @@ const CategoryRequests = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center text-gray-900 font-black text-sm bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                       <Package className="w-4 h-4 mr-2 text-emerald-500" />
-                      {waste.quantity} {category?.unit || 'Units'}
+                      {waste.quantity} {waste.unit || 'kg'}
                     </div>
-                    <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                      <Calendar className="w-4 h-4 mr-2 text-emerald-500" />
-                      {waste.pickup_date}
-                    </div>
+                    {waste.is_sellable ? (
+                        <div className="flex items-center text-emerald-700 font-black text-sm bg-emerald-50 p-3 rounded-2xl border border-emerald-100 shadow-sm">
+                            <DollarSign className="w-4 h-4 mr-1" />
+                            Rs. {waste.price || 0}
+                        </div>
+                    ) : (
+                        <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
+                            <Calendar className="w-4 h-4 mr-2 text-emerald-500" />
+                            {waste.pickup_date}
+                        </div>
+                    )}
                   </div>
                 </div>
                 

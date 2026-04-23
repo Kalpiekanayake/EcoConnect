@@ -74,36 +74,52 @@ const Waste = () => {
   
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Map state (default to Colombo, Sri Lanka)
   const [mapCenter, setMapCenter] = useState([6.9271, 79.8612]);
-
-  // Form state
-  const [formData, setFormData] = useState({
-    description: '',
-    category_id: '',
-    quantity: '',
-    pickup_date: '',
-    startTime: '',
-    endTime: '',
-    time_slot: '',
-    address_line: '',
-    latitude: 6.9271,
-    longitude: 79.8612,
-    is_sellable: false,
-    estimated_price: ''
-  });
-
-  // Edit mode state
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-
+  ...
   useEffect(() => {
     fetchInitialData();
     if (token) {
         API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
     }
-  }, [token]);
+    
+    // Check if we came here to edit a request
+    if (location.state?.editRequest) {
+        handleEdit(location.state.editRequest);
+    }
+  }, [token, location.state]);
+
+  const handleEdit = (waste) => {
+    setIsEditing(true);
+    setEditId(waste.id);
+    setMapCenter([waste.latitude || 6.9271, waste.longitude || 79.8612]);
+    
+    let start = "";
+    let end = "";
+    if (waste.time_slot && waste.time_slot.includes(" - ")) {
+        [start, end] = waste.time_slot.split(" - ");
+    }
+
+    setFormData({
+      description: waste.description || '',
+      category_id: waste.category_id.toString(),
+      quantity: waste.quantity.toString(),
+      unit: waste.unit || 'kg',
+      pickup_date: waste.pickup_date,
+      startTime: start,
+      endTime: end,
+      time_slot: waste.time_slot,
+      address_line: waste.address_line,
+      latitude: waste.latitude || 6.9271,
+      longitude: waste.longitude || 79.8612,
+      is_sellable: waste.is_sellable || false,
+      price: (waste.price || waste.estimated_price || '').toString()
+    });
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const fetchInitialData = async () => {
     setLoading(true);
@@ -145,7 +161,8 @@ const Waste = () => {
                 ...prev,
                 category_id: value,
                 is_sellable: selectedCat.is_sellable,
-                estimated_price: selectedCat.is_sellable ? (prev.quantity ? (parseFloat(prev.quantity) * selectedCat.base_price_per_unit).toFixed(2) : '') : ''
+                unit: selectedCat.unit || 'kg',
+                price: selectedCat.is_sellable ? (prev.quantity ? (parseFloat(prev.quantity) * (selectedCat.base_price_per_unit || 0)).toFixed(2) : '') : ''
             }));
             return;
         }
@@ -236,6 +253,7 @@ const Waste = () => {
       description: '', 
       category_id: '', 
       quantity: '', 
+      unit: 'kg',
       pickup_date: '', 
       startTime: '',
       endTime: '',
@@ -244,7 +262,7 @@ const Waste = () => {
       latitude: 6.9271,
       longitude: 79.8612,
       is_sellable: false, 
-      estimated_price: '' 
+      price: '' 
     });
     setError('');
   };
@@ -265,11 +283,13 @@ const Waste = () => {
     }
     setSubmitting(true);
     try {
+      const parsedPrice = formData.is_sellable ? parseFloat(formData.price) : 0;
       const payload = {
         ...formData,
         category_id: parseInt(formData.category_id),
         quantity: parseFloat(formData.quantity),
-        estimated_price: formData.is_sellable ? parseFloat(formData.estimated_price || 0) : 0
+        price: isNaN(parsedPrice) ? 0 : parsedPrice,
+        estimated_price: isNaN(parsedPrice) ? 0 : parsedPrice
       };
       delete payload.startTime;
       delete payload.endTime;
@@ -404,49 +424,73 @@ const Waste = () => {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Quantity {formData.category_id ? `(${categories.find(c => c.id === parseInt(formData.category_id))?.unit || 'Units'})` : ''}</label>
-                <div className="relative">
-                  <input type="number" step="0.1" name="quantity" required placeholder="e.g. 5.5" className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.quantity} onChange={handleChange} />
-                  <Package className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Quantity</label>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input type="number" step="0.1" name="quantity" required placeholder="e.g. 5.5" className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.quantity} onChange={handleChange} />
+                    <Package className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+                  </div>
+                  {(formData.category_id && (categories.find(c => c.id === parseInt(formData.category_id))?.name.includes('Coconut'))) ? (
+                    <select name="unit" className="w-28 px-4 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.unit} onChange={handleChange}>
+                        <option value="kg">kg</option>
+                        <option value="pieces">pieces</option>
+                    </select>
+                  ) : (
+                    <div className="w-28 flex items-center justify-center bg-gray-50 rounded-2xl border border-gray-100 font-black text-gray-400 text-xs uppercase tracking-widest">
+                        {formData.unit}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Sellable / Price Logic */}
+              {/* Sellable / Price Logic - Modern Toggle */}
               <div className="md:col-span-2">
-                {formData.category_id && (
-                  <div className={`p-6 rounded-2xl border flex items-center justify-between transition-all ${formData.is_sellable ? 'bg-orange-50 border-orange-100' : 'bg-gray-50 border-gray-100'}`}>
-                    <div className="flex items-center gap-4">
-                      <div className={`p-3 rounded-xl ${formData.is_sellable ? 'bg-orange-100 text-orange-600' : 'bg-gray-200 text-gray-400'}`}>
+                <div className={`p-8 rounded-[2rem] border-2 transition-all ${formData.is_sellable ? 'bg-emerald-50/50 border-emerald-100' : 'bg-gray-50/50 border-gray-100'}`}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div className="flex items-center gap-5">
+                      <div className={`p-4 rounded-2xl shadow-sm ${formData.is_sellable ? 'bg-emerald-600 text-white' : 'bg-white text-gray-400'}`}>
                         <DollarSign className="w-6 h-6" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-black text-gray-900">{formData.is_sellable ? 'Sellable Item' : 'Non-Sellable Item'}</h4>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{formData.is_sellable ? 'You will be paid for this waste' : 'This category is for disposal only'}</p>
+                        <h4 className="text-lg font-black text-gray-900">Is this sellable?</h4>
+                        <p className="text-xs font-bold text-gray-400">Toggle if you want to be paid for this waste</p>
                       </div>
                     </div>
-                    {formData.is_sellable ? (
-                      <div className="text-right">
-                        <label className="text-[9px] font-black text-orange-600 uppercase tracking-[0.2em] block mb-1">Expected Price (Rs)</label>
-                        <div className="flex items-center gap-2">
-                           <span className="text-xl font-black text-gray-900">Rs.</span>
-                           <input 
-                            type="number" 
-                            name="estimated_price" 
-                            step="0.01"
-                            className="w-32 bg-white border-2 border-orange-200 rounded-xl px-4 py-2 font-black text-gray-900 focus:ring-2 focus:ring-orange-500 outline-none"
-                            value={formData.estimated_price}
-                            onChange={handleChange}
-                            required
-                           />
+                    
+                    <button 
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, is_sellable: !prev.is_sellable, price: !prev.is_sellable ? prev.price : '' }))}
+                      className={`relative inline-flex h-9 w-16 items-center rounded-full transition-colors focus:outline-none ${formData.is_sellable ? 'bg-emerald-600' : 'bg-gray-200'}`}
+                    >
+                      <span className={`inline-block h-7 w-7 transform rounded-full bg-white transition-transform ${formData.is_sellable ? 'translate-x-8' : 'translate-x-1'}`} />
+                    </button>
+                  </div>
+
+                  {formData.is_sellable && (
+                    <div className="mt-8 pt-8 border-t border-emerald-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 animate-in fade-in slide-in-from-top-4">
+                      <div>
+                        <p className="text-sm font-black text-gray-900">Set your price</p>
+                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-1">Suggested based on your local market</p>
+                      </div>
+                      <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-emerald-100 shadow-sm w-full sm:w-auto">
+                        <span className="pl-4 font-black text-gray-400">Rs.</span>
+                        <input 
+                          type="number" 
+                          name="price" 
+                          step="0.01"
+                          placeholder="0.00"
+                          className="w-full sm:w-32 bg-transparent border-none focus:ring-0 font-black text-xl text-gray-900"
+                          value={formData.price}
+                          onChange={handleChange}
+                          required={formData.is_sellable}
+                        />
+                        <div className="bg-emerald-50 px-4 py-2 rounded-xl text-[10px] font-black text-emerald-600 uppercase tracking-widest whitespace-nowrap">
+                          Per {formData.unit}
                         </div>
                       </div>
-                    ) : (
-                      <div className="px-4 py-2 bg-white rounded-xl border border-gray-200 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                        Disposal Only
-                      </div>
-                    )}
-                  </div>
-                )}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">

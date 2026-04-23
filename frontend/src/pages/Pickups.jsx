@@ -129,14 +129,31 @@ const Pickups = () => {
                   <span className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">
                     {getCategoryName(pickup.category_id)}
                   </span>
-                  {pickup.is_sellable && (
-                    <div className="bg-orange-50 text-orange-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase flex items-center">
-                        <DollarSign className="w-3 h-3 mr-1" /> Sellable
+                  {pickup.is_sellable ? (
+                    <div className="bg-emerald-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase flex items-center shadow-sm">
+                        <DollarSign className="w-3 h-3 mr-1" /> SELLABLE
+                    </div>
+                  ) : (
+                    <div className="bg-gray-100 text-gray-500 px-3 py-1 rounded-lg text-[10px] font-black uppercase flex items-center">
+                        FREE PICKUP
                     </div>
                   )}
                 </div>
 
                 <div className="flex-1 space-y-4 mb-8">
+                   <div className="grid grid-cols-2 gap-4">
+                      <div className="flex items-center gap-3 text-gray-900 text-xs font-black bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
+                        <Package className="w-4 h-4 text-emerald-500" />
+                        {pickup.quantity} {pickup.unit || 'kg'}
+                      </div>
+                      {pickup.is_sellable && (
+                        <div className="flex items-center gap-2 text-emerald-700 text-xs font-black bg-emerald-50 p-3 rounded-2xl border border-emerald-100 shadow-sm">
+                          <DollarSign className="w-4 h-4" />
+                          Rs. {pickup.price || 0}
+                        </div>
+                      )}
+                   </div>
+                   
                    <div className="flex items-center gap-3 text-gray-400 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
                       <Calendar className="w-4 h-4 text-emerald-500" />
                       {pickup.pickup_date} <span className="opacity-20">|</span> <Clock className="w-4 h-4 text-emerald-500" /> {pickup.time_slot}

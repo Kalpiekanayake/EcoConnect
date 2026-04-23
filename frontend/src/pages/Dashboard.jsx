@@ -367,7 +367,7 @@ const Dashboard = () => {
                         </td>
                         <td className="px-8 py-5">
                           <p className="text-sm font-bold text-gray-600 line-clamp-1">{req.description || 'No description'}</p>
-                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{req.quantity} {categories.find(c => c.id === req.category_id)?.unit || 'Units'}</p>
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{req.quantity} {req.unit || 'Units'}</p>
                         </td>
                         <td className="px-8 py-5">
                           <div className="flex items-center gap-2 text-sm font-bold text-gray-600">

@@ -67,7 +67,7 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Quantity</p>
-                            <p className="text-sm font-black text-gray-900">{request.quantity} {categories.find(c => c.id === request.category_id)?.unit || 'Units'}</p>
+                            <p className="text-sm font-black text-gray-900">{request.quantity} {request.unit || 'Units'}</p>
                         </div>
                     </div>
 
@@ -94,12 +94,12 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
 
                 <div className="space-y-4">
                     <div className="flex items-center gap-4 bg-[#FAF9F6] p-4 rounded-2xl border border-gray-100">
-                        <div className="bg-orange-100 p-2.5 rounded-xl text-orange-600">
+                        <div className={`p-2.5 rounded-xl ${request.is_sellable ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>
                             <DollarSign className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Estimated Value</p>
-                            <p className="text-sm font-black text-gray-900">{request.is_sellable ? `Rs. ${request.estimated_price}` : 'Non-Sellable'}</p>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">{request.is_sellable ? 'Sellable Price' : 'Price Status'}</p>
+                            <p className="text-sm font-black text-gray-900">{request.is_sellable ? `Rs. ${request.price || 0}` : 'Free Pickup'}</p>
                         </div>
                     </div>
 
