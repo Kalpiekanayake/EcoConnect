@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, Database, ArrowRight, Navigation, Truck } from 'lucide-react';
+import { Plus, Trash2, Loader2, AlertCircle, Tag, Calendar, FileText, Edit2, X, CheckCircle2, Package, MapPin, Clock, DollarSign, Lock, Eye, ArrowRight, Navigation, Truck } from 'lucide-react';
 
 // Map imports
 import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet';
@@ -157,20 +157,6 @@ const Waste = () => {
         handleEdit(location.state.editRequest);
     }
   }, [token, location.state]);
-
-  const seedCategories = async () => {
-    setSubmitting(true);
-    try {
-        await API.post('/categories/seed');
-        const res = await API.get('/categories');
-        setCategories(res.data);
-        setSuccess('Categories initialized successfully!');
-    } catch (err) {
-        setError('Failed to initialize categories.');
-    } finally {
-        setSubmitting(false);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -441,7 +427,9 @@ const Waste = () => {
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Waste Category</label>
                 <select name="category_id" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.category_id} onChange={handleChange}>
                     <option value="">Select Category</option>
-                    {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
                 </select>
               </div>
               <div className="space-y-2">
