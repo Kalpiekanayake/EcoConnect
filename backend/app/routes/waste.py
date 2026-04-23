@@ -23,7 +23,7 @@ def create_pickup_request(
     if current_user.role != UserRole.HOUSEHOLD:
         raise HTTPException(status_code=403, detail="Only Households can create pickup requests")
         
-    new_request = PickupRequest(**request.dict(), household_id=current_user.id)
+    new_request = PickupRequest(**request.model_dump(), household_id=current_user.id)
     db.add(new_request)
     db.commit()
     db.refresh(new_request)
@@ -158,12 +158,16 @@ def update_pickup_request(
 
     request.description = updated_request.description
     request.quantity = updated_request.quantity
+    request.unit = updated_request.unit
     request.is_sellable = updated_request.is_sellable
+    request.price = updated_request.price
     request.estimated_price = updated_request.estimated_price
     request.pickup_date = updated_request.pickup_date
     request.time_slot = updated_request.time_slot
     request.address_line = updated_request.address_line
     request.category_id = updated_request.category_id
+    request.latitude = updated_request.latitude
+    request.longitude = updated_request.longitude
 
     db.commit()
     db.refresh(request)

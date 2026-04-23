@@ -22,8 +22,10 @@ class PickupRequest(Base):
     # Details
     description = Column(String(500), nullable=True)
     quantity = Column(Float, nullable=False)
+    unit = Column(String(50), nullable=False, default="kg")
     is_sellable = Column(Boolean, default=False)
-    estimated_price = Column(Float, nullable=True)
+    price = Column(Float, nullable=True)
+    estimated_price = Column(Float, nullable=True) # Keep for backward compatibility
     
     # Scheduling
     pickup_date = Column(Date, nullable=False)
