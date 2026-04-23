@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2, Eye } from 'lucide-react';
+import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2, Eye, Package } from 'lucide-react';
 
 const Pickups = () => {
   const [pickups, setPickups] = useState([]);
@@ -23,15 +23,22 @@ const Pickups = () => {
   const fetchInitialData = async () => {
     setLoading(true);
     try {
-      // Fetch only OPEN requests for this view
-      const [wasteRes, catRes] = await Promise.all([
+      const responses = await Promise.allSettled([
         API.get('/wastes?status=OPEN'),
         API.get('/categories')
       ]);
-      setPickups(wasteRes.data);
-      setCategories(catRes.data);
+      
+      if (responses[0].status === 'fulfilled') {
+        setPickups(responses[0].value.data);
+      } else {
+        console.error('Pickups fetch error:', responses[0].reason);
+      }
+
+      if (responses[1].status === 'fulfilled') {
+        setCategories(responses[1].value.data);
+      }
     } catch (err) {
-      setError('Failed to fetch pickups.');
+      setError('Failed to fetch data.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -41,7 +48,12 @@ const Pickups = () => {
   useEffect(() => {
     fetchInitialData();
     if (token) {
-        API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
+        API.get('/auth/me')
+          .then(res => setCurrentUser(res.data))
+          .catch(err => {
+            console.error('User fetch error:', err);
+            // Don't crash the page if auth/me fails, just continue as guest
+          });
     }
   }, [token]);
 
@@ -212,6 +224,17 @@ const Pickups = () => {
         request={selectedRequest}
         categories={categories}
       />
+
+      <style>{`
+        @keyframes bounce-in {
+          0% { transform: translateY(-20px); opacity: 0; }
+          60% { transform: translateY(5px); opacity: 1; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-bounce-in {
+          animation: bounce-in 0.4s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };
