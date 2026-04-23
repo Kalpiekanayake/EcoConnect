@@ -71,6 +71,23 @@ const CategoryRequests = () => {
     }
   };
 
+  const handleEdit = (waste) => {
+    navigate('/browse-requests', { state: { editRequest: waste } });
+  };
+
+  const handleDelete = async (id) => {
+    if (!token) return;
+    if (window.confirm('Are you sure you want to delete this record?')) {
+      try {
+        await API.delete(`/wastes/${id}`);
+        setRequests(requests.filter(w => w.id !== id));
+        setSuccess('Record deleted successfully');
+      } catch (err) {
+        setError('Failed to delete the record');
+      }
+    }
+  };
+
   const openDetails = (req) => {
     setSelectedRequest(req);
     setIsModalOpen(true);
@@ -200,6 +217,27 @@ const CategoryRequests = () => {
                   </button>
                   
                   <div className="flex items-center gap-2">
+                      {/* Household actions */}
+                      {token && currentUser && currentUser.id === waste.household_id && waste.status === 'OPEN' && (
+                          <>
+                              <button 
+                                  onClick={() => handleEdit(waste)}
+                                  className="p-3 bg-white text-emerald-600 border border-emerald-100 rounded-xl hover:bg-emerald-50 transition-all shadow-sm"
+                                  title="Edit"
+                              >
+                                  <Edit2 className="w-4 h-4" />
+                              </button>
+                              <button 
+                                  onClick={() => handleDelete(waste.id)}
+                                  className="p-3 bg-white text-red-500 border border-red-50 rounded-xl hover:bg-red-50 transition-all shadow-sm"
+                                  title="Delete"
+                              >
+                                  <Trash2 className="w-4 h-4" />
+                              </button>
+                          </>
+                      )}
+
+                      {/* Collector action */}
                       {token && currentUser?.role === 'COLLECTOR' && waste.status === 'OPEN' && (
                           <button 
                               onClick={() => handleBookPickup(waste.id)}
