@@ -17,6 +17,25 @@ const MyBookings = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [userRes, catRes] = await Promise.all([
+        API.get('/auth/me'),
+        API.get('/categories')
+      ]);
+      setCurrentUser(userRes.data);
+      setCategories(catRes.data);
+
+      const wasteRes = await API.get(`/wastes?collector_id=${userRes.data.id}`);
+      setBookings(wasteRes.data);
+    } catch (err) {
+      setError("Failed to load bookings.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -31,26 +50,6 @@ const MyBookings = () => {
       return () => clearTimeout(timer);
     }
   }, [success, error]);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [userRes, catRes] = await Promise.all([
-        API.get('/auth/me'),
-        API.get('/categories')
-      ]);
-      setCurrentUser(userRes.data);
-      setCategories(catRes.data);
-      
-      const wasteRes = await API.get(`/wastes?collector_id=${userRes.data.id}`);
-      setBookings(wasteRes.data);
-    } catch (err) {
-      console.error(err);
-      setError('Failed to load bookings.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleMarkCollected = async (id) => {
     try {

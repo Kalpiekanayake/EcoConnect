@@ -22,13 +22,6 @@ const CategoryRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-    if (token) {
-        API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
-    }
-  }, [categoryId, token]);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -52,6 +45,13 @@ const CategoryRequests = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+    if (token) {
+        API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
+    }
+  }, [categoryId, token]);
 
   const handleBookPickup = async (id) => {
     if (!token) {

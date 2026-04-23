@@ -20,13 +20,6 @@ const Pickups = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchInitialData();
-    if (token) {
-        API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
-    }
-  }, [token]);
-
   const fetchInitialData = async () => {
     setLoading(true);
     try {
@@ -44,6 +37,13 @@ const Pickups = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchInitialData();
+    if (token) {
+        API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
+    }
+  }, [token]);
 
   const getCategoryName = (id) => {
     const category = categories.find(c => c.id === id);

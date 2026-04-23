@@ -10,6 +10,12 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const token = localStorage.getItem("token");
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/login");
+  };
+
   useEffect(() => {
     if (token) {
       API.get('/auth/me')
@@ -19,12 +25,6 @@ const Navbar = () => {
       setUser(null);
     }
   }, [token]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-    navigate("/login");
-  };
 
   const isActive = (path) => location.pathname === path;
 

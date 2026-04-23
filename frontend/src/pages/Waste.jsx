@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
@@ -78,18 +78,43 @@ const Waste = () => {
 
   // Map state (default to Colombo, Sri Lanka)
   const [mapCenter, setMapCenter] = useState([6.9271, 79.8612]);
-  ...
-  useEffect(() => {
-    fetchInitialData();
-    if (token) {
-        API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
+
+  // Form state
+  const [formData, setFormData] = useState({
+    description: '',
+    category_id: '',
+    quantity: '',
+    unit: 'kg',
+    pickup_date: '',
+    startTime: '',
+    endTime: '',
+    time_slot: '',
+    address_line: '',
+    latitude: 6.9271,
+    longitude: 79.8612,
+    is_sellable: false,
+    price: ''
+  });
+
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+
+  const fetchInitialData = async () => {
+    setLoading(true);
+    try {
+      const [wasteRes, catRes] = await Promise.all([
+        API.get('/wastes'),
+        API.get('/categories')
+      ]);
+      setWastes(wasteRes.data);
+      setCategories(catRes.data);
+    } catch (err) {
+      setError('Failed to fetch data from the server.');
+    } finally {
+      setLoading(false);
     }
-    
-    // Check if we came here to edit a request
-    if (location.state?.editRequest) {
-        handleEdit(location.state.editRequest);
-    }
-  }, [token, location.state]);
+  };
 
   const handleEdit = (waste) => {
     setIsEditing(true);
@@ -121,21 +146,17 @@ const Waste = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const fetchInitialData = async () => {
-    setLoading(true);
-    try {
-      const [wasteRes, catRes] = await Promise.all([
-        API.get('/wastes'),
-        API.get('/categories')
-      ]);
-      setWastes(wasteRes.data);
-      setCategories(catRes.data);
-    } catch (err) {
-      setError('Failed to fetch data from the server.');
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    fetchInitialData();
+    if (token) {
+        API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
     }
-  };
+    
+    // Check if we came here to edit a request
+    if (location.state?.editRequest) {
+        handleEdit(location.state.editRequest);
+    }
+  }, [token, location.state]);
 
   const seedCategories = async () => {
     setSubmitting(true);
