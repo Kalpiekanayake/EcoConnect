@@ -65,32 +65,35 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FDFCFB] py-12 px-4">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100">
+      <div className="max-w-md w-full space-y-10 bg-white p-10 md:p-12 rounded-[2rem] shadow-xl shadow-emerald-900/5 border border-gray-100">
         <div className="text-center">
-          <h2 className="text-3xl font-black text-gray-900">Sign In</h2>
-          <p className="mt-2 text-sm text-gray-500 font-medium tracking-tight">Welcome back to EcoConnect</p>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl mb-6 shadow-sm border border-emerald-100/50">
+             <Lock className="w-8 h-8" />
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 tracking-tight">Welcome Back</h2>
+          <p className="mt-3 text-sm text-gray-500 font-medium">Continue your journey with EcoConnect</p>   
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className={`p-4 rounded-2xl text-sm flex items-start border animate-pulse ${authMessage && !loading ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
-              <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
+            <div className={`p-4 rounded-xl text-xs font-bold flex items-start border ${authMessage && !loading ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-red-50 text-red-700 border-red-100'}`}>        
+              <AlertCircle className="h-4 w-4 mr-3 flex-shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
-          
-          <div className="space-y-4">
+
+          <div className="space-y-5">
             <div>
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Email Address</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   name="email"
                   type="email"
                   required
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-[#FAF9F6] text-sm font-bold"
+                  className="block w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50 text-sm font-semibold placeholder:text-gray-300"
                   placeholder="your@email.com"
                   value={formData.email}
                   onChange={handleChange}
@@ -99,16 +102,16 @@ const Login = () => {
             </div>
 
             <div>
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Password</label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Password</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   name="password"
                   type="password"
                   required
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-[#FAF9F6] text-sm font-bold"
+                  className="block w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50 text-sm font-semibold placeholder:text-gray-300"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
@@ -120,19 +123,19 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 px-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center shadow-xl shadow-emerald-100 disabled:opacity-70 mt-4"
+            className="w-full py-4 px-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center shadow-xl shadow-emerald-100 disabled:opacity-70 mt-4"
           >
             {loading ? (
               <Loader2 className="animate-spin h-5 w-5" />
             ) : (
-              'Login'
+              'Sign In to Account'
             )}
           </button>
 
-          <p className="text-center text-sm text-gray-500 font-bold pt-2">
+          <p className="text-center text-sm text-gray-500 font-medium pt-2">
             Don't have an account?{' '}
-            <Link to="/register" className="text-emerald-600 hover:text-emerald-500 underline underline-offset-4 decoration-2">
-              Register here
+            <Link to="/register" className="text-emerald-600 hover:text-emerald-700 font-bold underline underline-offset-4 decoration-2">
+              Join for free
             </Link>
           </p>
         </form>

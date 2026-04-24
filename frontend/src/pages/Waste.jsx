@@ -351,22 +351,22 @@ const Waste = () => {
             <p className="mt-2 text-gray-500 font-medium">Select a category to view active pickup requests.</p>
           </div>
           <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center min-w-[120px]">
-            <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Total Jobs</p>
+            <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mb-1">Total Jobs</p>
             <p className="text-2xl font-black text-emerald-700">{wastes.length}</p>
           </div>
         </div>
 
         {/* Feedback Messages */}
-        <div className="fixed top-24 right-4 z-50 space-y-2 max-w-sm w-full">
+        <div className="fixed top-24 right-4 z-50 space-y-3 max-w-sm w-full px-4 sm:px-0">
           {success && (
-            <div className="bg-emerald-600 text-white p-4 rounded-2xl shadow-2xl flex items-center animate-bounce-in border-b-4 border-emerald-800">
-              <CheckCircle2 className="h-5 w-5 mr-3 flex-shrink-0" />
+            <div className="bg-emerald-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-emerald-500/50 backdrop-blur-md animate-in slide-in-from-right-10 duration-300">
+              <CheckCircle2 className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{success}</p>
             </div>
           )}
           {error && (
-            <div className="bg-red-600 text-white p-4 rounded-2xl shadow-2xl flex items-center animate-bounce-in border-b-4 border-red-800">
-              <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
+            <div className="bg-red-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-red-500/50 backdrop-blur-md animate-in slide-in-from-right-10 duration-300">
+              <AlertCircle className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{error}</p>
             </div>
           )}
@@ -374,8 +374,8 @@ const Waste = () => {
 
         {/* Category Selection Grid */}
         <div className="mb-20">
-            <h2 className="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
-                <div className="w-8 h-1 bg-emerald-600 rounded-full"></div>
+            <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3">
+                <div className="w-10 h-1 bg-emerald-600 rounded-full"></div>
                 Waste Categories
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -386,28 +386,27 @@ const Waste = () => {
                         <Link 
                             key={cat.id} 
                             to={`/browse-requests/${cat.id}`}
-                            className="p-8 rounded-[2.5rem] border-2 border-white bg-white shadow-sm transition-all hover:shadow-xl hover:border-emerald-100 hover:-translate-y-1 active:scale-95 group flex flex-col justify-between h-52 relative overflow-hidden"
+                            className="p-10 rounded-3xl border border-gray-100 bg-white shadow-sm transition-all hover:shadow-xl hover:shadow-emerald-900/5 hover:border-emerald-200 hover:-translate-y-1 active:scale-[0.98] group flex flex-col justify-between h-56 relative overflow-hidden"
                         >
                             <div className="flex justify-between items-start relative z-10">
-                                <div className={`p-4 ${style.color} ${style.text} rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-inner text-2xl flex items-center justify-center w-14 h-14`}>
+                                <div className={`p-4 ${style.color} ${style.text} rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-sm border border-emerald-100/50 text-4xl flex items-center justify-center w-20 h-20`}>
                                     {style.icon}
                                 </div>
                                 <div className="text-right">
                                     <span className="text-3xl font-black text-gray-900 group-hover:text-emerald-600 transition-colors">
                                         {count}
                                     </span>
-                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Active</p>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Active</p>
                                 </div>
                             </div>
-                            <div className="relative z-10">
-                                <h3 className="text-xl font-black text-gray-900 leading-tight group-hover:text-emerald-700 transition-colors">
+                            <div className="relative z-10 mt-6">
+                                <h3 className="text-xl font-bold text-gray-900 leading-tight group-hover:text-emerald-700 transition-colors">
                                     {cat.name}
                                 </h3>
-                                <p className="text-xs font-bold text-gray-400 mt-1 flex items-center gap-1">
-                                    Browse listings <ArrowRight className="w-3 h-3" />
+                                <p className="text-xs font-semibold text-gray-400 mt-2 flex items-center gap-2 group-hover:text-emerald-600 transition-colors">
+                                    Browse listings <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                                 </p>
                             </div>
-                            <div className={`absolute -bottom-10 -right-10 w-32 h-32 ${style.color.replace('bg-', 'bg-')}/20 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors`}></div>
                         </Link>
                     );
                 })}
@@ -416,51 +415,51 @@ const Waste = () => {
 
         {/* Form Section */}
         {(!currentUser || currentUser.role === 'HOUSEHOLD') && (
-          <div className={`bg-white rounded-[2.5rem] shadow-sm border ${isEditing ? 'border-emerald-200 bg-emerald-50/10' : 'border-gray-100'} p-8 mb-16 relative overflow-hidden`}>
+          <div className={`bg-white rounded-[2.5rem] shadow-sm border-2 ${isEditing ? 'border-emerald-200 bg-emerald-50/5' : 'border-gray-50'} p-10 md:p-12 mb-16 relative overflow-hidden`}>
             {!token && (
-              <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex items-center justify-center p-6 text-center">
-                 <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 max-w-sm">
-                    <div className="bg-emerald-100 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-600">
-                        <Lock className="w-6 h-6" />
+              <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex items-center justify-center p-6 text-center">
+                 <div className="bg-white p-10 rounded-[2rem] shadow-2xl border border-gray-100 max-w-md">
+                    <div className="bg-emerald-50 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 text-emerald-600 border border-emerald-100/50">
+                        <Lock className="w-8 h-8" />
                     </div>
-                    <h3 className="text-xl font-black text-gray-900 mb-2">Want to post waste?</h3>
-                    <p className="text-gray-500 text-sm font-medium mb-6">Create an account as a Household to publish your available pickups.</p>
-                    <Link to="/login" className="block w-full py-3 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-700 transition-all">
-                        Login to Continue
+                    <h3 className="text-2xl font-black text-gray-900 mb-3">Want to post waste?</h3>
+                    <p className="text-gray-500 font-medium mb-8 leading-relaxed">Create an account as a Household to publish your available pickups and start contributing to a greener future.</p>
+                    <Link to="/login" className="block w-full py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100">
+                        Sign In to Continue
                     </Link>
                  </div>
               </div>
             )}
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-black text-gray-900 flex items-center">
-                {isEditing ? <><Edit2 className="h-6 w-6 mr-3 text-emerald-600" />Update Request</> : <><Plus className="h-6 w-6 mr-3 text-emerald-600" />New Pickup Request</>}
+            <div className="flex items-center justify-between mb-10">
+              <h2 className="text-3xl font-black text-gray-900 flex items-center tracking-tight">
+                {isEditing ? <><Edit2 className="h-8 w-8 mr-4 text-emerald-600" />Update Your Request</> : <><Plus className="h-8 w-8 mr-4 text-emerald-600" />Post a Pickup</>}
               </h2>
-              {isEditing && <button onClick={handleCancel} className="text-sm text-gray-400 hover:text-gray-600 flex items-center font-bold uppercase tracking-widest"><X className="h-4 w-4 mr-1" /> Cancel</button>}
+              {isEditing && <button onClick={handleCancel} className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all active:scale-95"><X className="h-5 w-5" /></button>}
             </div>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Waste Category</label>
-                <select name="category_id" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.category_id} onChange={handleChange}>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Waste Category</label>
+                <select name="category_id" required className="w-full px-6 py-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50 font-bold text-gray-700 shadow-sm" value={formData.category_id} onChange={handleChange}>
                     <option value="">Select Category</option>
                     {categories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                 </select>
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Quantity</label>
-                <div className="flex gap-2">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Quantity</label>
+                <div className="flex gap-3">
                   <div className="relative flex-1">
-                    <input type="number" step="0.1" name="quantity" required placeholder="e.g. 5.5" className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.quantity} onChange={handleChange} />
-                    <Package className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+                    <input type="number" step="0.1" name="quantity" required placeholder="e.g. 5.5" className="w-full pl-12 pr-6 py-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50 font-bold text-gray-700 shadow-sm" value={formData.quantity} onChange={handleChange} />
+                    <Package className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
                   </div>
                   {(formData.category_id && (categories.find(c => c.id === parseInt(formData.category_id))?.name.includes('Coconut'))) ? (
-                    <select name="unit" className="w-28 px-4 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.unit} onChange={handleChange}>
+                    <select name="unit" className="w-32 px-4 py-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 outline-none bg-gray-50 font-bold text-gray-700 shadow-sm" value={formData.unit} onChange={handleChange}>
                         <option value="kg">kg</option>
                         <option value="pieces">pieces</option>
                     </select>
                   ) : (
-                    <div className="w-28 flex items-center justify-center bg-gray-50 rounded-2xl border border-gray-100 font-black text-gray-400 text-xs uppercase tracking-widest">
+                    <div className="w-32 flex items-center justify-center bg-gray-50 rounded-xl border border-gray-100 font-bold text-gray-400 text-xs uppercase tracking-widest">
                         {formData.unit}
                     </div>
                   )}
@@ -469,46 +468,46 @@ const Waste = () => {
 
               {/* Sellable / Price Logic - Modern Toggle */}
               <div className="md:col-span-2">
-                <div className={`p-8 rounded-[2rem] border-2 transition-all ${formData.is_sellable ? 'bg-emerald-50/50 border-emerald-100' : 'bg-gray-50/50 border-gray-100'}`}>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-                    <div className="flex items-center gap-5">
-                      <div className={`p-4 rounded-2xl shadow-sm ${formData.is_sellable ? 'bg-emerald-600 text-white' : 'bg-white text-gray-400'}`}>
-                        <DollarSign className="w-6 h-6" />
+                <div className={`p-10 rounded-3xl border-2 transition-all ${formData.is_sellable ? 'bg-emerald-50/50 border-emerald-100 shadow-lg shadow-emerald-900/5' : 'bg-gray-50/50 border-gray-100'}`}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8">
+                    <div className="flex items-center gap-6">
+                      <div className={`p-5 rounded-2xl shadow-sm border ${formData.is_sellable ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-white text-gray-400 border-gray-100'}`}>
+                        <DollarSign className="w-8 h-8" />
                       </div>
                       <div>
-                        <h4 className="text-lg font-black text-gray-900">Is this sellable?</h4>
-                        <p className="text-xs font-bold text-gray-400">Toggle if you want to be paid for this waste</p>
+                        <h4 className="text-xl font-bold text-gray-900 tracking-tight">Is this sellable?</h4>
+                        <p className="text-sm font-medium text-gray-500 mt-1">Get paid for recyclables like coconut shells and plastic.</p>
                       </div>
                     </div>
                     
                     <button 
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, is_sellable: !prev.is_sellable, price: !prev.is_sellable ? prev.price : '' }))}
-                      className={`relative inline-flex h-9 w-16 items-center rounded-full transition-colors focus:outline-none ${formData.is_sellable ? 'bg-emerald-600' : 'bg-gray-200'}`}
+                      className={`relative inline-flex h-10 w-20 items-center rounded-full transition-all duration-300 focus:outline-none ${formData.is_sellable ? 'bg-emerald-600' : 'bg-gray-300'}`}
                     >
-                      <span className={`inline-block h-7 w-7 transform rounded-full bg-white transition-transform ${formData.is_sellable ? 'translate-x-8' : 'translate-x-1'}`} />
+                      <span className={`inline-block h-8 w-8 transform rounded-full bg-white transition-transform duration-300 shadow-md ${formData.is_sellable ? 'translate-x-11' : 'translate-x-1'}`} />
                     </button>
                   </div>
 
                   {formData.is_sellable && (
-                    <div className="mt-8 pt-8 border-t border-emerald-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 animate-in fade-in slide-in-from-top-4">
+                    <div className="mt-10 pt-10 border-t border-emerald-100/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8 animate-in fade-in slide-in-from-top-4 duration-500">
                       <div>
-                        <p className="text-sm font-black text-gray-900">Set your price</p>
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-1">Suggested based on your local market</p>
+                        <p className="text-lg font-bold text-gray-900">Set your price</p>
+                        <p className="text-xs font-semibold text-emerald-600 mt-1">Based on current market rates in your area</p>
                       </div>
-                      <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-emerald-100 shadow-sm w-full sm:w-auto">
+                      <div className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-emerald-100 shadow-sm w-full sm:w-auto">
                         <span className="pl-4 font-black text-gray-400">Rs.</span>
                         <input 
                           type="number" 
                           name="price" 
                           step="0.01"
                           placeholder="0.00"
-                          className="w-full sm:w-32 bg-transparent border-none focus:ring-0 font-black text-xl text-gray-900"
+                          className="w-full sm:w-36 bg-transparent border-none focus:ring-0 font-black text-2xl text-gray-900"
                           value={formData.price}
                           onChange={handleChange}
                           required={formData.is_sellable}
                         />
-                        <div className="bg-emerald-50 px-4 py-2 rounded-xl text-[10px] font-black text-emerald-600 uppercase tracking-widest whitespace-nowrap">
+                        <div className="bg-emerald-50 px-5 py-2.5 rounded-xl text-[10px] font-bold text-emerald-600 uppercase tracking-widest whitespace-nowrap">
                           Per {formData.unit}
                         </div>
                       </div>
@@ -517,51 +516,55 @@ const Waste = () => {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Date</label>
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Preferred Pickup Date</label>
                 <div className="relative">
-                  <input type="date" name="pickup_date" required className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.pickup_date} onChange={handleChange} />
-                  <Calendar className="absolute left-4 top-4.5 h-5 w-5 text-gray-300" />
+                  <input type="date" name="pickup_date" required className="w-full pl-12 pr-6 py-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50 font-bold text-gray-700 shadow-sm" value={formData.pickup_date} onChange={handleChange} />
+                  <Calendar className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Time Range</label>
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Time Availability Window</label>
                 <div className="grid grid-cols-2 gap-4">
-                    <select name="startTime" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.startTime} onChange={handleChange}>
+                    <select name="startTime" required className="w-full px-6 py-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50 font-bold text-gray-700 shadow-sm" value={formData.startTime} onChange={handleChange}>
                         <option value="">Start</option>
                         {timeOptions.map(time => <option key={time} value={time}>{time}</option>)}
                     </select>
-                    <select name="endTime" required className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.endTime} onChange={handleChange}>
+                    <select name="endTime" required className="w-full px-6 py-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50 font-bold text-gray-700 shadow-sm" value={formData.endTime} onChange={handleChange}>
                         <option value="">End</option>
                         {timeOptions.map(time => <option key={time} value={time}>{time}</option>)}
                     </select>
                 </div>
               </div>
               <div className="md:col-span-2 space-y-4">
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pickup Address</label>
-                    <div className="flex gap-2">
-                        <input type="text" name="address_line" required className="flex-1 px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner" value={formData.address_line} onChange={handleChange} />
-                        <button type="button" onClick={handleFindOnMap} disabled={searchingMap} className="px-6 py-4 bg-emerald-100 text-emerald-700 font-black rounded-2xl hover:bg-emerald-200 transition-all flex items-center gap-2 whitespace-nowrap active:scale-95 disabled:opacity-50">{searchingMap ? <Loader2 className="w-5 h-5 animate-spin" /> : <Eye className="w-5 h-5" />}Find on Map</button>
+                <div className="space-y-3">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Pickup Address</label>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <input type="text" name="address_line" required className="flex-1 px-6 py-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50 font-bold text-gray-700 shadow-sm" value={formData.address_line} onChange={handleChange} />
+                        <button type="button" onClick={handleFindOnMap} disabled={searchingMap} className="px-8 py-4 bg-emerald-100 text-emerald-700 font-bold rounded-xl hover:bg-emerald-200 transition-all flex items-center justify-center gap-2 whitespace-nowrap active:scale-95 disabled:opacity-50">{searchingMap ? <Loader2 className="w-5 h-5 animate-spin" /> : <Eye className="w-5 h-5" />}Find on Map</button>
                     </div>
                 </div>
-                <div className="h-[300px] w-full rounded-[2.5rem] overflow-hidden border-4 border-white shadow-xl relative z-0">
+                <div className="h-[350px] w-full rounded-[2.5rem] overflow-hidden border-8 border-gray-50 shadow-inner relative z-0">
                     <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }}>
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         <ChangeView center={mapCenter} />
                         <MapController setPosition={setMapCenter} />
                     </MapContainer>
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[400]">
-                        <div className="w-8 h-8 border-2 border-emerald-600 rounded-full flex items-center justify-center"><div className="w-1 h-1 bg-emerald-600 rounded-full"></div></div>
+                        <div className="w-10 h-10 border-4 border-emerald-600 rounded-full flex items-center justify-center bg-emerald-600/10 backdrop-blur-[2px] shadow-2xl animate-pulse"><div className="w-1.5 h-1.5 bg-emerald-600 rounded-full shadow-sm"></div></div>
                     </div>
-                    <div className="absolute bottom-4 left-0 right-0 flex justify-center z-[400]"><button type="button" onClick={handleConfirmLocation} disabled={fetchingAddress} className="bg-emerald-900 text-white px-8 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-2xl hover:bg-emerald-800 transition-all active:scale-95">{fetchingAddress ? "Identifying..." : "Confirm Map Point"}</button></div>
+                    <div className="absolute bottom-6 left-0 right-0 flex justify-center z-[400] px-6"><button type="button" onClick={handleConfirmLocation} disabled={fetchingAddress} className="bg-gray-900 text-white px-10 py-3 rounded-xl font-bold text-[11px] uppercase tracking-widest shadow-2xl hover:bg-black transition-all active:scale-95">{fetchingAddress ? "Identifying Location..." : "Lock Map Position"}</button></div>
                 </div>
               </div>
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Description</label>
-                <textarea name="description" rows="2" className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-[#FAF9F6] font-bold text-gray-700 shadow-inner resize-none" value={formData.description} onChange={handleChange}></textarea>
+              <div className="md:col-span-2 space-y-3">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Additional Details</label>
+                <textarea name="description" rows="3" placeholder="Describe access points, specific items, or any other helpful info..." className="w-full px-6 py-4 rounded-xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50 font-semibold text-gray-700 shadow-sm resize-none placeholder:text-gray-300" value={formData.description} onChange={handleChange}></textarea>
               </div>
-              <div className="md:col-span-2 flex gap-4"><button type="submit" disabled={submitting} className="px-12 py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 shadow-xl active:scale-95 disabled:opacity-70">{submitting ? "Processing..." : (isEditing ? "Update" : "Post Request")}</button></div>
+              <div className="md:col-span-2 flex gap-4 pt-4">
+                 <button type="submit" disabled={submitting} className="flex-1 sm:flex-none px-16 py-5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 shadow-xl shadow-emerald-100 active:scale-95 disabled:opacity-70 transition-all text-lg">
+                    {submitting ? "Processing..." : (isEditing ? "Save Changes" : "Post Pickup Request")}
+                 </button>
+              </div>
             </form>
           </div>
         )}

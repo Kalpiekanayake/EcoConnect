@@ -38,95 +38,95 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
       ></div>
 
       {/* Modal */}
-      <div className="relative bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="relative bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         {/* Header */}
-        <div className="p-8 border-b border-gray-50 flex justify-between items-start">
-            <div className="flex items-center gap-6">
-                <div className={`w-16 h-16 ${style.color} rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-white`}>
+        <div className="p-10 border-b border-gray-100 flex justify-between items-start bg-gray-50/30">
+            <div className="flex items-center gap-8">
+                <div className={`w-24 h-24 ${style.color} rounded-3xl flex items-center justify-center text-5xl shadow-sm border border-white/50`}>
                     {style.icon}
                 </div>
                 <div>
-                    <h2 className="text-2xl font-black text-gray-900">{category?.name || 'Waste Request'}</h2>
-                    <div className={`mt-2 inline-flex px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${getStatusColor(request.status)}`}>
+                    <h2 className="text-3xl font-black text-gray-900 tracking-tight">{category?.name || 'Waste Request'}</h2>
+                    <div className={`mt-3 inline-flex px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${getStatusColor(request.status)}`}>
                         {request.status}
                     </div>
                 </div>
             </div>
             <button 
                 onClick={onClose}
-                className="p-3 hover:bg-gray-50 rounded-2xl text-gray-400 hover:text-gray-900 transition-all"
+                className="p-3 hover:bg-white rounded-2xl text-gray-400 hover:text-red-600 hover:shadow-sm transition-all border border-transparent hover:border-red-100"
             >
                 <X className="w-6 h-6" />
             </button>
         </div>
 
         {/* Content */}
-        <div className="p-8 overflow-y-auto max-h-[70vh]">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="p-10 overflow-y-auto max-h-[70vh]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Left Column: Core Info */}
                 <div className="space-y-6">
-                    <div className="flex items-center gap-4 bg-[#FAF9F6] p-4 rounded-2xl border border-gray-100">
-                        <div className="bg-emerald-100 p-2.5 rounded-xl text-emerald-600">
+                    <div className="flex items-center gap-5 bg-gray-50 p-5 rounded-2xl border border-gray-100/50">
+                        <div className="bg-emerald-50 p-3 rounded-xl text-emerald-600 border border-emerald-100">
                             <Package className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Quantity</p>
-                            <p className="text-sm font-black text-gray-900">{request.quantity} {request.unit || 'Units'}</p>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1.5">Total Quantity</p>
+                            <p className="text-sm font-bold text-gray-900">{request.quantity} {request.unit || 'Units'}</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 bg-[#FAF9F6] p-4 rounded-2xl border border-gray-100">
-                        <div className="bg-blue-100 p-2.5 rounded-xl text-blue-600">
+                    <div className="flex items-center gap-5 bg-gray-50 p-5 rounded-2xl border border-gray-100/50">
+                        <div className="bg-blue-50 p-3 rounded-xl text-blue-600 border border-blue-100">
                             <Calendar className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Pickup Date</p>
-                            <p className="text-sm font-black text-gray-900">{request.pickup_date}</p>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1.5">Pickup Date</p>
+                            <p className="text-sm font-bold text-gray-900">{request.pickup_date}</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 bg-[#FAF9F6] p-4 rounded-2xl border border-gray-100">
-                        <div className="bg-amber-100 p-2.5 rounded-xl text-amber-600">
+                    <div className="flex items-center gap-5 bg-gray-50 p-5 rounded-2xl border border-gray-100/50">
+                        <div className="bg-amber-50 p-3 rounded-xl text-amber-600 border border-amber-100">
                             <Clock className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Time Slot</p>
-                            <p className="text-sm font-black text-gray-900">{request.time_slot}</p>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1.5">Time Slot</p>
+                            <p className="text-sm font-bold text-gray-900">{request.time_slot}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Right Column: Pricing & Logistics */}
                 <div className="space-y-6">
-                    <div className="flex items-center gap-4 bg-[#FAF9F6] p-4 rounded-2xl border border-gray-100">
-                        <div className={`p-2.5 rounded-xl ${request.is_sellable ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>
+                    <div className="flex items-center gap-5 bg-gray-50 p-5 rounded-2xl border border-gray-100/50">
+                        <div className={`p-3 rounded-xl border ${request.is_sellable ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-white text-gray-400 border-gray-100'}`}>
                             <DollarSign className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">{request.is_sellable ? 'Sellable Price' : 'Price Status'}</p>
-                            <p className="text-sm font-black text-gray-900">{request.is_sellable ? `Rs. ${request.price || 0}` : 'Free Pickup'}</p>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1.5">{request.is_sellable ? 'Sellable Price' : 'Price Status'}</p>
+                            <p className={`text-sm font-bold ${request.is_sellable ? 'text-emerald-600' : 'text-gray-900'}`}>{request.is_sellable ? `Rs. ${request.price || 0}` : 'Free Collection'}</p>
                         </div>
                     </div>
 
-                    <div className="flex items-start gap-4 bg-[#FAF9F6] p-4 rounded-2xl border border-gray-100">
-                        <div className="bg-red-100 p-2.5 rounded-xl text-red-600">
+                    <div className="flex items-start gap-5 bg-gray-50 p-5 rounded-2xl border border-gray-100/50">
+                        <div className="bg-red-50 p-3 rounded-xl text-red-600 border border-red-100 flex-shrink-0">
                             <MapPin className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Pickup Address</p>
-                            <p className="text-sm font-bold text-gray-900 mt-1 leading-relaxed">{request.address_line}</p>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1.5">Pickup Address</p>
+                            <p className="text-sm font-semibold text-gray-900 mt-1 leading-relaxed">{request.address_line}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom: Description */}
-                <div className="md:col-span-2">
-                    <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100">
-                        <div className="flex items-center gap-3 mb-3">
-                            <Info className="w-4 h-4 text-gray-400" />
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Additional Details</p>
+                <div className="md:col-span-2 pt-4">
+                    <div className="bg-gray-50 p-8 rounded-[2rem] border border-gray-100/50 shadow-inner">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Info className="w-4 h-4 text-emerald-500" />
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Additional Details</p>
                         </div>
-                        <p className="text-gray-600 text-sm font-medium italic leading-relaxed">
+                        <p className="text-gray-600 text-sm font-semibold italic leading-relaxed">
                             "{request.description || 'No additional instructions provided by the household.'}"
                         </p>
                     </div>
@@ -135,12 +135,12 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-8 bg-gray-50/50 border-t border-gray-50 flex justify-end">
+        <div className="p-10 bg-gray-50/50 border-t border-gray-100 flex justify-end">
             <button 
                 onClick={onClose}
-                className="px-10 py-4 bg-gray-900 text-white font-black text-xs rounded-xl hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
+                className="px-12 py-4 bg-gray-900 text-white font-bold text-xs rounded-xl hover:bg-emerald-600 transition-all shadow-lg shadow-gray-200 active:scale-95"
             >
-                Close Details
+                Close Request Details
             </button>
         </div>
       </div>

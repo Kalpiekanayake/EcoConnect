@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Tag, Calendar, MapPin, Package, Clock, ArrowLeft, Loader2, DollarSign, Lock, Eye, Truck, CheckCircle2 } from 'lucide-react';
+import { Tag, Calendar, MapPin, Package, Clock, ArrowLeft, Loader2, DollarSign, Lock, Eye, Truck, CheckCircle2, Edit2 } from 'lucide-react';
 
 // --- Category Visual Mapping ---
 const getCategoryStyles = (name) => {
@@ -105,41 +105,41 @@ const CategoryRequests = () => {
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
       
-      <main className="max-w-6xl mx-auto py-12 px-4">
+      <main className="max-w-6xl mx-auto py-16 px-4">
         {/* Header */}
         <div className="mb-12">
-          <Link to="/browse-requests" className="inline-flex items-center text-sm font-black text-emerald-600 hover:gap-2 transition-all gap-1 uppercase tracking-widest mb-6 group">
-            <ArrowLeft className="w-4 h-4" /> Back to Categories
+          <Link to="/browse-requests" className="inline-flex items-center text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-all gap-1.5 uppercase tracking-widest mb-8 group">
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Categories
           </Link>
           
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-            <div className="flex items-center gap-6">
-                <div className={`w-20 h-20 ${categoryStyle.color} rounded-[2rem] flex items-center justify-center text-4xl shadow-inner border-2 border-white`}>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+            <div className="flex items-center gap-8">
+                <div className={`w-28 h-28 ${categoryStyle.color} rounded-[2.5rem] flex items-center justify-center text-6xl shadow-inner border-2 border-white`}>
                     {categoryStyle.icon}
                 </div>
                 <div>
-                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">{category?.name}</h1>
-                    <p className="text-gray-500 font-medium mt-1">Available pickup requests for this type.</p>
+                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">{category?.name}</h1>
+                    <p className="text-lg text-gray-500 font-medium mt-2">Available pickup requests for this category.</p>
                 </div>
             </div>
-            <div className="bg-white px-8 py-4 rounded-[2rem] border border-gray-100 shadow-sm text-center min-w-[140px]">
-              <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Active Jobs</p>
-              <p className="text-3xl font-black text-emerald-600">{requests.filter(r => r.status === 'OPEN').length}</p>
+            <div className="bg-white px-10 py-5 rounded-[2rem] border border-gray-100 shadow-sm text-center min-w-[160px]">
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Active Jobs</p>
+              <p className="text-4xl font-black text-emerald-600">{requests.filter(r => r.status === 'OPEN').length}</p>
             </div>
           </div>
         </div>
 
         {/* Feedback Messages */}
-        <div className="fixed top-24 right-4 z-50 space-y-2 max-w-sm w-full">
+        <div className="fixed top-24 right-4 z-50 space-y-3 max-w-sm w-full px-4 sm:px-0">
           {success && (
-            <div className="bg-emerald-600 text-white p-4 rounded-2xl shadow-2xl flex items-center animate-bounce-in border-b-4 border-emerald-800">
-              <CheckCircle2 className="h-5 w-5 mr-3 flex-shrink-0" />
+            <div className="bg-emerald-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-emerald-500/50 backdrop-blur-md animate-in slide-in-from-right-10 duration-300">
+              <CheckCircle2 className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{success}</p>
             </div>
           )}
           {error && (
-            <div className="bg-red-600 text-white p-4 rounded-2xl shadow-2xl flex items-center animate-bounce-in border-b-4 border-red-800">
-              <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
+            <div className="bg-red-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-red-500/50 backdrop-blur-md animate-in slide-in-from-right-10 duration-300">
+              <AlertCircle className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{error}</p>
             </div>
           )}
@@ -147,33 +147,36 @@ const CategoryRequests = () => {
 
         {requests.length === 0 ? (
           <div className="bg-white rounded-[3rem] border-4 border-dashed border-gray-100 py-32 text-center shadow-sm">
-            <Tag className="h-16 w-16 text-gray-100 mx-auto mb-6" />
-            <h3 className="text-2xl font-black text-gray-900">No requests in this category</h3>
-            <Link to="/browse-requests" className="text-emerald-600 font-bold hover:underline mt-2 inline-block">Be the first to post a request</Link>
+            <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100/50">
+               <Tag className="h-10 w-10 text-gray-200" />
+            </div>
+            <h3 className="text-2xl font-black text-gray-900">No requests found</h3>
+            <p className="text-gray-500 font-medium mt-2 mb-8">Be the first to post a request in this category.</p>
+            <Link to="/browse-requests" className="px-8 py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100">Post Request Now</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {requests.map((waste) => {
                 const style = getCategoryStyles(category?.name);
                 return (
-                    <div key={waste.id} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
-                        <div className="flex justify-between items-start mb-6">
+                    <div key={waste.id} className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all group flex flex-col h-full hover:border-emerald-100">
+                        <div className="flex justify-between items-start mb-8">
                         <div className="flex flex-col gap-2">
-                            <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-[10px] font-black ${style.color} ${style.text} border ${style.border} uppercase tracking-widest w-fit`}>
-                                <span>{style.icon}</span> {category?.name}
+                            <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-[10px] font-bold ${style.color} ${style.text} border ${style.border}/50 uppercase tracking-widest w-fit`}>
+                                <span className="text-xl">{style.icon}</span> {category?.name}
                             </span>
                             {waste.is_sellable ? (
-                                <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-emerald-600 text-white border border-emerald-700 uppercase tracking-widest w-fit shadow-sm">
-                                    <DollarSign className="w-3 h-3 mr-1" /> SELLABLE
+                                <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-bold bg-emerald-600 text-white border border-emerald-500 uppercase tracking-widest w-fit shadow-sm shadow-emerald-100">
+                                    <DollarSign className="w-3.5 h-3.5 mr-1" /> SELLABLE
                                 </span>
                             ) : (
-                                <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black bg-gray-100 text-gray-500 border border-gray-200 uppercase tracking-widest w-fit">
+                                <span className="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-bold bg-gray-100 text-gray-500 border border-gray-200 uppercase tracking-widest w-fit">
                                     FREE PICKUP
                                 </span>
                             )}
                         </div>
-                        <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border shadow-sm ${
-                            waste.status === 'OPEN' ? 'bg-white text-emerald-600 border-emerald-50' : 
+                        <span className={`px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest border shadow-sm ${
+                            waste.status === 'OPEN' ? 'bg-white text-emerald-600 border-emerald-100 shadow-sm' : 
                             waste.status === 'BOOKED' ? 'bg-amber-50 text-amber-700 border-amber-100' :
                             'bg-gray-50 text-gray-400 border-gray-100'
                         }`}>
@@ -181,49 +184,49 @@ const CategoryRequests = () => {
                         </span>
                         </div>
 
-                        <div className="space-y-4 mb-8 flex-1">
-                            <p className="text-gray-600 text-sm font-medium leading-relaxed min-h-[40px] line-clamp-2 italic">
-                                "{waste.description || 'No description provided.'}"
+                        <div className="space-y-6 mb-10 flex-1">
+                            <p className="text-gray-600 text-sm font-semibold leading-relaxed min-h-[48px] line-clamp-3">
+                                "{waste.description || 'No additional details provided.'}"
                             </p>
                             
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="flex items-center text-gray-900 font-black text-sm bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                                    <Package className="w-4 h-4 mr-2 text-emerald-500" />
+                                <div className="flex items-center text-gray-900 font-bold text-xs bg-gray-50 p-4 rounded-2xl border border-gray-100 shadow-sm">
+                                    <Package className="w-4 h-4 mr-3 text-emerald-500" />
                                     {waste.quantity} {waste.unit || 'kg'}
                                 </div>
                                 {waste.is_sellable ? (
-                                    <div className="flex items-center text-emerald-700 font-black text-sm bg-emerald-50 p-3 rounded-2xl border border-emerald-100 shadow-sm">
-                                        <DollarSign className="w-4 h-4 mr-1" />
+                                    <div className="flex items-center text-emerald-700 font-black text-xs bg-emerald-50 p-4 rounded-2xl border border-emerald-100 shadow-sm">
+                                        <DollarSign className="w-4 h-4 mr-1.5" />
                                         Rs. {waste.price || 0}
                                     </div>
                                 ) : (
-                                    <div className="flex items-center text-gray-500 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
-                                        <Calendar className="w-4 h-4 mr-2 text-emerald-500" />
+                                    <div className="flex items-center text-gray-500 text-xs font-bold bg-gray-50 p-4 rounded-2xl border border-gray-100 shadow-sm">
+                                        <Calendar className="w-4 h-4 mr-3 text-emerald-500" />
                                         {waste.pickup_date}
                                     </div>
                                 )}
                             </div>
 
-                            <div className="flex items-start gap-3 text-gray-400 text-xs font-bold bg-[#FAF9F6] p-3 rounded-2xl border border-gray-50 shadow-inner">
+                            <div className="flex items-start gap-4 text-gray-500 text-xs font-bold bg-gray-50 p-4 rounded-2xl border border-gray-100 shadow-sm">
                                 <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-gray-700 leading-tight line-clamp-1">{waste.address_line}</span>
+                                <span className="text-gray-700 leading-normal line-clamp-2">{waste.address_line}</span>
                             </div>
                         </div>
 
-                        <div className="pt-6 border-t border-gray-50 flex items-center justify-between mt-auto">
+                        <div className="pt-8 border-t border-gray-50 flex items-center justify-between mt-auto">
                             <button 
                                 onClick={() => openDetails(waste)}
-                                className="flex items-center gap-2 text-[10px] font-black text-gray-400 hover:text-emerald-600 uppercase tracking-widest transition-colors"
+                                className="flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-emerald-600 uppercase tracking-widest transition-all"
                             >
-                                <Eye className="w-4 h-4" /> Details
+                                <Eye className="w-4 h-4" /> View Details
                             </button>
                             
                             {waste.status === 'OPEN' && (
                                 <button 
                                     onClick={() => handleBookPickup(waste.id)}
-                                    className="px-6 py-3 bg-gray-900 text-white font-black text-xs rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-2 active:scale-95 shadow-lg"
+                                    className="px-8 py-3.5 bg-gray-900 text-white font-bold text-xs rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-gray-200"
                                 >
-                                    {token && currentUser?.role === 'COLLECTOR' ? 'Book Now' : (token ? 'View Only' : <><Lock className="w-3 h-3" /> Login</>)}
+                                    {token && currentUser?.role === 'COLLECTOR' ? 'Claim Pickup' : (token ? 'View Listing' : <><Lock className="w-3.5 h-3.5" /> Login</>)}
                                 </button>
                             )}
 
