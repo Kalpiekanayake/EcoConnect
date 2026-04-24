@@ -66,11 +66,29 @@ const MyBookings = () => {
     setIsModalOpen(true);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FDFCFB]">
+        <Navbar />
+        <main className="max-w-5xl mx-auto py-16 px-4">
+          <div className="mb-16">
+            <div className="h-10 w-48 bg-gray-100 rounded-lg animate-pulse mb-3"></div>
+            <div className="h-5 w-64 bg-gray-50 rounded-lg animate-pulse"></div>
+          </div>
+          <div className="space-y-8">
+            <div className="h-8 w-40 bg-gray-100 rounded animate-pulse"></div>
+            {[1,2].map(i => <div key={i} className="h-32 bg-white rounded-[2.5rem] border border-gray-100 animate-pulse"></div>)}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
       <main className="max-w-5xl mx-auto py-16 px-4">
-        <div className="mb-16">
+        <div className="mb-16 animate-in fade-in slide-in-from-left-4 duration-500">
           <h1 className="text-4xl font-black text-gray-900 tracking-tight">My Bookings</h1>
           <p className="mt-2 text-lg text-gray-500 font-medium">Track your scheduled pickups and completion status.</p> 
         </div>
@@ -78,28 +96,26 @@ const MyBookings = () => {
         {/* Feedback Messages */}
         <div className="fixed top-24 right-4 z-50 space-y-3 max-w-sm w-full px-4 sm:px-0">
           {success && (
-            <div className="bg-emerald-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-emerald-500/50 backdrop-blur-md animate-in slide-in-from-right-10 duration-300">
+            <div className="bg-emerald-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-emerald-500/50 backdrop-blur-md animate-toast-in">
               <CheckCircle2 className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{success}</p>
             </div>
           )}
           {error && (
-            <div className="bg-red-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-red-500/50 backdrop-blur-md animate-in slide-in-from-right-10 duration-300">
+            <div className="bg-red-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-red-500/50 backdrop-blur-md animate-toast-in">
               <AlertCircle className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{error}</p>
             </div>
           )}
         </div>
 
-        {loading ? (
-          <div className="flex justify-center py-24"><Loader2 className="animate-spin h-12 w-12 text-emerald-600" /></div>
-        ) : bookings.length === 0 ? (
-          <div className="bg-white rounded-[3rem] p-24 text-center border-4 border-dashed border-gray-100 shadow-sm">
+        {bookings.length === 0 ? (
+          <div className="bg-white rounded-[3rem] p-24 text-center border-4 border-dashed border-gray-100 shadow-sm animate-in zoom-in-95 duration-700">
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100/50">
                <Truck className="h-10 w-10 text-gray-200" />
             </div>
             <h3 className="text-2xl font-black text-gray-900">No bookings yet</h3>
-            <p className="text-gray-500 mt-2 font-medium mb-10 leading-relaxed">You haven't claimed any pickups yet. Start earning now.</p>
+            <p className="text-gray-500 mt-2 font-medium mb-10 leading-relaxed max-w-sm mx-auto">You haven't claimed any pickups yet. Start earning now by browsing available jobs.</p>
             <Link to="/available-pickups" className="inline-flex items-center gap-3 px-10 py-5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100 active:scale-95">
               Browse Available Jobs <ChevronRight className="w-5 h-5" />
             </Link>
@@ -107,39 +123,39 @@ const MyBookings = () => {
         ) : (
           <div className="space-y-16">
             {/* Active Section */}
-            <div>
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-                    <span className="w-2 h-10 bg-amber-500 rounded-full"></span>
+                    <span className="w-2 h-10 bg-amber-500 rounded-full shadow-sm shadow-amber-200"></span>
                     Scheduled Pickups
                 </h2>
                 <div className="grid gap-6">
                     {bookings.filter(b => b.status === 'BOOKED').length === 0 ? (
-                        <div className="bg-gray-50/50 rounded-2xl p-8 border border-gray-100/50 text-center">
+                        <div className="bg-gray-50/50 rounded-[2.5rem] p-12 border border-gray-100/50 text-center">
                            <p className="text-gray-400 font-bold italic">No active jobs at the moment.</p>    
                         </div>
                     ) : (
                         bookings.filter(b => b.status === 'BOOKED').map(booking => (
-                        <div key={booking.id} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 group hover:border-emerald-200 transition-all hover:shadow-xl hover:shadow-emerald-900/5">
+                        <div key={booking.id} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 group hover:border-emerald-200 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/5">
                             <div className="flex items-center gap-8 w-full">
-                                <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-emerald-600 font-black shadow-inner group-hover:bg-emerald-100 transition-colors">
+                                <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-emerald-600 font-black shadow-inner group-hover:bg-emerald-100 transition-colors duration-500 group-hover:scale-105">
                                     #{booking.id}
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <span className="bg-amber-100 text-amber-700 text-[10px] font-bold uppercase px-3 py-1 rounded-lg border border-amber-200 tracking-widest">Scheduled</span>
-                                        <h3 className="font-bold text-gray-900 text-lg">Waste Collection Job</h3>
+                                        <span className="bg-amber-100 text-amber-700 text-[10px] font-bold uppercase px-3 py-1 rounded-lg border border-amber-200 tracking-widest group-hover:scale-105 transition-transform">Scheduled</span>
+                                        <h3 className="font-bold text-gray-900 text-lg group-hover:text-emerald-700 transition-colors">Waste Collection Job</h3>
                                     </div>
                                     <div className="flex flex-wrap items-center gap-6 text-xs text-gray-400 font-bold">   
-                                        <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-emerald-500" /> {booking.pickup_date}</span>
-                                        <span className="flex items-center gap-2"><Clock className="w-4 h-4 text-emerald-500" /> {booking.time_slot}</span>
-                                        <span className="flex items-center gap-2"><Package className="w-4 h-4 text-emerald-500" /> {booking.quantity} {categories.find(c => c.id === booking.category_id)?.unit || 'Units'}</span>
+                                        <span className="flex items-center gap-2 group-hover:text-gray-600 transition-colors"><Calendar className="w-4 h-4 text-emerald-500" /> {booking.pickup_date}</span>
+                                        <span className="flex items-center gap-2 group-hover:text-gray-600 transition-colors"><Clock className="w-4 h-4 text-emerald-500" /> {booking.time_slot}</span>
+                                        <span className="flex items-center gap-2 group-hover:text-gray-600 transition-colors"><Package className="w-4 h-4 text-emerald-500" /> {booking.quantity} {categories.find(c => c.id === booking.category_id)?.unit || 'Units'}</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 w-full md:w-auto">
                                 <button
                                     onClick={() => openDetails(booking)}
-                                    className="flex-1 md:flex-none p-4 bg-[#FAF9F6] text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl border border-gray-50 transition-all shadow-sm flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-widest"
+                                    className="flex-1 md:flex-none p-4 bg-[#FAF9F6] text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl border border-gray-100 transition-all shadow-sm flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-widest active:scale-90"
                                 >
                                     <Eye className="w-5 h-5" /> Details
                                 </button>
@@ -157,32 +173,32 @@ const MyBookings = () => {
             </div>
 
             {/* History Section */}
-            <div>
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
                 <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3 opacity-50">       
-                    <span className="w-2 h-10 bg-emerald-500 rounded-full"></span>
+                    <span className="w-2 h-10 bg-emerald-500 rounded-full shadow-sm shadow-emerald-200"></span>
                     Job History
                 </h2>
                 <div className="grid gap-4">
                     {bookings.filter(b => b.status === 'COLLECTED').map(booking => (
-                        <div key={booking.id} className="bg-white/50 rounded-2xl p-6 border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all group gap-4">   
+                        <div key={booking.id} className="bg-white/50 rounded-[2rem] p-6 border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500 group gap-4 hover:shadow-xl hover:shadow-emerald-900/5 hover:border-emerald-100">   
                              <div className="flex items-center gap-6">
-                                <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                                <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
                                    <CheckCircle2 className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-gray-900">Job #{booking.id} completed</h4>
+                                    <h4 className="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">Job #{booking.id} completed</h4>
                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{booking.pickup_date}</p>
                                 </div>
                              </div>
                              <div className="flex items-center justify-between w-full sm:w-auto gap-8">
-                                <div className="text-xs font-bold text-gray-500 bg-gray-100/50 px-4 py-2 rounded-lg">
+                                <div className="text-xs font-bold text-gray-500 bg-gray-100/50 px-5 py-2.5 rounded-xl border border-transparent group-hover:border-emerald-100 group-hover:text-emerald-700 transition-all">
                                     {booking.quantity} Units Collected
                                 </div>
                                 <button
                                     onClick={() => openDetails(booking)}
-                                    className="p-3 bg-white text-gray-400 hover:text-emerald-600 rounded-xl border border-gray-50 transition-all shadow-sm"
+                                    className="p-3 bg-white text-gray-400 hover:text-emerald-600 rounded-xl border border-gray-100 transition-all shadow-sm active:scale-90"
                                 >
-                                    <Eye className="w-5 h-5" />
+                                    <Eye className="w-4 h-4" />
                                 </button>
                              </div>
                         </div>

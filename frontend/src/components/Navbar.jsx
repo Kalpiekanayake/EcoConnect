@@ -44,27 +44,27 @@ const Navbar = () => {
             
             <div className="hidden lg:ml-12 lg:flex lg:space-x-2">
               {token && (
-                <Link to="/dashboard" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${isActive('/dashboard') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
+                <Link to="/dashboard" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-95 ${isActive('/dashboard') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
                   Dashboard
                 </Link>
               )}
               
-              <Link to="/browse-requests" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${isActive('/browse-requests') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
+              <Link to="/browse-requests" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-95 ${isActive('/browse-requests') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
                 Browse Requests
               </Link>
               
-              <Link to="/available-pickups" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${isActive('/available-pickups') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
+              <Link to="/available-pickups" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-95 ${isActive('/available-pickups') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
                 Pickups
               </Link>
 
               {token && user?.role === 'HOUSEHOLD' && (
-                <Link to="/my-requests" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${isActive('/my-requests') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
+                <Link to="/my-requests" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-95 ${isActive('/my-requests') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
                   My Requests
                 </Link>
               )}
 
               {token && user?.role === 'COLLECTOR' && (
-                <Link to="/my-bookings" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${isActive('/my-bookings') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
+                <Link to="/my-bookings" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 active:scale-95 ${isActive('/my-bookings') ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}>
                   My Bookings
                 </Link>
               )}
@@ -78,17 +78,17 @@ const Navbar = () => {
                   <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest leading-none mb-1">{user?.role}</p>
                   <p className="text-sm font-bold text-gray-900 leading-none">{user?.full_name}</p>
                 </div>
-                <div className="h-10 w-10 bg-gray-50 rounded-xl flex items-center justify-center text-emerald-600 border border-gray-100">
+                <div className="h-10 w-10 bg-gray-50 rounded-xl flex items-center justify-center text-emerald-600 border border-gray-100 hover:bg-emerald-50 transition-colors">
                   <UserCircle className="w-6 h-6" />
                 </div>
-                <button onClick={handleLogout} className="p-2.5 rounded-xl bg-white border border-gray-100 text-gray-400 hover:text-red-600 hover:bg-red-50 hover:border-red-100 transition-all shadow-sm" title="Logout">
+                <button onClick={handleLogout} className="p-2.5 rounded-xl bg-white border border-gray-100 text-gray-400 hover:text-red-600 hover:bg-red-50 hover:border-red-100 transition-all shadow-sm active:scale-90" title="Logout">
                   <LogOut className="w-5 h-5" />
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-4">
                 <Link to="/login" className="text-sm font-semibold text-gray-600 hover:text-emerald-600 transition-colors">Sign In</Link>
-                <Link to="/register" className="px-6 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-100 transition-all hover:-translate-y-0.5 active:translate-y-0">
+                <Link to="/register" className="px-6 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-100 transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-95">
                   Join Platform
                 </Link>
               </div>

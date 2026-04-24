@@ -33,16 +33,16 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" 
+        className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-300" 
         onClick={onClose}
       ></div>
 
       {/* Modal */}
-      <div className="relative bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="relative bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-300 ease-out">
         {/* Header */}
         <div className="p-10 border-b border-gray-100 flex justify-between items-start bg-gray-50/30">
             <div className="flex items-center gap-8">
-                <div className={`w-24 h-24 ${style.color} rounded-3xl flex items-center justify-center text-5xl shadow-sm border border-white/50`}>
+                <div className={`w-24 h-24 ${style.color} rounded-3xl flex items-center justify-center text-5xl shadow-sm border border-white/50 group hover:rotate-3 transition-transform duration-500`}>
                     {style.icon}
                 </div>
                 <div>
@@ -54,7 +54,7 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
             </div>
             <button 
                 onClick={onClose}
-                className="p-3 hover:bg-white rounded-2xl text-gray-400 hover:text-red-600 hover:shadow-sm transition-all border border-transparent hover:border-red-100"
+                className="p-3 hover:bg-white rounded-2xl text-gray-400 hover:text-red-600 hover:shadow-sm transition-all border border-transparent hover:border-red-100 active:scale-90"
             >
                 <X className="w-6 h-6" />
             </button>
