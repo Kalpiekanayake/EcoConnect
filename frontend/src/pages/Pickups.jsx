@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2, Eye, Package } from 'lucide-react';
+import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2, Eye, Package, PlusCircle, ArrowRight } from 'lucide-react';
 
 // --- Category Visual Mapping ---
 const getCategoryStyles = (name) => {
@@ -44,16 +44,12 @@ const Pickups = () => {
       
       if (responses[0].status === 'fulfilled') {
         setPickups(responses[0].value.data);
-      } else {
-        console.error('Pickups fetch error:', responses[0].reason);
       }
-
       if (responses[1].status === 'fulfilled') {
         setCategories(responses[1].value.data);
       }
     } catch (err) {
       setError('Failed to fetch data.');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -62,11 +58,7 @@ const Pickups = () => {
   useEffect(() => {
     fetchInitialData();
     if (token) {
-        API.get('/auth/me')
-          .then(res => setCurrentUser(res.data))
-          .catch(err => {
-            console.error('User fetch error:', err);
-          });
+        API.get('/auth/me').then(res => setCurrentUser(res.data)).catch(() => {});
     }
   }, [token]);
 
@@ -80,12 +72,10 @@ const Pickups = () => {
         navigate('/login', { state: { from: { pathname: '/available-pickups' }, message: 'Please login as a Collector to book pickups.' } });
         return;
     }
-
     if (currentUser?.role !== 'COLLECTOR') {
         setError("Only registered Collectors can book pickups.");
         return;
     }
-
     try {
         await API.patch(`/wastes/${id}/book`);
         setSuccess("Pickup booked successfully! You can find it in 'My Bookings'.");
@@ -104,13 +94,13 @@ const Pickups = () => {
     return (
         <div className="min-h-screen bg-[#FDFCFB]">
             <Navbar />
-            <main className="max-w-6xl mx-auto py-16 px-4">
+            <main className="max-w-7xl mx-auto py-16 px-6">
                 <div className="mb-12">
-                    <div className="h-10 w-48 bg-gray-100 rounded-lg animate-pulse mb-3"></div>
-                    <div className="h-5 w-64 bg-gray-50 rounded-lg animate-pulse"></div>
+                    <div className="h-12 w-64 bg-gray-100 rounded-xl animate-pulse mb-4"></div>
+                    <div className="h-6 w-80 bg-gray-50 rounded-lg animate-pulse"></div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {[1,2,3,4,5,6].map(i => <div key={i} className="h-96 bg-white rounded-[2.5rem] border border-gray-100 animate-pulse"></div>)}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {[1,2,3,4,5,6].map(i => <div key={i} className="h-96 bg-white rounded-[3rem] border border-gray-100 animate-pulse shadow-sm"></div>)}
                 </div>
             </main>
         </div>
@@ -121,15 +111,15 @@ const Pickups = () => {
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
       
-      <main className="max-w-6xl mx-auto py-16 px-4">
-        <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 animate-in fade-in slide-in-from-left-4 duration-500">
+      <main className="max-w-7xl mx-auto py-16 px-6 sm:px-8 pt-32">
+        <div className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-10 animate-in fade-in slide-in-from-left-4 duration-700">
           <div>
-            <h1 className="text-4xl font-black text-gray-900 tracking-tight">Available Pickups</h1>
-            <p className="mt-2 text-lg text-gray-500 font-medium">Find and book waste collection requests in your vicinity.</p>
+            <h1 className="text-5xl font-black text-gray-900 tracking-behance leading-tight">Available Pickups</h1>
+            <p className="mt-3 text-lg text-gray-500 font-medium">Claim active collection tasks and optimize your eco-route.</p>
           </div>
-          <div className="bg-emerald-50 px-8 py-4 rounded-[2rem] border border-emerald-100 hidden sm:block shadow-sm text-center min-w-[140px] hover:shadow-md transition-shadow">
-            <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mb-1">Open Jobs</p>
-            <p className="text-3xl font-black text-emerald-700">{pickups.length}</p>
+          <div className="bg-emerald-600 text-white px-10 py-5 rounded-[2.5rem] border border-emerald-500 hidden sm:block shadow-2xl shadow-emerald-900/20 text-center min-w-[160px] hover:scale-105 transition-transform duration-500">
+            <p className="text-[10px] text-emerald-100 font-bold uppercase tracking-[0.3em] mb-1">Live Feed</p>
+            <p className="text-4xl font-black tracking-behance">{pickups.length}</p>
           </div>
         </div>
 
@@ -150,82 +140,84 @@ const Pickups = () => {
         </div>
 
         {pickups.length === 0 ? (
-          <div className="bg-white rounded-[3rem] border-4 border-dashed border-gray-100 py-32 text-center shadow-sm animate-in zoom-in-95 duration-700">
+          <div className="bg-white rounded-[4rem] border-4 border-dashed border-gray-100 py-40 text-center shadow-sm animate-in zoom-in-95 duration-700">
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100/50">
                <Truck className="h-10 w-10 text-gray-200" />
             </div>
-            <h3 className="text-2xl font-black text-gray-900">No pickups available</h3>
-            <p className="text-gray-500 font-medium mt-2 max-w-xs mx-auto leading-relaxed">All requests have been booked or the area is currently clear. Check back later for new opportunities.</p>
+            <h3 className="text-3xl font-black text-gray-900 tracking-behance">All Caught Up!</h3>
+            <p className="text-gray-500 font-medium mt-3 max-w-sm mx-auto leading-relaxed">No new pickups in your area at the moment. We'll notify you when new tasks appear.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
             {pickups.map((pickup) => {
               const catName = getCategoryName(pickup.category_id);
               const style = getCategoryStyles(catName);
               return (
-                <div key={pickup.id} className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-500 group flex flex-col h-full hover:border-emerald-200 hover:-translate-y-2">
-                  <div className="flex justify-between items-start mb-8">
-                    <span className={`flex items-center gap-2 ${style.color} ${style.text} px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest border ${style.border}/50 shadow-sm group-hover:scale-105 transition-transform`}>
-                      <span className="text-xl">{style.icon}</span> {catName}
+                <div key={pickup.id} className="bg-white rounded-[3.5rem] p-12 border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-emerald-900/10 transition-all duration-500 group flex flex-col h-full hover:border-emerald-200 hover:-translate-y-2">
+                  <div className="flex justify-between items-start mb-10">
+                    <span className={`flex items-center gap-3 ${style.color} ${style.text} px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] border ${style.border}/50 shadow-inner group-hover:scale-105 transition-transform`}>
+                      <span className="text-2xl">{style.icon}</span> {catName}
                     </span>
                     {pickup.is_sellable ? (
-                      <div className="bg-emerald-600 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center shadow-sm shadow-emerald-100">
+                      <div className="bg-emerald-600 text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center shadow-lg shadow-emerald-100">
                           <DollarSign className="w-3.5 h-3.5 mr-1" /> SELLABLE
                       </div>
                     ) : (
-                      <div className="bg-gray-100 text-gray-500 px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center">
-                          FREE PICKUP
+                      <div className="bg-gray-100 text-gray-400 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center">
+                          FREE
                       </div>
                     )}
                   </div>
 
-                  <div className="flex-1 space-y-6 mb-10">
+                  <div className="flex-1 space-y-8 mb-10">
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 text-gray-900 text-xs font-bold bg-gray-50 p-4 rounded-2xl border border-gray-100 shadow-sm group-hover:bg-white transition-colors">
-                          <Package className="w-4 h-4 text-emerald-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                        <div className="flex items-center gap-4 text-gray-900 text-sm font-bold bg-gray-50 p-5 rounded-[2rem] border border-gray-100 shadow-inner group-hover:bg-white transition-colors">
+                          <Package className="w-5 h-5 text-emerald-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
                           {pickup.quantity} {pickup.unit || 'kg'}
                         </div>
                         {pickup.is_sellable && (
-                          <div className="flex items-center gap-2 text-emerald-700 text-xs font-black bg-emerald-50 p-4 rounded-2xl border border-emerald-100 shadow-sm group-hover:shadow-md transition-all">
-                            <DollarSign className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <div className="flex items-center gap-2 text-emerald-700 text-sm font-black bg-emerald-50 p-5 rounded-[2rem] border border-emerald-100 shadow-sm group-hover:shadow-md transition-all">
+                            <DollarSign className="w-5 h-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
                             Rs. {pickup.price || 0}
                           </div>
                         )}
                     </div>
                     
-                    <div className="flex items-center gap-4 text-gray-500 text-xs font-bold bg-gray-50 p-4 rounded-2xl border border-gray-100 shadow-sm group-hover:bg-white transition-colors">
-                        <Calendar className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                        <span className="text-gray-700">{pickup.pickup_date}</span>
-                        <span className="opacity-20 text-gray-400">|</span>
-                        <Clock className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                        <span className="text-gray-700">{pickup.time_slot}</span>
-                    </div>
-                    
-                    <div className="flex items-start gap-4 text-gray-500 text-xs font-bold bg-gray-50 p-4 rounded-2xl border border-gray-100 shadow-sm group-hover:bg-white transition-colors">
-                        <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                        <span className="text-gray-700 leading-normal line-clamp-2">{pickup.address_line}</span>
+                    <div className="space-y-4">
+                       <div className="flex items-center gap-4 text-gray-600 text-sm font-bold bg-gray-50/50 p-5 rounded-2xl border border-gray-100/50 group-hover:bg-white transition-colors">
+                           <Calendar className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                           <span>{pickup.pickup_date}</span>
+                           <span className="opacity-20 text-gray-400">|</span>
+                           <Clock className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                           <span>{pickup.time_slot}</span>
+                       </div>
+                       
+                       <div className="flex items-start gap-4 text-gray-600 text-sm font-bold bg-gray-50/50 p-5 rounded-2xl border border-gray-100/50 group-hover:bg-white transition-colors">
+                           <MapPin className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                           <span className="leading-relaxed line-clamp-2">{pickup.address_line}</span>
+                       </div>
                     </div>
 
-                    <div className="p-6 bg-gray-50/50 rounded-2xl min-h-[96px] border border-gray-100/50 group-hover:bg-white transition-colors">
-                        <p className="text-gray-600 text-sm font-semibold leading-relaxed italic line-clamp-3 group-hover:text-gray-900 transition-colors">
+                    <div className="p-8 bg-gray-50/30 rounded-[2.5rem] min-h-[110px] border border-gray-100/50 group-hover:bg-white transition-colors shadow-inner">
+                        <p className="text-gray-500 text-sm font-semibold leading-relaxed italic line-clamp-3 group-hover:text-gray-800 transition-colors">
                           "{pickup.description || 'No additional details provided.'}"
                         </p>
                     </div>
                   </div>
 
-                  <div className="pt-8 border-t border-gray-50 flex items-center justify-between mt-auto">
+                  <div className="pt-10 border-t border-gray-50 flex items-center justify-between mt-auto">
                     <button 
                       onClick={() => openDetails(pickup)}
-                      className="flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-emerald-600 uppercase tracking-widest transition-all active:scale-95"
+                      className="flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-emerald-600 uppercase tracking-[0.2em] transition-all active:scale-95"
                     >
-                      <Eye className="w-4 h-4" /> View Details
+                      <Eye className="w-5 h-5" /> Details
                     </button>
                     
                     <button 
                       onClick={() => handleBookPickup(pickup.id)}
-                      className="px-8 py-3.5 bg-gray-900 text-white font-bold text-xs rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-2 active:scale-90 shadow-lg shadow-gray-200"
+                      className="px-10 py-4.5 bg-gray-900 text-white font-bold text-sm rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-3 active:scale-90 shadow-xl shadow-gray-200"
                     >
-                      {token && currentUser?.role === 'COLLECTOR' ? 'Claim Pickup' : <><Lock className="w-3.5 h-3.5" /> Login to Book</>}
+                      {token && currentUser?.role === 'COLLECTOR' ? 'Claim Job' : <><Lock className="w-4 h-4" /> Login</>}
                     </button>
                   </div>
                 </div>
@@ -236,16 +228,16 @@ const Pickups = () => {
 
         {/* Guest CTA */}
         {!token && (
-            <div className="mt-24 bg-gray-900 rounded-[3rem] p-16 md:p-20 text-center text-white relative overflow-hidden shadow-2xl shadow-emerald-900/10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <div className="mt-32 bg-gray-900 rounded-[4rem] p-20 md:p-32 text-center text-white relative overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-10 duration-1000">
+                <div className="absolute inset-0 bg-eco-gradient opacity-10"></div>
                 <div className="relative z-10">
-                    <h2 className="text-4xl font-black mb-6 tracking-tight">Are you a Waste Collector?</h2>
-                    <p className="text-gray-400 text-lg font-medium mb-10 max-w-2xl mx-auto leading-relaxed">Join our professional network of collectors. Book pickups in advance, optimize your routes, and earn from recyclables.</p>
-                    <Link to="/register" className="inline-flex px-12 py-5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all active:scale-95 shadow-xl shadow-emerald-600/20">
-                        Start Collecting Now
+                    <h2 className="text-5xl font-black mb-8 tracking-behance leading-tight">Professional <br /> Waste Collection</h2>
+                    <p className="text-emerald-50/60 text-xl font-medium mb-12 max-w-2xl mx-auto leading-relaxed">Join our certified network. Access premium collection routes, track your environmental impact, and get paid for quality recyclables.</p>
+                    <Link to="/register" className="inline-flex px-14 py-6 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-500 transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-emerald-600/30 text-lg">
+                        Start Collecting
                     </Link>
                 </div>
-                <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-[120px]"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-[80px]"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
             </div>
         )}
       </main>
@@ -256,17 +248,6 @@ const Pickups = () => {
         request={selectedRequest}
         categories={categories}
       />
-
-      <style>{`
-        @keyframes bounce-in {
-          0% { transform: translateY(-20px); opacity: 0; }
-          60% { transform: translateY(5px); opacity: 1; }
-          100% { transform: translateY(0); opacity: 1; }
-        }
-        .animate-bounce-in {
-          animation: bounce-in 0.4s ease-out forwards;
-        }
-      `}</style>
     </div>
   );
 };

@@ -19,41 +19,45 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Behance-Style Custom Utilities */
+
+/* Soft Glow Effect */
+.glow-emerald {
+  box-shadow: 0 0 50px -10px rgba(16, 185, 129, 0.2);
 }
 
-::-webkit-scrollbar-track {
-  background: #f9fafb;
+.glow-soft {
+  box-shadow: 0 20px 80px -15px rgba(0, 0, 0, 0.05);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
-  border-radius: 10px;
-  border: 2px solid #f9fafb;
+/* Premium Gradients */
+.bg-eco-gradient {
+  background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #d1d5db;
+.bg-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Premium Global Transitions */
-a, button, input, select, textarea {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* Typography Spacing */
+.tracking-behance {
+  letter-spacing: -0.02em;
 }
 
-/* Button & Card Micro-interactions */
-.btn-press:active {
-  transform: scale(0.96);
+/* Animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+.animate-fade-up {
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Skeleton Pulse Animation */
+/* Skeleton Loading */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -65,18 +69,25 @@ a, button, input, select, textarea {
   animation: shimmer 1.5s infinite linear;
 }
 
-/* Focus States for Accessibility */
-:focus-visible {
-  outline: 2px solid #10b981;
-  outline-offset: 2px;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-/* Toast Animations */
-@keyframes toast-in {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.animate-toast-in {
-  animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+/* Interactive Feedback */
+.btn-press:active {
+  transform: scale(0.95);
 }

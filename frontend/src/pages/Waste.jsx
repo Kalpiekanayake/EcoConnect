@@ -355,12 +355,12 @@ const Waste = () => {
       <main className="max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 animate-in fade-in slide-in-from-left-4 duration-500">
           <div>
-            <h1 className="text-4xl font-black text-gray-900 tracking-tight">Browse Requests</h1>
-            <p className="mt-2 text-lg text-gray-500 font-medium">Select a category to view active pickup requests.</p>
+            <h1 className="text-5xl font-black text-gray-900 tracking-behance leading-tight">Waste Categories</h1>
+            <p className="mt-3 text-lg text-gray-500 font-medium">Select a category to view active pickup requests or post a new one.</p>
           </div>
-          <div className="bg-emerald-50 px-8 py-4 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center min-w-[140px]">
-            <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mb-1">Total Jobs</p>
-            <p className="text-3xl font-black text-emerald-700">{wastes.length}</p>
+          <div className="bg-emerald-50 px-8 py-4 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center min-w-[140px] hover:shadow-md transition-shadow">
+            <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-[0.2em] mb-1">Total Jobs</p>
+            <p className="text-3xl font-black text-emerald-700 tracking-behance">{wastes.length}</p>
           </div>
         </div>
 
@@ -382,11 +382,11 @@ const Waste = () => {
 
         {/* Category Selection Grid */}
         <div className="mb-24">
-            <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-700">
-                <div className="w-10 h-1 bg-emerald-600 rounded-full"></div>
-                Waste Categories
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <div className="flex items-center gap-4 mb-12 animate-in fade-in slide-in-from-bottom-2 duration-700">
+                <div className="w-12 h-1.5 bg-emerald-600 rounded-full"></div>
+                <h2 className="text-2xl font-black text-gray-900 tracking-behance">Browse by Category</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                 {categories.map((cat) => {
                     const count = wastes.filter(w => w.category_id === cat.id && w.status === 'OPEN').length;
                     const style = getCategoryStyles(cat.name);
@@ -394,25 +394,25 @@ const Waste = () => {
                         <Link 
                             key={cat.id} 
                             to={`/browse-requests/${cat.id}`}
-                            className="p-10 rounded-3xl border border-gray-100 bg-white shadow-sm transition-all hover:shadow-xl hover:shadow-emerald-900/5 hover:border-emerald-200 hover:-translate-y-1.5 active:scale-[0.98] group flex flex-col justify-between h-60 relative overflow-hidden"
+                            className="p-12 rounded-[3rem] border border-gray-100 bg-white shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/10 hover:border-emerald-200 hover:-translate-y-2 active:scale-[0.98] group flex flex-col justify-between h-72 relative overflow-hidden"
                         >
                             <div className="flex justify-between items-start relative z-10">
-                                <div className={`p-4 ${style.color} ${style.text} rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-sm border border-emerald-100/50 text-4xl flex items-center justify-center w-20 h-20 group-hover:scale-110 group-hover:rotate-3`}>
+                                <div className={`p-5 ${style.color} ${style.text} rounded-[2rem] group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-inner text-5xl flex items-center justify-center w-24 h-24 group-hover:scale-110 group-hover:rotate-6`}>
                                     {style.icon}
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-3xl font-black text-gray-900 group-hover:text-emerald-600 transition-colors">
+                                    <span className="text-4xl font-black text-gray-900 group-hover:text-emerald-600 transition-colors tracking-behance">
                                         {count}
                                     </span>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Active</p>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Active</p>
                                 </div>
                             </div>
-                            <div className="relative z-10 mt-6">
-                                <h3 className="text-xl font-bold text-gray-900 leading-tight group-hover:text-emerald-700 transition-colors">
+                            <div className="relative z-10">
+                                <h3 className="text-2xl font-bold text-gray-900 leading-tight group-hover:text-emerald-700 transition-colors tracking-tight">
                                     {cat.name}
                                 </h3>
-                                <p className="text-xs font-semibold text-gray-400 mt-2 flex items-center gap-2 group-hover:text-emerald-600 transition-colors">
-                                    Browse listings <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />
+                                <p className="text-xs font-semibold text-gray-400 mt-3 flex items-center gap-2 group-hover:text-emerald-600 transition-colors">
+                                    View active listings <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                                 </p>
                             </div>
                         </Link>
@@ -423,17 +423,17 @@ const Waste = () => {
 
         {/* Form Section */}
         {(!currentUser || currentUser.role === 'HOUSEHOLD') && (
-          <div className={`bg-white rounded-[3rem] shadow-sm border-2 ${isEditing ? 'border-emerald-200 bg-emerald-50/5 shadow-xl shadow-emerald-900/5' : 'border-gray-50'} p-10 md:p-14 mb-16 relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-1000`}>
+          <div className={`bg-white rounded-[4rem] shadow-2xl shadow-gray-200/50 border-2 ${isEditing ? 'border-emerald-200 bg-emerald-50/5' : 'border-gray-50'} p-12 md:p-20 mb-24 relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-1000`}>
             {!token && (
-              <div className="absolute inset-0 bg-white/60 backdrop-blur-md z-10 flex items-center justify-center p-6 text-center transition-all">
-                 <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 max-w-md animate-in zoom-in-95 duration-500">
-                    <div className="bg-emerald-50 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 text-emerald-600 border border-emerald-100/50">
-                        <Lock className="w-8 h-8" />
+              <div className="absolute inset-0 bg-white/40 backdrop-blur-xl z-10 flex items-center justify-center p-6 text-center transition-all">
+                 <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl border border-gray-100 max-w-lg animate-in zoom-in-95 duration-500">
+                    <div className="bg-emerald-50 w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8 text-emerald-600 border border-emerald-100/50 shadow-inner">
+                        <Lock className="w-10 h-10" />
                     </div>
-                    <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">Want to post waste?</h3>
-                    <p className="text-gray-500 font-medium mb-8 leading-relaxed">Create an account as a Household to publish your available pickups and start contributing to a greener future.</p>
-                    <Link to="/login" className="block w-full py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 active:scale-95">
-                        Sign In to Continue
+                    <h3 className="text-3xl font-black text-gray-900 mb-4 tracking-behance">Join the Community</h3>
+                    <p className="text-gray-500 font-medium mb-10 text-lg leading-relaxed">Create a free household account to start posting pickup requests and earning rewards.</p>
+                    <Link to="/login" className="block w-full py-6 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-95 text-lg">
+                        Sign In to Start
                     </Link>
                  </div>
               </div>
