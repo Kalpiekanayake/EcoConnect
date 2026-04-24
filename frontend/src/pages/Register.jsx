@@ -60,180 +60,183 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FDFCFB] py-12 px-4">
-      <div className="max-w-md w-full space-y-10 bg-white p-10 md:p-12 rounded-[2rem] shadow-xl shadow-emerald-900/5 border border-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-[#FDFCFB] py-16 px-6 relative overflow-hidden">
+      {/* Behance-style Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full bg-eco-gradient opacity-5 -z-10"></div>
+      <div className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-emerald-200/20 rounded-full blur-[120px] animate-pulse"></div>
+      <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-emerald-900/10 rounded-full blur-[100px]"></div>
+
+      <div className="max-w-2xl w-full space-y-10 bg-white/70 backdrop-blur-xl border border-white p-10 md:p-14 rounded-[4rem] shadow-2xl shadow-gray-200/50 relative z-10 animate-fade-up">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl mb-6 shadow-sm border border-emerald-100/50">
-             <Users className="w-8 h-8" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-emerald-600 text-white rounded-[2rem] mb-8 shadow-xl shadow-emerald-600/20 transform hover:-rotate-12 transition-transform duration-500">
+             <Users className="w-10 h-10" />
           </div>
-          <h2 className="text-3xl font-black text-gray-900 tracking-tight">Create Account</h2>
-          <p className="mt-3 text-sm text-gray-500 font-medium">Join the EcoConnect community today</p> 
+          <h2 className="text-4xl font-black text-gray-900 tracking-behance leading-tight">Create <br /> Account.</h2>
+          <p className="mt-4 text-gray-500 font-medium">Join the sustainable logistics network.</p>
         </div>
 
-        <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
+        <form className="mt-10 space-y-8" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 text-red-700 p-4 rounded-xl text-xs font-bold flex items-start border border-red-100">
+            <div className="bg-red-50 text-red-700 p-5 rounded-2xl text-xs font-bold flex items-start border border-red-100 animate-in slide-in-from-top-2 duration-300">
               <AlertCircle className="h-4 w-4 mr-3 flex-shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
-          <div className="space-y-5">
+          <div className="space-y-8">
             {/* Role Selection */}
-            <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-1 mb-3 block text-center">I want to be a...</label>
-              <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50/50 p-2 rounded-2xl border border-gray-100 flex gap-2">
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: 'HOUSEHOLD' })}
-                  className={`py-3.5 rounded-xl font-bold text-xs transition-all border-2 ${
+                  className={`flex-1 py-4 rounded-xl font-bold text-xs transition-all ${
                     formData.role === 'HOUSEHOLD'
-                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100'
-                    : 'bg-gray-50 text-gray-400 border-gray-100 hover:border-emerald-200'
+                    ? 'bg-white text-emerald-600 shadow-lg border border-gray-100'
+                    : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
-                  Household
+                  I am a Household
                 </button>
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: 'COLLECTOR' })}
-                  className={`py-3.5 rounded-xl font-bold text-xs transition-all border-2 ${
+                  className={`flex-1 py-4 rounded-xl font-bold text-xs transition-all ${
                     formData.role === 'COLLECTOR'
-                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-100'
-                    : 'bg-gray-50 text-gray-400 border-gray-100 hover:border-emerald-200'
+                    ? 'bg-white text-emerald-600 shadow-lg border border-gray-100'
+                    : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
-                  Collector
+                  I am a Collector
                 </button>
-              </div>
             </div>
 
-            <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Full Name</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  name="full_name"
-                  type="text"
-                  required
-                  className="block w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50 text-sm font-semibold placeholder:text-gray-300"
-                  placeholder="John Doe"
-                  value={formData.full_name}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Email Address</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  className="block w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50 text-sm font-semibold placeholder:text-gray-300"
-                  placeholder="email@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Phone</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="group">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-2 mb-3 block">Full Name</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">        
-                    <Phone className="h-4 w-4 text-gray-400" />
-                  </div>
-                  <input
-                    name="phone"
+                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none group-focus-within:text-emerald-600 transition-colors">
+                    <User className="h-5 w-5 text-gray-300" />
+                    </div>
+                    <input
+                    name="full_name"
                     type="text"
-                    className="block w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50 text-sm font-semibold placeholder:text-gray-300"
-                    placeholder="0712345678"
-                    value={formData.phone}
+                    required
+                    className="block w-full pl-14 pr-6 py-5 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50/50 text-sm font-semibold placeholder:text-gray-200 group-hover:bg-white"
+                    placeholder="John Doe"
+                    value={formData.full_name}
                     onChange={handleChange}
-                  />
+                    />
                 </div>
-              </div>
-              <div>
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Address</label>
+                </div>
+
+                <div className="group">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-2 mb-3 block">Email Address</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">        
-                    <MapPin className="h-4 w-4 text-gray-400" />
-                  </div>
-                  <input
-                    name="address"
-                    type="text"
-                    className="block w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50 text-sm font-semibold placeholder:text-gray-300"
-                    placeholder="Street/City"
-                    value={formData.address}
+                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none group-focus-within:text-emerald-600 transition-colors">
+                    <Mail className="h-5 w-5 text-gray-300" />
+                    </div>
+                    <input
+                    name="email"
+                    type="email"
+                    required
+                    className="block w-full pl-14 pr-6 py-5 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50/50 text-sm font-semibold placeholder:text-gray-200 group-hover:bg-white"
+                    placeholder="email@example.com"
+                    value={formData.email}
                     onChange={handleChange}
-                  />
+                    />
                 </div>
-              </div>
-            </div>
+                </div>
 
-            <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                <div className="group">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-2 mb-3 block">Phone</label>
+                    <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none group-focus-within:text-emerald-600 transition-colors">        
+                        <Phone className="h-4 w-4 text-gray-300" />
+                    </div>
+                    <input
+                        name="phone"
+                        type="text"
+                        className="block w-full pl-12 pr-6 py-5 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50/50 text-sm font-semibold placeholder:text-gray-200 group-hover:bg-white"
+                        placeholder="0712345678"
+                        value={formData.phone}
+                        onChange={handleChange}
+                    />
+                    </div>
                 </div>
-                <input
-                  name="password"
-                  type="password"
-                  required
-                  className="block w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50 text-sm font-semibold placeholder:text-gray-300"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
 
-            <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Confirm Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                <div className="group">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-2 mb-3 block">Address</label>
+                    <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none group-focus-within:text-emerald-600 transition-colors">        
+                        <MapPin className="h-4 w-4 text-gray-300" />
+                    </div>
+                    <input
+                        name="address"
+                        type="text"
+                        className="block w-full pl-12 pr-6 py-5 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50/50 text-sm font-semibold placeholder:text-gray-200 group-hover:bg-white"
+                        placeholder="Street/City"
+                        value={formData.address}
+                        onChange={handleChange}
+                    />
+                    </div>
                 </div>
-                <input
-                  name="confirmPassword"
-                  type="password"
-                  required
-                  className="block w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50 text-sm font-semibold placeholder:text-gray-300"
-                  placeholder="••••••••"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                />
-              </div>
+
+                <div className="group">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-2 mb-3 block">Secret Key</label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none group-focus-within:text-emerald-600 transition-colors">
+                    <Lock className="h-5 w-5 text-gray-300" />
+                    </div>
+                    <input
+                    name="password"
+                    type="password"
+                    required
+                    className="block w-full pl-14 pr-6 py-5 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50/50 text-sm font-semibold placeholder:text-gray-200 group-hover:bg-white"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    />
+                </div>
+                </div>
+
+                <div className="group">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] ml-2 mb-3 block">Verify Key</label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none group-focus-within:text-emerald-600 transition-colors">
+                    <Lock className="h-5 w-5 text-gray-300" />
+                    </div>
+                    <input
+                    name="confirmPassword"
+                    type="password"
+                    required
+                    className="block w-full pl-14 pr-6 py-5 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all bg-gray-50/50 text-sm font-semibold placeholder:text-gray-200 group-hover:bg-white"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    />
+                </div>
+                </div>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 px-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 shadow-xl shadow-emerald-100 mt-6"
+            className="w-full py-6 px-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center disabled:opacity-70 shadow-2xl shadow-emerald-600/20 mt-6 group"
           >
             {loading ? (
               <>
-                <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                Processing...
+                <Loader2 className="animate-spin h-6 w-6 mr-3" />
+                Validating...
               </>
             ) : (
-              'Create Free Account'
+              <span className="flex items-center gap-2 text-lg">Create Free Account <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
             )}
           </button>
 
-          <p className="text-center text-sm text-gray-500 font-medium pt-2">
+          <p className="text-center text-sm text-gray-500 font-medium pt-4">
             Already have an account?{' '}
-            <Link to="/login" className="text-emerald-600 hover:text-emerald-700 font-bold underline underline-offset-4 decoration-2">
+            <Link to="/login" className="text-emerald-600 hover:text-emerald-700 font-bold underline underline-offset-8 decoration-2 decoration-emerald-200 hover:decoration-emerald-500 transition-all">
               Sign In
             </Link>
           </p>
