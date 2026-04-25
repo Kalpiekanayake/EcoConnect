@@ -102,7 +102,7 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-[#FDFCFB]">
         <Navbar />
-        <main className="max-w-7xl mx-auto py-16 px-6">
+        <main className="max-w-7xl mx-auto py-16 px-6 pt-32">
           <div className="mb-12">
              <div className="h-12 w-64 bg-gray-100 rounded-xl animate-pulse mb-4"></div>
              <div className="h-6 w-80 bg-gray-50 rounded-lg animate-pulse"></div>
@@ -120,7 +120,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto py-16 px-6 sm:px-8">
+      <main className="max-w-7xl mx-auto py-16 px-6 sm:px-8 pt-32">
         {/* Header */}
         <div className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
           <div className="animate-in fade-in slide-in-from-left-4 duration-700">

@@ -335,7 +335,7 @@ const Waste = () => {
     return (
         <div className="min-h-screen bg-[#FDFCFB]">
             <Navbar />
-            <main className="max-w-6xl mx-auto py-16 px-4">
+            <main className="max-w-6xl mx-auto py-16 px-4 pt-32">
                 <div className="mb-12">
                     <div className="h-10 w-48 bg-gray-100 rounded-lg animate-pulse mb-3"></div>
                     <div className="h-5 w-64 bg-gray-50 rounded-lg animate-pulse"></div>
@@ -352,7 +352,7 @@ const Waste = () => {
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
       
-      <main className="max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+      <main className="max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8 pt-32">
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 animate-in fade-in slide-in-from-left-4 duration-500">
           <div>
             <h1 className="text-5xl font-black text-gray-900 tracking-behance leading-tight">Waste Categories</h1>

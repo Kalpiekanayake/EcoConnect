@@ -58,7 +58,7 @@ const MyRequests = () => {
     return (
       <div className="min-h-screen bg-[#FDFCFB]">
         <Navbar />
-        <main className="max-w-7xl mx-auto py-16 px-6">
+        <main className="max-w-7xl mx-auto py-16 px-6 pt-32">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-16 gap-8">   
             <div className="h-12 w-48 bg-gray-100 rounded-xl animate-pulse"></div>
             <div className="h-16 w-48 bg-emerald-50 rounded-2xl animate-pulse"></div>

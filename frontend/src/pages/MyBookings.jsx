@@ -70,7 +70,7 @@ const MyBookings = () => {
     return (
       <div className="min-h-screen bg-[#FDFCFB]">
         <Navbar />
-        <main className="max-w-5xl mx-auto py-16 px-4">
+        <main className="max-w-5xl mx-auto py-16 px-4 pt-32">
           <div className="mb-16">
             <div className="h-10 w-48 bg-gray-100 rounded-lg animate-pulse mb-3"></div>
             <div className="h-5 w-64 bg-gray-50 rounded-lg animate-pulse"></div>
@@ -87,7 +87,7 @@ const MyBookings = () => {
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
       <Navbar />
-      <main className="max-w-5xl mx-auto py-16 px-4">
+      <main className="max-w-5xl mx-auto py-16 px-4 pt-32">
         <div className="mb-16 animate-in fade-in slide-in-from-left-4 duration-500">
           <h1 className="text-4xl font-black text-gray-900 tracking-tight">My Bookings</h1>
           <p className="mt-2 text-lg text-gray-500 font-medium">Track your scheduled pickups and completion status.</p> 

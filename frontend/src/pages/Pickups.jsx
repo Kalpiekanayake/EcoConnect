@@ -94,7 +94,7 @@ const Pickups = () => {
     return (
         <div className="min-h-screen bg-[#FDFCFB]">
             <Navbar />
-            <main className="max-w-7xl mx-auto py-16 px-6">
+            <main className="max-w-7xl mx-auto py-16 px-6 pt-32">
                 <div className="mb-12">
                     <div className="h-12 w-64 bg-gray-100 rounded-xl animate-pulse mb-4"></div>
                     <div className="h-6 w-80 bg-gray-50 rounded-lg animate-pulse"></div>

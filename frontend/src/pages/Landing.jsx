@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Leaf, Truck, Calendar, ShieldCheck, ArrowRight, MapPin, Recycle, DollarSign, Search, CheckCircle, Users, Globe, BarChart3 } from 'lucide-react';
+import { Leaf, Truck, Calendar, ShieldCheck, ArrowRight, MapPin, Recycle, DollarSign, Search, CheckCircle, Users, Globe, BarChart3, Package } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
 const Landing = () => {
@@ -8,7 +8,7 @@ const Landing = () => {
       <Navbar />
       
       {/* Hero Section - Behance Style */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20">
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-40 pb-20">
         {/* Background Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full bg-eco-gradient -z-10"></div>
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-400/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
