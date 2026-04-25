@@ -333,7 +333,7 @@ const Waste = () => {
 
   if (loading) {
     return (
-        <div className="min-h-screen bg-[#FDFCFB]">
+        <div className="min-h-screen bg-off-white">
             <Navbar />
             <main className="max-w-6xl mx-auto py-16 px-4 pt-32">
                 <div className="mb-12">
@@ -349,31 +349,31 @@ const Waste = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-off-white">
       <Navbar />
       
       <main className="max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8 pt-32">
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 animate-in fade-in slide-in-from-left-4 duration-500">
           <div>
-            <h1 className="text-5xl font-black text-gray-900 tracking-behance leading-tight">Waste Categories</h1>
-            <p className="mt-3 text-lg text-gray-500 font-medium">Select a category to view active pickup requests or post a new one.</p>
+            <h1 className="text-5xl font-black text-dark-slate tracking-behance leading-tight">Waste Categories</h1>
+            <p className="mt-3 text-lg text-muted-gray font-medium">Select a category to view active pickup requests or post a new one.</p>
           </div>
-          <div className="bg-emerald-50 px-8 py-4 rounded-2xl border border-emerald-100 hidden sm:block shadow-sm text-center min-w-[140px] hover:shadow-md transition-shadow">
-            <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-[0.2em] mb-1">Total Jobs</p>
-            <p className="text-3xl font-black text-emerald-700 tracking-behance">{wastes.length}</p>
+          <div className="bg-soft-mint px-8 py-4 rounded-2xl border border-primary/20 hidden sm:block shadow-sm text-center min-w-[140px] hover:shadow-md transition-shadow">
+            <p className="text-[10px] text-primary font-bold uppercase tracking-[0.2em] mb-1">Total Jobs</p>
+            <p className="text-3xl font-black text-primary tracking-behance">{wastes.length}</p>
           </div>
         </div>
 
         {/* Feedback Messages */}
         <div className="fixed top-24 right-4 z-50 space-y-3 max-w-sm w-full px-4 sm:px-0">
           {success && (
-            <div className="bg-emerald-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-emerald-500/50 backdrop-blur-md animate-toast-in">
+            <div className="bg-primary text-white p-5 rounded-2xl shadow-2xl flex items-center border border-white/20 backdrop-blur-md animate-toast-in">
               <CheckCircle2 className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{success}</p>
             </div>
           )}
           {error && (
-            <div className="bg-red-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-red-500/50 backdrop-blur-md animate-toast-in">
+            <div className="bg-red-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-white/20 backdrop-blur-md animate-toast-in">
               <AlertCircle className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{error}</p>
             </div>
@@ -383,8 +383,8 @@ const Waste = () => {
         {/* Category Selection Grid */}
         <div className="mb-24">
             <div className="flex items-center gap-4 mb-12 animate-in fade-in slide-in-from-bottom-2 duration-700">
-                <div className="w-12 h-1.5 bg-emerald-600 rounded-full"></div>
-                <h2 className="text-2xl font-black text-gray-900 tracking-behance">Browse by Category</h2>
+                <div className="w-12 h-1.5 bg-primary rounded-full"></div>
+                <h2 className="text-2xl font-black text-dark-slate tracking-behance">Browse by Category</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                 {categories.map((cat) => {
@@ -394,24 +394,24 @@ const Waste = () => {
                         <Link 
                             key={cat.id} 
                             to={`/browse-requests/${cat.id}`}
-                            className="p-12 rounded-[3rem] border border-gray-100 bg-white shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/10 hover:border-emerald-200 hover:-translate-y-2 active:scale-[0.98] group flex flex-col justify-between h-72 relative overflow-hidden"
+                            className="p-12 rounded-[3rem] border border-gray-100 bg-white shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/20 hover:-translate-y-2 active:scale-[0.98] group flex flex-col justify-between h-72 relative overflow-hidden"
                         >
                             <div className="flex justify-between items-start relative z-10">
-                                <div className={`p-5 ${style.color} ${style.text} rounded-[2rem] group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-inner text-5xl flex items-center justify-center w-24 h-24 group-hover:scale-110 group-hover:rotate-6`}>
+                                <div className={`p-5 ${style.color} ${style.text} rounded-[2rem] group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner text-5xl flex items-center justify-center w-24 h-24 group-hover:scale-110 group-hover:rotate-6`}>
                                     {style.icon}
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-4xl font-black text-gray-900 group-hover:text-emerald-600 transition-colors tracking-behance">
+                                    <span className="text-4xl font-black text-dark-slate group-hover:text-primary transition-colors tracking-behance">
                                         {count}
                                     </span>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Active</p>
+                                    <p className="text-[10px] font-bold text-muted-gray uppercase tracking-[0.2em] mt-1">Active</p>
                                 </div>
                             </div>
                             <div className="relative z-10">
-                                <h3 className="text-2xl font-bold text-gray-900 leading-tight group-hover:text-emerald-700 transition-colors tracking-tight">
+                                <h3 className="text-2xl font-bold text-dark-slate leading-tight group-hover:text-primary transition-colors tracking-tight">
                                     {cat.name}
                                 </h3>
-                                <p className="text-xs font-semibold text-gray-400 mt-3 flex items-center gap-2 group-hover:text-emerald-600 transition-colors">
+                                <p className="text-xs font-semibold text-muted-gray mt-3 flex items-center gap-2 group-hover:text-primary transition-colors">
                                     View active listings <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                                 </p>
                             </div>
@@ -423,31 +423,31 @@ const Waste = () => {
 
         {/* Form Section */}
         {(!currentUser || currentUser.role === 'HOUSEHOLD') && (
-          <div className={`bg-white rounded-[4rem] shadow-2xl shadow-gray-200/50 border-2 ${isEditing ? 'border-emerald-200 bg-emerald-50/5' : 'border-gray-50'} p-12 md:p-20 mb-24 relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-1000`}>
+          <div className={`bg-white rounded-[4rem] shadow-2xl shadow-gray-200/50 border-2 ${isEditing ? 'border-primary/20 bg-soft-mint/10' : 'border-gray-50'} p-12 md:p-20 mb-24 relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-1000`}>
             {!token && (
               <div className="absolute inset-0 bg-white/40 backdrop-blur-xl z-10 flex items-center justify-center p-6 text-center transition-all">
                  <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl border border-gray-100 max-w-lg animate-in zoom-in-95 duration-500">
-                    <div className="bg-emerald-50 w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8 text-emerald-600 border border-emerald-100/50 shadow-inner">
+                    <div className="bg-soft-mint w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8 text-primary border border-primary/20 shadow-inner">
                         <Lock className="w-10 h-10" />
                     </div>
-                    <h3 className="text-3xl font-black text-gray-900 mb-4 tracking-behance">Join the Community</h3>
-                    <p className="text-gray-500 font-medium mb-10 text-lg leading-relaxed">Create a free household account to start posting pickup requests and earning rewards.</p>
-                    <Link to="/login" className="block w-full py-6 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-95 text-lg">
+                    <h3 className="text-3xl font-black text-dark-slate mb-4 tracking-behance">Join the Community</h3>
+                    <p className="text-muted-gray font-medium mb-10 text-lg leading-relaxed">Create a free household account to start posting pickup requests and earning rewards.</p>
+                    <Link to="/login" className="block w-full py-6 bg-primary text-white font-bold rounded-2xl hover:bg-deep-forest transition-all shadow-xl shadow-primary/20 active:scale-95 text-lg">
                         Sign In to Start
                     </Link>
                  </div>
               </div>
             )}
             <div className="flex items-center justify-between mb-12">
-              <h2 className="text-3xl font-black text-gray-900 flex items-center tracking-tight">
-                {isEditing ? <><Edit2 className="h-8 w-8 mr-4 text-emerald-600 animate-pulse" />Update Your Request</> : <><Plus className="h-8 w-8 mr-4 text-emerald-600" />Post a Pickup</>}
+              <h2 className="text-3xl font-black text-dark-slate flex items-center tracking-tight">
+                {isEditing ? <><Edit2 className="h-8 w-8 mr-4 text-primary animate-pulse" />Update Your Request</> : <><Plus className="h-8 w-8 mr-4 text-primary" />Post a Pickup</>}
               </h2>
-              {isEditing && <button onClick={handleCancel} className="p-3 rounded-2xl bg-gray-50 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all active:scale-90"><X className="h-6 w-6" /></button>}
+              {isEditing && <button onClick={handleCancel} className="p-3 rounded-2xl bg-off-white text-muted-gray hover:text-red-600 hover:bg-red-50 transition-all active:scale-90"><X className="h-6 w-6" /></button>}
             </div>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="space-y-3">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Waste Category</label>
-                <select name="category_id" required className="w-full px-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50/50 font-bold text-gray-700 shadow-sm hover:bg-white" value={formData.category_id} onChange={handleChange}>
+                <label className="text-[10px] font-bold text-muted-gray uppercase tracking-widest ml-1 block">Waste Category</label>
+                <select name="category_id" required className="w-full px-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none bg-off-white font-bold text-dark-slate shadow-sm hover:bg-white" value={formData.category_id} onChange={handleChange}>
                     <option value="">Select Category</option>
                     {categories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -455,19 +455,19 @@ const Waste = () => {
                 </select>
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Quantity</label>
+                <label className="text-[10px] font-bold text-muted-gray uppercase tracking-widest ml-1 block">Quantity</label>
                 <div className="flex gap-4">
                   <div className="relative flex-1">
-                    <input type="number" step="0.1" name="quantity" required placeholder="e.g. 5.5" className="w-full pl-14 pr-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50/50 font-bold text-gray-700 shadow-sm hover:bg-white" value={formData.quantity} onChange={handleChange} />
-                    <Package className="absolute left-5 top-5 h-5 w-5 text-gray-400" />
+                    <input type="number" step="0.1" name="quantity" required placeholder="e.g. 5.5" className="w-full pl-14 pr-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none bg-off-white font-bold text-dark-slate shadow-sm hover:bg-white" value={formData.quantity} onChange={handleChange} />
+                    <Package className="absolute left-5 top-5 h-5 w-5 text-muted-gray" />
                   </div>
                   {(formData.category_id && (categories.find(c => c.id === parseInt(formData.category_id))?.name.includes('Coconut'))) ? (
-                    <select name="unit" className="w-36 px-4 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 outline-none bg-gray-50/50 font-bold text-gray-700 shadow-sm hover:bg-white" value={formData.unit} onChange={handleChange}>
+                    <select name="unit" className="w-36 px-4 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-primary outline-none bg-off-white font-bold text-dark-slate shadow-sm hover:bg-white" value={formData.unit} onChange={handleChange}>
                         <option value="kg">kg</option>
                         <option value="pieces">pieces</option>
                     </select>
                   ) : (
-                    <div className="w-36 flex items-center justify-center bg-gray-50/50 rounded-2xl border border-gray-100 font-bold text-gray-400 text-[10px] uppercase tracking-widest">
+                    <div className="w-36 flex items-center justify-center bg-off-white rounded-2xl border border-gray-100 font-bold text-muted-gray text-[10px] uppercase tracking-widest">
                         {formData.unit}
                     </div>
                   )}
@@ -476,46 +476,46 @@ const Waste = () => {
 
               {/* Sellable / Price Logic - Modern Toggle */}
               <div className="md:col-span-2">
-                <div className={`p-10 rounded-[2.5rem] border-2 transition-all duration-500 ${formData.is_sellable ? 'bg-emerald-50/30 border-emerald-100 shadow-inner' : 'bg-gray-50/30 border-gray-100 shadow-inner'}`}>
+                <div className={`p-10 rounded-[2.5rem] border-2 transition-all duration-500 ${formData.is_sellable ? 'bg-primary/5 border-primary/20 shadow-inner' : 'bg-gray-50 border-gray-100 shadow-inner'}`}>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8">
                     <div className="flex items-center gap-6">
-                      <div className={`p-5 rounded-2xl shadow-sm border transition-all duration-500 ${formData.is_sellable ? 'bg-emerald-600 text-white border-emerald-500 scale-110' : 'bg-white text-gray-400 border-gray-100'}`}>
+                      <div className={`p-5 rounded-2xl shadow-sm border transition-all duration-500 ${formData.is_sellable ? 'bg-primary text-white border-primary scale-110' : 'bg-white text-muted-gray border-gray-100'}`}>
                         <DollarSign className="w-8 h-8" />
                       </div>
                       <div>
-                        <h4 className="text-xl font-bold text-gray-900 tracking-tight">Is this sellable?</h4>
-                        <p className="text-sm font-medium text-gray-500 mt-1">Get paid for recyclables like coconut shells and plastic.</p>
+                        <h4 className="text-xl font-bold text-dark-slate tracking-tight">Is this sellable?</h4>
+                        <p className="text-sm font-medium text-muted-gray mt-1">Get paid for recyclables like coconut shells and plastic.</p>
                       </div>
                     </div>
                     
                     <button 
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, is_sellable: !prev.is_sellable, price: !prev.is_sellable ? prev.price : '' }))}
-                      className={`relative inline-flex h-11 w-22 items-center rounded-full transition-all duration-500 focus:outline-none ${formData.is_sellable ? 'bg-emerald-600' : 'bg-gray-300'}`}
+                      className={`relative inline-flex h-11 w-22 items-center rounded-full transition-all duration-500 focus:outline-none ${formData.is_sellable ? 'bg-primary' : 'bg-muted-gray'}`}
                     >
                       <span className={`inline-block h-9 w-9 transform rounded-full bg-white transition-transform duration-500 shadow-md ${formData.is_sellable ? 'translate-x-12' : 'translate-x-1'}`} />
                     </button>
                   </div>
 
                   {formData.is_sellable && (
-                    <div className="mt-10 pt-10 border-t border-emerald-100/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8 animate-in fade-in slide-in-from-top-6 duration-700">
+                    <div className="mt-10 pt-10 border-t border-primary/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8 animate-in fade-in slide-in-from-top-6 duration-700">
                       <div>
-                        <p className="text-lg font-bold text-gray-900">Set your price</p>
-                        <p className="text-xs font-semibold text-emerald-600 mt-1 uppercase tracking-wider">Current local market rate suggestion applied</p>
+                        <p className="text-lg font-bold text-dark-slate">Set your price</p>
+                        <p className="text-xs font-semibold text-primary mt-1 uppercase tracking-wider">Current local market rate suggestion applied</p>
                       </div>
-                      <div className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-emerald-100 shadow-sm w-full sm:w-auto hover:shadow-md transition-shadow">
-                        <span className="pl-4 font-black text-gray-300 text-xl">Rs.</span>
+                      <div className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-primary/20 shadow-sm w-full sm:w-auto hover:shadow-md transition-shadow">
+                        <span className="pl-4 font-black text-muted-gray text-xl">Rs.</span>
                         <input 
                           type="number" 
                           name="price" 
                           step="0.01"
                           placeholder="0.00"
-                          className="w-full sm:w-40 bg-transparent border-none focus:ring-0 font-black text-3xl text-gray-900 placeholder:text-gray-100"
+                          className="w-full sm:w-40 bg-transparent border-none focus:ring-0 font-black text-3xl text-dark-slate placeholder:text-gray-100"
                           value={formData.price}
                           onChange={handleChange}
                           required={formData.is_sellable}
                         />
-                        <div className="bg-emerald-50 px-5 py-3 rounded-xl text-[10px] font-bold text-emerald-600 uppercase tracking-widest whitespace-nowrap border border-emerald-100">
+                        <div className="bg-soft-mint px-5 py-3 rounded-xl text-[10px] font-bold text-primary uppercase tracking-widest whitespace-nowrap border border-primary/10">
                           Per {formData.unit}
                         </div>
                       </div>
@@ -525,20 +525,20 @@ const Waste = () => {
               </div>
 
               <div className="space-y-3">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Preferred Pickup Date</label>
+                <label className="text-[10px] font-bold text-muted-gray uppercase tracking-widest ml-1 block">Preferred Pickup Date</label>
                 <div className="relative">
-                  <input type="date" name="pickup_date" required className="w-full pl-14 pr-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50/50 font-bold text-gray-700 shadow-sm hover:bg-white" value={formData.pickup_date} onChange={handleChange} />
-                  <Calendar className="absolute left-5 top-5 h-5 w-5 text-gray-400" />
+                  <input type="date" name="pickup_date" required className="w-full pl-14 pr-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none bg-off-white font-bold text-dark-slate shadow-sm hover:bg-white" value={formData.pickup_date} onChange={handleChange} />
+                  <Calendar className="absolute left-5 top-5 h-5 w-5 text-muted-gray" />
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Time Availability Window</label>
+                <label className="text-[10px] font-bold text-muted-gray uppercase tracking-widest ml-1 block">Time Availability Window</label>
                 <div className="grid grid-cols-2 gap-4">
-                    <select name="startTime" required className="w-full px-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50/50 font-bold text-gray-700 shadow-sm hover:bg-white" value={formData.startTime} onChange={handleChange}>
+                    <select name="startTime" required className="w-full px-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none bg-off-white font-bold text-dark-slate shadow-sm hover:bg-white" value={formData.startTime} onChange={handleChange}>
                         <option value="">Start</option>
                         {timeOptions.map(time => <option key={time} value={time}>{time}</option>)}
                     </select>
-                    <select name="endTime" required className="w-full px-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50/50 font-bold text-gray-700 shadow-sm hover:bg-white" value={formData.endTime} onChange={handleChange}>
+                    <select name="endTime" required className="w-full px-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none bg-off-white font-bold text-dark-slate shadow-sm hover:bg-white" value={formData.endTime} onChange={handleChange}>
                         <option value="">End</option>
                         {timeOptions.map(time => <option key={time} value={time}>{time}</option>)}
                     </select>
@@ -546,32 +546,32 @@ const Waste = () => {
               </div>
               <div className="md:col-span-2 space-y-4">
                 <div className="space-y-3">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Pickup Address</label>
+                    <label className="text-[10px] font-bold text-muted-gray uppercase tracking-widest ml-1 block">Pickup Address</label>
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <input type="text" name="address_line" required className="flex-1 px-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50/50 font-bold text-gray-700 shadow-sm hover:bg-white" value={formData.address_line} onChange={handleChange} />
-                        <button type="button" onClick={handleFindOnMap} disabled={searchingMap} className="px-10 py-4.5 bg-emerald-100 text-emerald-700 font-bold rounded-2xl hover:bg-emerald-200 transition-all flex items-center justify-center gap-3 whitespace-nowrap active:scale-95 disabled:opacity-50 shadow-sm">
+                        <input type="text" name="address_line" required className="flex-1 px-6 py-4.5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none bg-off-white font-bold text-dark-slate shadow-sm hover:bg-white" value={formData.address_line} onChange={handleChange} />
+                        <button type="button" onClick={handleFindOnMap} disabled={searchingMap} className="px-10 py-4.5 bg-soft-mint text-primary font-bold rounded-2xl hover:bg-primary/20 transition-all flex items-center justify-center gap-3 whitespace-nowrap active:scale-95 disabled:opacity-50 shadow-sm">
                            {searchingMap ? <Loader2 className="w-5 h-5 animate-spin" /> : <MapPin className="w-5 h-5" />} Find on Map
                         </button>
                     </div>
                 </div>
-                <div className="h-[400px] w-full rounded-[3rem] overflow-hidden border-[12px] border-gray-50 shadow-inner relative z-0 transition-all hover:border-gray-100">
+                <div className="h-[400px] w-full rounded-[3rem] overflow-hidden border-[12px] border-off-white shadow-inner relative z-0 transition-all hover:border-soft-mint/30">
                     <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }}>
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         <ChangeView center={mapCenter} />
                         <MapController setPosition={setMapCenter} />
                     </MapContainer>
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[400]">
-                        <div className="w-12 h-12 border-4 border-emerald-600 rounded-full flex items-center justify-center bg-emerald-600/10 backdrop-blur-[2px] shadow-2xl animate-pulse"><div className="w-2 h-2 bg-emerald-600 rounded-full shadow-sm"></div></div>
+                        <div className="w-12 h-12 border-4 border-primary rounded-full flex items-center justify-center bg-primary/10 backdrop-blur-[2px] shadow-2xl animate-pulse"><div className="w-2 h-2 bg-primary rounded-full shadow-sm"></div></div>
                     </div>
-                    <div className="absolute bottom-8 left-0 right-0 flex justify-center z-[400] px-6"><button type="button" onClick={handleConfirmLocation} disabled={fetchingAddress} className="bg-gray-900 text-white px-12 py-4 rounded-2xl font-bold text-[12px] uppercase tracking-[0.2em] shadow-2xl hover:bg-black transition-all active:scale-95 border border-white/10">{fetchingAddress ? "Identifying..." : "Lock Map Position"}</button></div>
+                    <div className="absolute bottom-8 left-0 right-0 flex justify-center z-[400] px-6"><button type="button" onClick={handleConfirmLocation} disabled={fetchingAddress} className="bg-dark-slate text-white px-12 py-4 rounded-2xl font-bold text-[12px] uppercase tracking-[0.2em] shadow-2xl hover:bg-black transition-all active:scale-95 border border-white/10">{fetchingAddress ? "Identifying..." : "Lock Map Position"}</button></div>
                 </div>
               </div>
               <div className="md:col-span-2 space-y-3">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block">Additional Details</label>
-                <textarea name="description" rows="4" placeholder="Describe access points, specific items, or any other helpful info to help the collector..." className="w-full px-6 py-5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none bg-gray-50/50 font-semibold text-gray-700 shadow-sm resize-none placeholder:text-gray-300 hover:bg-white" value={formData.description} onChange={handleChange}></textarea>
+                <label className="text-[10px] font-bold text-muted-gray uppercase tracking-widest ml-1 block">Additional Details</label>
+                <textarea name="description" rows="4" placeholder="Describe access points, specific items, or any other helpful info to help the collector..." className="w-full px-6 py-5 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none bg-off-white font-semibold text-dark-slate shadow-sm resize-none placeholder:text-gray-300 hover:bg-white" value={formData.description} onChange={handleChange}></textarea>
               </div>
               <div className="md:col-span-2 flex gap-4 pt-6">
-                 <button type="submit" disabled={submitting} className="flex-1 sm:flex-none px-20 py-6 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 shadow-2xl shadow-emerald-100 active:scale-[0.98] disabled:opacity-70 transition-all text-xl flex items-center justify-center gap-3">
+                 <button type="submit" disabled={submitting} className="flex-1 sm:flex-none px-20 py-6 bg-primary text-white font-bold rounded-2xl hover:bg-deep-forest shadow-2xl shadow-primary/20 active:scale-[0.98] disabled:opacity-70 transition-all text-xl flex items-center justify-center gap-3">
                     {submitting ? <Loader2 className="w-6 h-6 animate-spin" /> : (isEditing ? <CheckCircle2 className="w-6 h-6" /> : <PlusCircle className="w-6 h-6" />)}
                     {submitting ? "Processing..." : (isEditing ? "Save Changes" : "Post Pickup Request")}
                  </button>

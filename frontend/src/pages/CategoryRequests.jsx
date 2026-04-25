@@ -92,7 +92,7 @@ const CategoryRequests = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDFCFB]">
+      <div className="min-h-screen bg-off-white">
         <Navbar />
         <main className="max-w-6xl mx-auto py-16 px-4">
           <div className="mb-12">
@@ -116,13 +116,13 @@ const CategoryRequests = () => {
   const categoryStyle = getCategoryStyles(category?.name);
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-off-white">
       <Navbar />
       
-      <main className="max-w-7xl mx-auto py-16 px-6 pt-32">
+      <main className="max-w-7xl mx-auto py-16 px-6 sm:px-8 pt-32">
         {/* Header */}
         <div className="mb-16 animate-in fade-in slide-in-from-left-4 duration-700">
-          <Link to="/browse-requests" className="inline-flex items-center text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-all gap-1.5 uppercase tracking-[0.3em] mb-10 group active:scale-95">
+          <Link to="/browse-requests" className="inline-flex items-center text-sm font-bold text-primary hover:text-deep-forest transition-all gap-1.5 uppercase tracking-[0.3em] mb-10 group active:scale-95">
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" /> Return to Categories
           </Link>
           
@@ -132,12 +132,12 @@ const CategoryRequests = () => {
                     {categoryStyle.icon}
                 </div>
                 <div>
-                    <h1 className="text-5xl md:text-6xl font-black text-gray-900 tracking-behance leading-tight">{category?.name}</h1>
-                    <p className="text-xl text-gray-500 font-medium mt-3">Verified listings waiting for collection.</p>
+                    <h1 className="text-5xl md:text-6xl font-black text-dark-slate tracking-behance leading-tight">{category?.name}</h1>
+                    <p className="text-xl text-muted-gray font-medium mt-3">Verified listings waiting for collection.</p>
                 </div>
             </div>
-            <div className="bg-emerald-600 text-white px-12 py-6 rounded-[2.5rem] shadow-2xl shadow-emerald-900/20 text-center min-w-[180px] hover:scale-105 transition-transform duration-500">
-              <p className="text-[10px] text-emerald-100 font-bold uppercase tracking-[0.3em] mb-1">Available</p>
+            <div className="bg-primary text-white px-12 py-6 rounded-[2.5rem] shadow-2xl shadow-primary/20 text-center min-w-[180px] hover:scale-105 transition-transform duration-500">
+              <p className="text-[10px] text-soft-mint font-bold uppercase tracking-[0.3em] mb-1">Available</p>
               <p className="text-5xl font-black tracking-behance">{requests.filter(r => r.status === 'OPEN').length}</p>
             </div>
           </div>
@@ -146,13 +146,13 @@ const CategoryRequests = () => {
         {/* Feedback Messages */}
         <div className="fixed top-24 right-4 z-50 space-y-3 max-w-sm w-full px-4 sm:px-0">
           {success && (
-            <div className="bg-emerald-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-emerald-500/50 backdrop-blur-md animate-toast-in">
+            <div className="bg-primary text-white p-5 rounded-2xl shadow-2xl flex items-center border border-white/20 backdrop-blur-md animate-toast-in">
               <CheckCircle2 className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{success}</p>
             </div>
           )}
           {error && (
-            <div className="bg-red-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-red-500/50 backdrop-blur-md animate-toast-in">
+            <div className="bg-red-600 text-white p-5 rounded-2xl shadow-2xl flex items-center border border-white/20 backdrop-blur-md animate-toast-in">
               <AlertCircle className="h-6 w-6 mr-4 flex-shrink-0" />
               <p className="text-sm font-bold">{error}</p>
             </div>
@@ -164,9 +164,9 @@ const CategoryRequests = () => {
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100/50">
                <Tag className="h-10 w-10 text-gray-200" />
             </div>
-            <h3 className="text-3xl font-black text-gray-900 tracking-behance">Empty Category</h3>
-            <p className="text-gray-500 font-medium mt-3 mb-12 max-w-xs mx-auto leading-relaxed">No requests have been posted here yet. Be the pioneer and post the first request!</p>
-            <Link to="/browse-requests" className="px-12 py-5 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-95 inline-flex items-center gap-3 text-lg">
+            <h3 className="text-3xl font-black text-dark-slate tracking-behance">Empty Category</h3>
+            <p className="text-muted-gray font-medium mt-3 mb-12 max-w-xs mx-auto leading-relaxed">No requests have been posted here yet. Be the pioneer and post the first request!</p>
+            <Link to="/browse-requests" className="px-12 py-5 bg-primary text-white font-bold rounded-2xl hover:bg-deep-forest transition-all shadow-xl shadow-primary/20 active:scale-95 inline-flex items-center gap-3 text-lg">
                 <PlusCircle className="w-6 h-6" /> Post Request Now
             </Link>
           </div>
@@ -175,64 +175,64 @@ const CategoryRequests = () => {
             {requests.map((waste) => {
                 const style = getCategoryStyles(category?.name);
                 return (
-                    <div key={waste.id} className="bg-white rounded-[3.5rem] p-12 border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-emerald-900/10 transition-all duration-500 group flex flex-col h-full hover:border-emerald-200 hover:-translate-y-2">
+                    <div key={waste.id} className="bg-white rounded-[3.5rem] p-12 border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 group flex flex-col h-full hover:border-primary/20 hover:-translate-y-2">
                         <div className="flex justify-between items-start mb-10">
                         <div className="flex flex-col gap-3">
                             <span className={`inline-flex items-center gap-2 px-5 py-2 rounded-xl text-[10px] font-bold ${style.color} ${style.text} border ${style.border}/50 uppercase tracking-[0.2em] w-fit group-hover:scale-105 transition-transform`}>
                                 <span className="text-2xl">{style.icon}</span> {category?.name}
                             </span>
                             {waste.is_sellable ? (
-                                <span className="inline-flex items-center px-5 py-2 rounded-xl text-[10px] font-bold bg-emerald-600 text-white border border-emerald-500 uppercase tracking-[0.2em] w-fit shadow-lg shadow-emerald-100">
+                                <span className="inline-flex items-center px-5 py-2 rounded-xl text-[10px] font-bold bg-primary text-white border border-deep-forest uppercase tracking-[0.2em] w-fit shadow-lg shadow-primary/20">
                                     <DollarSign className="w-4 h-4 mr-1.5" /> SELLABLE
                                 </span>
                             ) : (
-                                <span className="inline-flex items-center px-5 py-2 rounded-xl text-[10px] font-bold bg-gray-100 text-gray-500 border border-gray-200 uppercase tracking-[0.2em] w-fit">
+                                <span className="inline-flex items-center px-5 py-2 rounded-xl text-[10px] font-bold bg-gray-100 text-muted-gray border border-gray-200 uppercase tracking-[0.2em] w-fit">
                                     FREE PICKUP
                                 </span>
                             )}
                         </div>
                         <span className={`px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] border shadow-sm transition-all duration-300 group-hover:scale-105 ${
-                            waste.status === 'OPEN' ? 'bg-white text-emerald-600 border-emerald-100 glow-emerald' : 
+                            waste.status === 'OPEN' ? 'bg-white text-blue-600 border-blue-100' : 
                             waste.status === 'BOOKED' ? 'bg-amber-50 text-amber-700 border-amber-100' :
-                            'bg-gray-50 text-gray-400 border-gray-100'
+                            'bg-soft-mint text-primary border-primary/10'
                         }`}>
                             {waste.status}
                         </span>
                         </div>
 
                         <div className="space-y-8 mb-12 flex-1">
-                            <p className="text-gray-600 text-base font-semibold leading-relaxed min-h-[56px] line-clamp-3 group-hover:text-gray-900 transition-colors italic">
+                            <p className="text-muted-gray text-base font-semibold leading-relaxed min-h-[56px] line-clamp-3 group-hover:text-dark-slate transition-colors italic">
                                 "{waste.description || 'No additional details provided by the household.'}"
                             </p>
                             
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="flex items-center text-gray-900 font-bold text-sm bg-gray-50 p-5 rounded-[2rem] border border-gray-100 shadow-inner group-hover:bg-white transition-colors">
-                                    <Package className="w-5 h-5 mr-3 text-emerald-500 group-hover:scale-110 transition-transform" />
+                                <div className="flex items-center text-dark-slate font-bold text-sm bg-off-white p-5 rounded-[2rem] border border-gray-100 shadow-inner group-hover:bg-white transition-colors">
+                                    <Package className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
                                     {waste.quantity} {waste.unit || 'kg'}
                                 </div>
                                 {waste.is_sellable ? (
-                                    <div className="flex items-center text-emerald-700 font-black text-sm bg-emerald-50 p-5 rounded-[2rem] border border-emerald-100 shadow-sm group-hover:shadow-md transition-all">
+                                    <div className="flex items-center text-primary font-black text-sm bg-soft-mint p-5 rounded-[2rem] border border-primary/10 shadow-sm group-hover:shadow-md transition-all">
                                         <DollarSign className="w-5 h-5 mr-1.5 group-hover:scale-110 transition-transform" />
                                         Rs. {waste.price || 0}
                                     </div>
                                 ) : (
-                                    <div className="flex items-center text-gray-500 text-sm font-bold bg-gray-50 p-5 rounded-[2rem] border border-gray-100 shadow-inner group-hover:bg-white transition-colors">
-                                        <Calendar className="w-5 h-5 mr-3 text-emerald-500" />
+                                    <div className="flex items-center text-muted-gray text-sm font-bold bg-off-white p-5 rounded-[2rem] border border-gray-100 shadow-inner group-hover:bg-white transition-colors">
+                                        <Calendar className="w-5 h-5 mr-3 text-primary" />
                                         {waste.pickup_date}
                                     </div>
                                 )}
                             </div>
 
-                            <div className="flex items-start gap-4 text-gray-500 text-sm font-bold bg-gray-50 p-6 rounded-[2.5rem] border border-gray-100 shadow-inner group-hover:bg-white transition-colors">
-                                <MapPin className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                                <span className="text-gray-700 leading-relaxed line-clamp-2">{waste.address_line}</span>
+                            <div className="flex items-start gap-4 text-muted-gray text-sm font-bold bg-off-white p-6 rounded-[2.5rem] border border-gray-100 shadow-inner group-hover:bg-white transition-colors">
+                                <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                                <span className="text-dark-slate leading-relaxed line-clamp-2">{waste.address_line}</span>
                             </div>
                         </div>
 
                         <div className="pt-10 border-t border-gray-50 flex items-center justify-between mt-auto">
                             <button 
                                 onClick={() => openDetails(waste)}
-                                className="flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-emerald-600 uppercase tracking-[0.2em] transition-all active:scale-95"
+                                className="flex items-center gap-2 text-[10px] font-bold text-muted-gray hover:text-primary uppercase tracking-[0.2em] transition-all active:scale-95"
                             >
                                 <Eye className="w-5 h-5" /> View Details
                             </button>
@@ -240,7 +240,7 @@ const CategoryRequests = () => {
                             {waste.status === 'OPEN' && (
                                 <button 
                                     onClick={() => handleBookPickup(waste.id)}
-                                    className="px-10 py-4.5 bg-gray-900 text-white font-bold text-sm rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-3 active:scale-90 shadow-xl shadow-gray-200"
+                                    className="px-10 py-4.5 bg-dark-slate text-white font-bold text-sm rounded-xl hover:bg-primary transition-all flex items-center gap-3 active:scale-90 shadow-xl shadow-gray-200"
                                 >
                                     {token && currentUser?.role === 'COLLECTOR' ? 'Claim Job' : (token ? 'Manage' : <><Lock className="w-4 h-4" /> Login</>)}
                                 </button>
@@ -249,7 +249,7 @@ const CategoryRequests = () => {
                             {currentUser?.id === waste.household_id && waste.status === 'OPEN' && (
                                 <button 
                                     onClick={() => navigate('/browse-requests', { state: { editRequest: waste } })}
-                                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-amber-50 hover:text-amber-600 transition-all active:scale-90 shadow-sm border border-transparent hover:border-amber-100"
+                                    className="p-4 bg-off-white text-muted-gray rounded-2xl hover:bg-amber-50 hover:text-amber-600 transition-all active:scale-90 shadow-sm border border-transparent hover:border-amber-100"
                                 >
                                     <Edit2 className="w-5 h-5" />
                                 </button>

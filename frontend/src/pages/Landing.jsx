@@ -4,32 +4,32 @@ import Navbar from '../components/Navbar';
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-off-white">
       <Navbar />
       
       {/* Hero Section - Behance Style */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-40 pb-20">
         {/* Background Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full bg-eco-gradient -z-10"></div>
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-400/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-900/40 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-deep-forest/40 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-100 text-[10px] font-bold uppercase tracking-[0.3em] mb-10 animate-fade-up shadow-2xl">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-soft-mint text-[10px] font-bold uppercase tracking-[0.3em] mb-10 animate-fade-up shadow-2xl">
             <Leaf className="w-3.5 h-3.5" /> Eco-Conscious Logistics
           </div>
           
           <h1 className="text-6xl md:text-[110px] font-black text-white leading-[0.95] mb-12 tracking-behance animate-fade-up" style={{ animationDelay: '0.1s' }}>
             Future of <br />
-            <span className="text-emerald-400 italic">Waste Management.</span>
+            <span className="text-primary italic">Waste Management.</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-emerald-50/80 max-w-3xl mx-auto mb-16 leading-relaxed font-medium animate-fade-up" style={{ animationDelay: '0.2s' }}>
+          <p className="text-xl md:text-2xl text-soft-mint/80 max-w-3xl mx-auto mb-16 leading-relaxed font-medium animate-fade-up" style={{ animationDelay: '0.2s' }}>
             Empowering communities to turn waste into resources. Connect directly with local collectors for seamless, verified pickups.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-up" style={{ animationDelay: '0.3s' }}>
-            <Link to="/register" className="w-full sm:w-auto px-12 py-6 bg-white text-emerald-900 font-bold rounded-2xl hover:bg-emerald-50 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 shadow-2xl shadow-emerald-900/20 text-lg">
+            <Link to="/register" className="w-full sm:w-auto px-12 py-6 bg-white text-deep-forest font-bold rounded-2xl hover:bg-soft-mint transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 shadow-2xl shadow-deep-forest/20 text-lg">
               Get Started <ArrowRight className="w-5 h-5" />
             </Link>
             <Link to="/browse-requests" className="w-full sm:w-auto px-12 py-6 bg-white/10 backdrop-blur-md text-white font-bold rounded-2xl border border-white/20 hover:bg-white/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 text-lg">
@@ -44,7 +44,7 @@ const Landing = () => {
                { icon: <Recycle />, label: "500 Tons Recycled" },
                { icon: <ShieldCheck />, label: "100% Verified" }
              ].map((stat, i) => (
-               <div key={i} className="flex flex-col items-center gap-3 text-emerald-100/60">
+               <div key={i} className="flex flex-col items-center gap-3 text-soft-mint/80">
                   <div className="p-3 bg-white/5 rounded-xl border border-white/10">{stat.icon}</div>
                   <span className="text-xs font-bold uppercase tracking-widest">{stat.label}</span>
                </div>
@@ -54,11 +54,11 @@ const Landing = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-32 relative overflow-hidden">
+      <section className="py-32 relative overflow-hidden bg-off-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-24">
-            <h2 className="text-sm font-bold text-emerald-600 uppercase tracking-[0.4em] mb-6">Process</h2>
-            <h3 className="text-4xl md:text-6xl font-black text-gray-900 tracking-behance leading-tight">Simple. Transparent. <br />Efficient.</h3>
+            <h2 className="text-sm font-bold text-primary uppercase tracking-[0.4em] mb-6">Process</h2>
+            <h3 className="text-4xl md:text-6xl font-black text-dark-slate tracking-behance leading-tight">Simple. Transparent. <br />Efficient.</h3>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -82,13 +82,13 @@ const Landing = () => {
                 icon: <DollarSign className="w-8 h-8" />
               }
             ].map((item, i) => (
-              <div key={i} className="group relative p-12 bg-white rounded-[3rem] border border-gray-100 hover:border-emerald-200 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/5 hover:-translate-y-2">
-                <span className="text-[80px] font-black text-gray-50 absolute top-4 right-8 leading-none group-hover:text-emerald-50 transition-colors">{item.step}</span>
-                <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-8 relative z-10 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
+              <div key={i} className="group relative p-12 bg-white rounded-[3rem] border border-gray-100 hover:border-primary/20 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2">
+                <span className="text-[80px] font-black text-gray-50 absolute top-4 right-8 leading-none group-hover:text-soft-mint transition-colors">{item.step}</span>
+                <div className="w-16 h-16 bg-soft-mint text-primary rounded-2xl flex items-center justify-center mb-8 relative z-10 group-hover:bg-primary group-hover:text-white transition-all duration-500">
                   {item.icon}
                 </div>
-                <h4 className="text-2xl font-bold text-gray-900 mb-4 relative z-10">{item.title}</h4>
-                <p className="text-gray-500 font-medium leading-relaxed relative z-10">{item.desc}</p>
+                <h4 className="text-2xl font-bold text-dark-slate mb-4 relative z-10">{item.title}</h4>
+                <p className="text-muted-gray font-medium leading-relaxed relative z-10">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -96,14 +96,14 @@ const Landing = () => {
       </section>
 
       {/* Categories Showcase */}
-      <section className="py-32 bg-gray-50">
+      <section className="py-32 bg-soft-mint/30">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
             <div className="max-w-2xl">
-              <h2 className="text-sm font-bold text-emerald-600 uppercase tracking-[0.4em] mb-6">Categories</h2>
-              <h3 className="text-4xl md:text-6xl font-black text-gray-900 tracking-behance">We handle it with care.</h3>
+              <h2 className="text-sm font-bold text-primary uppercase tracking-[0.4em] mb-6">Categories</h2>
+              <h3 className="text-4xl md:text-6xl font-black text-dark-slate tracking-behance">We handle it with care.</h3>
             </div>
-            <Link to="/browse-requests" className="px-8 py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black transition-all flex items-center gap-3">
+            <Link to="/browse-requests" className="px-8 py-4 bg-dark-slate text-white font-bold rounded-2xl hover:bg-black transition-all flex items-center gap-3">
               Explore All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -116,10 +116,10 @@ const Landing = () => {
               { name: 'Glassware', icon: '🍾', count: '420 active' },
               { name: 'Mixed Waste', icon: '🗑️', count: '2.1k active' },
             ].map((item, i) => (
-              <div key={i} className="bg-white p-10 rounded-[2.5rem] text-center border border-white hover:border-emerald-100 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-500 group">
+              <div key={i} className="bg-white p-10 rounded-[2.5rem] text-center border border-white hover:border-soft-mint hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group">
                 <div className="text-6xl mb-8 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500">{item.icon}</div>
-                <h4 className="font-bold text-gray-900 mb-2">{item.name}</h4>
-                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{item.count}</p>
+                <h4 className="font-bold text-dark-slate mb-2">{item.name}</h4>
+                <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{item.count}</p>
               </div>
             ))}
           </div>
@@ -127,16 +127,16 @@ const Landing = () => {
       </section>
 
       {/* CTA Footer Section */}
-      <section className="py-32 px-6">
-        <div className="max-w-6xl mx-auto bg-gray-900 rounded-[4rem] p-16 md:p-32 text-center relative overflow-hidden shadow-2xl">
+      <section className="py-32 px-6 bg-off-white">
+        <div className="max-w-6xl mx-auto bg-dark-slate rounded-[4rem] p-16 md:p-32 text-center relative overflow-hidden shadow-2xl">
           <div className="absolute inset-0 bg-eco-gradient opacity-10"></div>
           <div className="relative z-10">
             <h2 className="text-5xl md:text-[80px] font-black text-white mb-12 leading-tight tracking-behance">
               Join the Circular <br />
-              <span className="text-emerald-400">Revolution.</span>
+              <span className="text-primary">Revolution.</span>
             </h2>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Link to="/register" className="w-full sm:w-auto px-12 py-6 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-500 transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-emerald-500/20">
+              <Link to="/register" className="w-full sm:w-auto px-12 py-6 bg-primary text-white font-bold rounded-2xl hover:bg-emerald-500 transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-primary/20">
                 Register Now
               </Link>
               <Link to="/login" className="w-full sm:w-auto px-12 py-6 bg-white/5 border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all">
@@ -145,7 +145,7 @@ const Landing = () => {
             </div>
           </div>
           
-          <div className="absolute top-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
         </div>
       </section>
 

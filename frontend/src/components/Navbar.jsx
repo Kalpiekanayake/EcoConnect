@@ -41,10 +41,10 @@ const Navbar = () => {
         <div className={`bg-white/70 backdrop-blur-xl border border-white/40 rounded-[2rem] px-8 py-4 flex items-center justify-between shadow-2xl shadow-gray-200/50 transition-all duration-500 ${scrolled ? 'mx-0 shadow-emerald-900/5 bg-white/90' : 'mx-4'}`}>
           <div className="flex items-center gap-12">
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="h-11 w-11 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-600/20 group-hover:rotate-6 transition-all duration-500 group-hover:scale-110">
+              <div className="h-11 w-11 bg-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-primary/20 group-hover:rotate-6 transition-all duration-500 group-hover:scale-110">
                 <Leaf className="w-6 h-6 fill-current" />
               </div>
-              <span className="text-2xl font-black text-gray-900 tracking-behance group-hover:text-emerald-600 transition-colors">EcoConnect</span>
+              <span className="text-2xl font-black text-dark-slate tracking-behance group-hover:text-primary transition-colors">EcoConnect</span>
             </Link>
 
             <div className="hidden lg:flex items-center gap-2">
@@ -68,20 +68,20 @@ const Navbar = () => {
             {token ? (
               <div className="flex items-center gap-5 pl-6 border-l border-gray-100">
                 <div className="text-right">
-                  <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-[0.3em] leading-none mb-1">{user?.role}</p>
-                  <p className="text-sm font-bold text-gray-900 leading-none">{user?.full_name}</p>
+                  <p className="text-[9px] font-bold text-primary uppercase tracking-[0.3em] leading-none mb-1">{user?.role}</p>
+                  <p className="text-sm font-bold text-dark-slate leading-none">{user?.full_name}</p>
                 </div>
-                <div className="h-11 w-11 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 border border-emerald-100/50 shadow-inner group cursor-pointer hover:bg-emerald-600 hover:text-white transition-all duration-500">
+                <div className="h-11 w-11 bg-soft-mint rounded-2xl flex items-center justify-center text-primary border border-primary/10 shadow-inner group cursor-pointer hover:bg-primary hover:text-white transition-all duration-500">
                   <UserCircle className="w-6 h-6" />
                 </div>
-                <button onClick={handleLogout} className="p-3 rounded-2xl bg-gray-50 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all active:scale-90 shadow-sm" title="Logout">
+                <button onClick={handleLogout} className="p-3 rounded-2xl bg-off-white text-muted-gray hover:text-red-600 hover:bg-red-50 transition-all active:scale-90 shadow-sm" title="Logout">
                   <LogOut className="w-5 h-5" />
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-6">
-                <Link to="/login" className="text-sm font-bold text-gray-500 hover:text-emerald-600 transition-colors">Sign In</Link>
-                <Link to="/register" className="px-8 py-4 bg-emerald-600 text-white text-sm font-bold rounded-2xl hover:bg-emerald-700 shadow-xl shadow-emerald-600/20 transition-all hover:scale-105 active:scale-95">
+                <Link to="/login" className="text-sm font-bold text-muted-gray hover:text-primary transition-colors">Sign In</Link>
+                <Link to="/register" className="px-8 py-4 bg-primary text-white text-sm font-bold rounded-2xl hover:bg-deep-forest shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
                   Join Platform
                 </Link>
               </div>
@@ -89,7 +89,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center lg:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-3 rounded-2xl bg-emerald-50 text-emerald-600 transition-all active:scale-90">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-3 rounded-2xl bg-soft-mint text-primary transition-all active:scale-90">
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
@@ -108,12 +108,12 @@ const Navbar = () => {
           {token && (
              <div className="pt-6 border-t border-gray-50 flex flex-col gap-4">
                 <div className="flex items-center gap-4 px-4">
-                   <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                   <div className="w-12 h-12 bg-soft-mint rounded-2xl flex items-center justify-center text-primary">
                       <UserCircle className="w-7 h-7" />
                    </div>
                    <div>
-                      <p className="text-sm font-black text-gray-900">{user?.full_name}</p>
-                      <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{user?.role}</p>
+                      <p className="text-sm font-black text-dark-slate">{user?.full_name}</p>
+                      <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{user?.role}</p>
                    </div>
                 </div>
                 <button onClick={handleLogout} className="w-full py-5 rounded-2xl font-bold text-red-600 bg-red-50 flex items-center justify-center gap-3 active:scale-95 transition-all">
@@ -124,8 +124,8 @@ const Navbar = () => {
           
           {!token && (
             <div className="grid grid-cols-2 gap-4 pt-4">
-               <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center py-5 rounded-2xl font-bold text-gray-500 bg-gray-50 active:scale-95 transition-all">Sign In</Link>
-               <Link to="/register" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center py-5 rounded-2xl font-bold text-white bg-emerald-600 shadow-xl shadow-emerald-600/20 active:scale-95 transition-all">Join Now</Link>
+               <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center py-5 rounded-2xl font-bold text-muted-gray bg-off-white active:scale-95 transition-all">Sign In</Link>
+               <Link to="/register" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center py-5 rounded-2xl font-bold text-white bg-primary shadow-xl shadow-primary/20 active:scale-95 transition-all">Join Now</Link>
             </div>
           )}
         </div>
@@ -139,8 +139,8 @@ const NavLink = ({ to, active, children }) => (
     to={to} 
     className={`px-6 py-2 rounded-xl text-sm font-bold transition-all duration-300 active:scale-95 ${
       active 
-      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
-      : 'text-gray-500 hover:text-emerald-600 hover:bg-emerald-50'
+      ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+      : 'text-muted-gray hover:text-primary hover:bg-soft-mint'
     }`}
   >
     {children}
@@ -153,8 +153,8 @@ const MobileNavLink = ({ to, active, onClick, children }) => (
     onClick={onClick} 
     className={`block px-6 py-5 rounded-[2rem] font-bold text-lg transition-all ${
       active 
-      ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-600/20 scale-[1.02]' 
-      : 'text-gray-500 hover:bg-emerald-50 hover:text-emerald-700'
+      ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-[1.02]' 
+      : 'text-muted-gray hover:bg-soft-mint hover:text-primary'
     }`}
   >
     {children}

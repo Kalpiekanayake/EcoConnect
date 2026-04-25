@@ -100,7 +100,7 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDFCFB]">
+      <div className="min-h-screen bg-off-white">
         <Navbar />
         <main className="max-w-7xl mx-auto py-16 px-6 pt-32">
           <div className="mb-12">
@@ -117,35 +117,35 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB]">
+    <div className="min-h-screen bg-off-white">
       <Navbar />
 
       <main className="max-w-7xl mx-auto py-16 px-6 sm:px-8 pt-32">
         {/* Header */}
         <div className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
           <div className="animate-in fade-in slide-in-from-left-4 duration-700">
-            <h1 className="text-5xl font-black text-gray-900 tracking-behance leading-tight">Your Impact Dashboard</h1>
-            <p className="text-gray-500 font-medium mt-3 text-lg">
-                Welcome back, <span className="text-emerald-600 font-bold">{user?.username}</span>. You're making a difference.
+            <h1 className="text-5xl font-black text-dark-slate tracking-behance leading-tight">Your Impact Dashboard</h1>
+            <p className="text-muted-gray font-medium mt-3 text-lg">
+                Welcome back, <span className="text-primary font-bold">{user?.username}</span>. You're making a difference.
             </p>
           </div>
-          <Link to="/browse-requests" className="px-10 py-5 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
-            <PlusCircle className="w-5 h-5 text-emerald-400" /> New Pickup Request
+          <Link to="/browse-requests" className="px-10 py-5 bg-dark-slate text-white font-bold rounded-2xl hover:bg-black shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
+            <PlusCircle className="w-5 h-5 text-primary" /> New Pickup Request
           </Link>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-            <StatCard label="Total Impact" value={stats.total} icon={<Package className="w-6 h-6" />} color="bg-emerald-600 text-white" glassy={true} />
-            <StatCard label="Pending Pickups" value={stats.open} icon={<Eye className="w-6 h-6" />} color="bg-emerald-50 text-emerald-600" />
+            <StatCard label="Total Impact" value={stats.total} icon={<Package className="w-6 h-6" />} color="bg-primary text-white" glassy={true} />
+            <StatCard label="Pending Pickups" value={stats.open} icon={<Eye className="w-6 h-6" />} color="bg-soft-mint text-primary" />
             <StatCard label="Active Bookings" value={stats.booked} icon={<Clock className="w-6 h-6" />} color="bg-amber-50 text-amber-600" />
-            <StatCard label="Completed" value={stats.collected} icon={<CheckCircle2 className="w-6 h-6" />} color="bg-gray-100 text-gray-400" />
+            <StatCard label="Completed" value={stats.collected} icon={<CheckCircle2 className="w-6 h-6" />} color="bg-gray-100 text-muted-gray" />
         </div>
 
         {/* Content Table */}
         <div className="bg-white rounded-[3rem] border border-gray-100 shadow-2xl shadow-gray-200/50 overflow-hidden mb-16 animate-in fade-in slide-in-from-bottom-10 duration-1000">
             <div className="p-10 border-b border-gray-50 flex flex-col sm:flex-row justify-between items-center gap-8 bg-gray-50/20">
-                <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Recent Activity</h2>
+                <h2 className="text-2xl font-bold text-dark-slate tracking-tight">Recent Activity</h2>
                 <div className="flex bg-gray-100/60 p-1.5 rounded-2xl border border-gray-100 backdrop-blur-sm">
                     <TabButton active={activeTab === 'ALL'} onClick={() => setActiveTab('ALL')}>All Activity</TabButton>
                     <TabButton active={activeTab === 'OPEN'} onClick={() => setActiveTab('OPEN')}>Open</TabButton>
@@ -158,10 +158,10 @@ const Dashboard = () => {
                 <table className="w-full text-left">
                     <thead>
                         <tr className="bg-gray-50/50">
-                            <th className="px-10 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">Category</th>
-                            <th className="px-10 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">Details</th>
-                            <th className="px-10 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">Status</th>
-                            <th className="px-10 py-6 text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] text-right">Action</th>
+                            <th className="px-10 py-6 text-[10px] font-bold text-muted-gray uppercase tracking-[0.3em]">Category</th>
+                            <th className="px-10 py-6 text-[10px] font-bold text-muted-gray uppercase tracking-[0.3em]">Details</th>
+                            <th className="px-10 py-6 text-[10px] font-bold text-muted-gray uppercase tracking-[0.3em]">Status</th>
+                            <th className="px-10 py-6 text-[10px] font-bold text-muted-gray uppercase tracking-[0.3em] text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
@@ -172,8 +172,8 @@ const Dashboard = () => {
                                         <div className="w-24 h-24 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 text-gray-200 border border-gray-100 shadow-inner">
                                             <ListChecks className="w-10 h-10" />
                                         </div>
-                                        <p className="text-gray-400 font-bold text-lg">No requests found</p>
-                                        <p className="text-gray-400 text-sm font-medium mt-2">Your waste management journey begins with your first post.</p>
+                                        <p className="text-muted-gray font-bold text-lg">No requests found</p>
+                                        <p className="text-muted-gray text-sm font-medium mt-2">Your waste management journey begins with your first post.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -182,29 +182,29 @@ const Dashboard = () => {
                                 const catName = getCategoryName(req.category_id);
                                 const style = getCategoryStyles(catName);
                                 return (
-                                    <tr key={req.id} className="hover:bg-gray-50/50 transition-colors group">
+                                    <tr key={req.id} className="hover:bg-soft-mint/10 transition-colors group">
                                         <td className="px-10 py-8">
                                             <div className="flex items-center gap-6">
                                                 <div className={`w-16 h-16 ${style.color} rounded-2xl flex items-center justify-center text-3xl shadow-sm border ${style.border}/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
                                                     {style.icon}
                                                 </div>
                                                 <div>
-                                                    <p className="text-base font-bold text-gray-900 mb-1">{catName}</p>
-                                                    <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Job ID #{req.id}</p>
+                                                    <p className="text-base font-bold text-dark-slate mb-1">{catName}</p>
+                                                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Job ID #{req.id}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-10 py-8">
-                                            <p className="text-sm font-semibold text-gray-600 line-clamp-1 mb-2">"{req.description || 'No additional details'}"</p>
+                                            <p className="text-sm font-semibold text-muted-gray line-clamp-1 mb-2">"{req.description || 'No additional details'}"</p>
                                             <div className="flex items-center gap-3">
-                                                <span className="px-3 py-1 bg-gray-100 rounded-lg text-[10px] font-bold text-gray-500 uppercase tracking-wider">{req.quantity} {req.unit || 'Units'}</span>
+                                                <span className="px-3 py-1 bg-gray-100 rounded-lg text-[10px] font-bold text-muted-gray uppercase tracking-wider">{req.quantity} {req.unit || 'Units'}</span>
                                             </div>
                                         </td>
                                         <td className="px-10 py-8">
                                             <span className={`px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] border shadow-sm transition-all duration-500 group-hover:px-6 ${
-                                                req.status === 'OPEN' ? 'bg-white text-emerald-600 border-emerald-100 glow-emerald' : 
-                                                req.status === 'BOOKED' ? 'bg-amber-50 text-amber-700 border-amber-100' :
-                                                'bg-gray-50 text-gray-400 border-gray-100'
+                                                req.status === 'OPEN' ? 'bg-white text-blue-500 border-blue-100 shadow-blue-500/10' : 
+                                                req.status === 'BOOKED' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                                'bg-emerald-50 text-emerald-600 border-emerald-100'
                                             }`}>
                                                 {req.status}
                                             </span>
@@ -212,7 +212,7 @@ const Dashboard = () => {
                                         <td className="px-10 py-8 text-right">
                                             <button 
                                                 onClick={() => openDetails(req)}
-                                                className="p-4 bg-white text-gray-400 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all active:scale-90 shadow-sm hover:shadow-xl hover:shadow-emerald-600/20 border border-gray-100"
+                                                className="p-4 bg-white text-muted-gray rounded-2xl hover:bg-primary hover:text-white transition-all active:scale-90 shadow-sm hover:shadow-xl hover:shadow-primary/20 border border-gray-100"
                                             >
                                                 <ArrowRight className="w-5 h-5" />
                                             </button>
@@ -225,18 +225,18 @@ const Dashboard = () => {
                 </table>
             </div>
 
-            <div className="bg-gray-50/50 px-10 py-8 flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+            <div className="bg-gray-50/50 px-10 py-8 flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-gray-100 text-[10px] font-bold text-muted-gray uppercase tracking-[0.2em]">
                 <div className="flex items-center gap-3">
-                   <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                   <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                    <span>{getFilteredRequests().length} Total Results</span>
                 </div>
                 {user?.role === 'HOUSEHOLD' && (
-                    <Link to="/my-requests" className="text-emerald-600 hover:text-emerald-700 flex items-center gap-3 group/link px-6 py-3 bg-white rounded-xl border border-gray-100 hover:border-emerald-200 transition-all shadow-sm">
+                    <Link to="/my-requests" className="text-primary hover:text-deep-forest flex items-center gap-3 group/link px-6 py-3 bg-white rounded-xl border border-gray-100 hover:border-primary/20 transition-all shadow-sm">
                         Manage History <ArrowRight className="w-4 h-4 group-hover/link:translate-x-2 transition-transform" />
                     </Link>
                 )}
                 {user?.role === 'COLLECTOR' && (
-                    <Link to="/my-bookings" className="text-emerald-600 hover:text-emerald-700 flex items-center gap-3 group/link px-6 py-3 bg-white rounded-xl border border-gray-100 hover:border-emerald-200 transition-all shadow-sm">
+                    <Link to="/my-bookings" className="text-primary hover:text-deep-forest flex items-center gap-3 group/link px-6 py-3 bg-white rounded-xl border border-gray-100 hover:border-primary/20 transition-all shadow-sm">
                         Manage History <ArrowRight className="w-4 h-4 group-hover/link:translate-x-2 transition-transform" />
                     </Link>
                 )}
@@ -260,10 +260,10 @@ const StatCard = ({ label, value, icon, color, glassy }) => (
             <div className={`p-4 rounded-2xl border shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 ${glassy ? 'bg-white/10 border-white/20' : color + ' border-gray-100/50 bg-gray-50/50'}`}>
                 {icon}
             </div>
-            <span className={`text-4xl font-black tracking-behance ${glassy ? 'text-white' : 'text-gray-900'}`}>{value}</span>
+            <span className={`text-4xl font-black tracking-behance ${glassy ? 'text-white' : 'text-dark-slate'}`}>{value}</span>
         </div>
         <div>
-            <p className={`text-[10px] font-bold uppercase tracking-[0.3em] ${glassy ? 'text-emerald-100' : 'text-gray-400'}`}>{label}</p>
+            <p className={`text-[10px] font-bold uppercase tracking-[0.3em] ${glassy ? 'text-soft-mint' : 'text-muted-gray'}`}>{label}</p>
         </div>
     </div>
 );
@@ -272,7 +272,7 @@ const TabButton = ({ children, active, onClick }) => (
     <button 
         onClick={onClick}
         className={`px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all active:scale-95 ${
-            active ? 'bg-white text-emerald-600 shadow-xl shadow-gray-200/50 border border-gray-100' : 'text-gray-400 hover:text-gray-600'
+            active ? 'bg-white text-primary shadow-xl shadow-gray-200/50 border border-gray-100' : 'text-muted-gray hover:text-dark-slate'
         }`}
     >
         {children}
