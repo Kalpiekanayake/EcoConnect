@@ -8,31 +8,30 @@ const Landing = () => {
       <Navbar />
       
       {/* Hero Section - Behance Style */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-40 pb-20">
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-40 pb-20 bg-off-white">
         {/* Background Decorative Elements */}
-        <div className="absolute top-0 left-0 w-full h-full bg-eco-gradient -z-10"></div>
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-deep-forest/40 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-soft-mint/30 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-soft-mint text-[10px] font-bold uppercase tracking-[0.3em] mb-10 animate-fade-up shadow-2xl">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-soft-mint border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-[0.3em] mb-10 animate-fade-up shadow-sm">
             <Leaf className="w-3.5 h-3.5" /> Eco-Conscious Logistics
           </div>
           
-          <h1 className="text-6xl md:text-[110px] font-black text-white leading-[0.95] mb-12 tracking-behance animate-fade-up" style={{ animationDelay: '0.1s' }}>
+          <h1 className="text-6xl md:text-[110px] font-black text-dark-slate leading-[0.95] mb-12 tracking-behance animate-fade-up" style={{ animationDelay: '0.1s' }}>
             Future of <br />
             <span className="text-primary italic">Waste Management.</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-soft-mint/80 max-w-3xl mx-auto mb-16 leading-relaxed font-medium animate-fade-up" style={{ animationDelay: '0.2s' }}>
+          <p className="text-xl md:text-2xl text-muted-gray max-w-3xl mx-auto mb-16 leading-relaxed font-medium animate-fade-up" style={{ animationDelay: '0.2s' }}>
             Empowering communities to turn waste into resources. Connect directly with local collectors for seamless, verified pickups.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-up" style={{ animationDelay: '0.3s' }}>
-            <Link to="/register" className="w-full sm:w-auto px-12 py-6 bg-white text-deep-forest font-bold rounded-2xl hover:bg-soft-mint transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 shadow-2xl shadow-deep-forest/20 text-lg">
+            <Link to="/register" className="w-full sm:w-auto px-12 py-6 bg-primary text-white font-bold rounded-2xl hover:bg-deep-forest transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 shadow-2xl shadow-primary/20 text-lg">
               Get Started <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link to="/browse-requests" className="w-full sm:w-auto px-12 py-6 bg-white/10 backdrop-blur-md text-white font-bold rounded-2xl border border-white/20 hover:bg-white/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 text-lg">
+            <Link to="/browse-requests" className="w-full sm:w-auto px-12 py-6 bg-white text-dark-slate font-bold rounded-2xl border border-gray-100 hover:border-primary/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 text-lg shadow-sm">
               Explore Community
             </Link>
           </div>
@@ -44,8 +43,8 @@ const Landing = () => {
                { icon: <Recycle />, label: "500 Tons Recycled" },
                { icon: <ShieldCheck />, label: "100% Verified" }
              ].map((stat, i) => (
-               <div key={i} className="flex flex-col items-center gap-3 text-soft-mint/80">
-                  <div className="p-3 bg-white/5 rounded-xl border border-white/10">{stat.icon}</div>
+               <div key={i} className="flex flex-col items-center gap-3 text-muted-gray">
+                  <div className="p-3 bg-soft-mint rounded-xl border border-primary/10 text-primary">{stat.icon}</div>
                   <span className="text-xs font-bold uppercase tracking-widest">{stat.label}</span>
                </div>
              ))}
