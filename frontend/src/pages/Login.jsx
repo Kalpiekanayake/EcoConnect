@@ -75,7 +75,7 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-primary text-white rounded-[2rem] mb-8 shadow-xl shadow-primary/20 transform hover:rotate-12 transition-transform duration-500">
              <Lock className="w-10 h-10" />
           </div>
-          <h2 className="text-4xl font-black text-dark-slate tracking-behance leading-tight">Welcome <br /> back.</h2>
+          <h2 className="text-4xl font-extrabold text-dark-slate tracking-behance leading-tight">Welcome <br /> back.</h2>
           <p className="mt-4 text-muted-gray font-medium">Eco-conscious logistics start here.</p>       
         </div>
 

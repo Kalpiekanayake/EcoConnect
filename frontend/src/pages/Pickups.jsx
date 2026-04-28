@@ -114,12 +114,12 @@ const Pickups = () => {
       <main className="max-w-7xl mx-auto py-16 px-6 sm:px-8 pt-32">
         <div className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-10 animate-in fade-in slide-in-from-left-4 duration-700">
           <div>
-            <h1 className="text-5xl font-black text-dark-slate tracking-behance leading-tight">Available Pickups</h1>
+            <h1 className="text-5xl font-extrabold text-dark-slate tracking-behance leading-tight">Available Pickups</h1>
             <p className="mt-3 text-lg text-muted-gray font-medium">Claim active collection tasks and optimize your eco-route.</p>
           </div>
           <div className="bg-primary text-white px-10 py-5 rounded-[2.5rem] border border-deep-forest hidden sm:block shadow-2xl shadow-primary/20 text-center min-w-[160px] hover:scale-105 transition-transform duration-500">
             <p className="text-[10px] text-soft-mint font-bold uppercase tracking-[0.3em] mb-1">Live Feed</p>
-            <p className="text-4xl font-black tracking-behance">{pickups.length}</p>
+            <p className="text-4xl font-extrabold tracking-behance">{pickups.length}</p>
           </div>
         </div>
 
@@ -144,7 +144,7 @@ const Pickups = () => {
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100/50">
                <Truck className="h-10 w-10 text-gray-200" />
             </div>
-            <h3 className="text-3xl font-black text-dark-slate tracking-behance">All Caught Up!</h3>
+            <h3 className="text-3xl font-extrabold text-dark-slate tracking-behance">All Caught Up!</h3>
             <p className="text-muted-gray font-medium mt-3 max-w-sm mx-auto leading-relaxed">No new pickups in your area at the moment. We'll notify you when new tasks appear.</p>
           </div>
         ) : (
@@ -176,7 +176,7 @@ const Pickups = () => {
                           {pickup.quantity} {pickup.unit || 'kg'}
                         </div>
                         {pickup.is_sellable && (
-                          <div className="flex items-center gap-2 text-primary text-sm font-black bg-soft-mint p-5 rounded-[2rem] border border-primary/20 shadow-sm group-hover:shadow-md transition-all">
+                          <div className="flex items-center gap-2 text-primary text-sm font-extrabold bg-soft-mint p-5 rounded-[2rem] border border-primary/20 shadow-sm group-hover:shadow-md transition-all">
                             <DollarSign className="w-5 h-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
                             Rs. {pickup.price || 0}
                           </div>
@@ -231,7 +231,7 @@ const Pickups = () => {
             <div className="mt-32 bg-dark-slate rounded-[4rem] p-20 md:p-32 text-center text-white relative overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-10 duration-1000">
                 <div className="absolute inset-0 bg-eco-gradient opacity-10"></div>
                 <div className="relative z-10">
-                    <h2 className="text-5xl font-black mb-8 tracking-behance leading-tight">Professional <br /> Waste Collection</h2>
+                    <h2 className="text-5xl font-extrabold mb-8 tracking-behance leading-tight">Professional <br /> Waste Collection</h2>
                     <p className="text-soft-mint/60 text-xl font-medium mb-12 max-w-2xl mx-auto leading-relaxed">Join our certified network. Access premium collection routes, track your environmental impact, and get paid for quality recyclables.</p>
                     <Link to="/register" className="inline-flex px-14 py-6 bg-primary text-white font-bold rounded-2xl hover:bg-emerald-500 transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-primary/30 text-lg">
                         Start Collecting

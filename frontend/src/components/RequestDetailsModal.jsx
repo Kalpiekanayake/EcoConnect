@@ -46,7 +46,7 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
                     {style.icon}
                 </div>
                 <div>
-                    <h2 className="text-3xl font-black text-dark-slate tracking-tight">{category?.name || 'Waste Request'}</h2>
+                    <h2 className="text-3xl font-extrabold text-dark-slate tracking-tight">{category?.name || 'Waste Request'}</h2>
                     <div className={`mt-3 inline-flex px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${getStatusColor(request.status)}`}>
                         {request.status}
                     </div>

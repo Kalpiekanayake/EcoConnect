@@ -1,59 +1,93 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --color-primary: #10B981;
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  --font-display: "Clash Display", "Plus Jakarta Sans", sans-serif;
+  
+  --color-primary: #15803d; /* Deeper Green */
+  --color-primary-light: #22c55e;
+  --color-primary-dark: #14532d;
+  --color-accent: #84CC16;
   --color-deep-forest: #064E3B;
-  --color-soft-mint: #ECFDF5;
-  --color-off-white: #FAFAF9;
-  --color-accent-lime: #84CC16;
-  --color-warm-sand: #F5E6C8;
-  --color-dark-slate: #0F172A;
-  --color-muted-gray: #64748B;
+  --color-soft-mint: #f0fdf4;
+  --color-off-white: #fafaf9;
+  --color-dark-slate: #0c0a09;
+  --color-muted-gray: #57534e;
+  --color-border-light: #e7e5e4;
+
+  --shadow-corporate: 0 4px 20px -2px rgba(21, 128, 61, 0.05);
+  --shadow-corporate-lg: 0 10px 40px -10px rgba(21, 128, 61, 0.1);
+  --shadow-corporate-xl: 0 25px 50px -12px rgba(21, 128, 61, 0.15);
+
+  --background-image-corporate-gradient: linear-gradient(135deg, #14532d 0%, #16a34a 100%);
+  --background-image-hero-gradient: radial-gradient(circle at top right, #f0fdf4 0%, #fafaf9 100%);
 }
 
 :root {
-  line-height: 1.6;
+  line-height: 1.5;
   font-weight: 400;
-  background-color: #FAFAF9;
-  color: #0F172A;
+  background-color: #fafaf9;
+  color: #0c0a09;
+  font-family: var(--font-sans);
   scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  @apply font-bold tracking-tight;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-smoothing: grayscale;
   @apply bg-off-white text-dark-slate;
 }
 
-/* Behance-Style Custom Utilities */
+/* Professional Sri Lankan Waste Management Aesthetic */
 
-/* Soft Glow Effect */
-.glow-emerald {
-  box-shadow: 0 0 50px -10px rgba(16, 185, 129, 0.2);
-}
-
-.glow-soft {
-  box-shadow: 0 20px 80px -15px rgba(0, 0, 0, 0.05);
-}
-
-/* Premium Gradients */
-.bg-eco-gradient {
-  background: linear-gradient(135deg, #064E3B 0%, #10B981 100%);
-}
-
-.bg-glass {
+.glass {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-/* Typography Spacing */
-.tracking-behance {
-  letter-spacing: -0.02em;
+/* Section Styling */
+.section-padding {
+  @apply py-20 md:py-32;
+}
+
+.container-custom {
+  @apply max-w-7xl mx-auto px-6 lg:px-12;
+}
+
+/* Typography Helpers */
+.text-heading {
+  @apply text-dark-slate font-extrabold tracking-tight;
+}
+
+.text-body {
+  @apply text-muted-gray font-medium leading-relaxed;
+}
+
+/* Button Refinement - Professional CleanTech Look */
+.btn-primary {
+  @apply px-8 py-4 bg-primary text-white font-bold rounded-full transition-all duration-300 hover:bg-primary-dark hover:shadow-xl active:scale-95 flex items-center justify-center gap-2;
+}
+
+.btn-secondary {
+  @apply px-8 py-4 bg-white text-primary font-bold rounded-full border-2 border-primary/10 transition-all duration-300 hover:border-primary/40 hover:bg-soft-mint active:scale-95 flex items-center justify-center gap-2;
+}
+
+.btn-outline {
+  @apply px-8 py-4 bg-transparent text-dark-slate font-bold rounded-full border-2 border-border-light transition-all duration-300 hover:border-primary/40 hover:text-primary active:scale-95 flex items-center justify-center gap-2;
+}
+
+/* Card Style */
+.card-professional {
+  @apply bg-white rounded-3xl border border-border-light shadow-corporate transition-all duration-500 hover:shadow-corporate-lg hover:-translate-y-1;
 }
 
 /* Animations */
@@ -63,40 +97,23 @@ body {
 }
 
 .animate-fade-up {
-  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Skeleton Loading */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, #f3f4f6 25%, #f9fafb 50%, #f3f4f6 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite linear;
+  animation: fade-up 0.6s cubic-bezier(0.21, 1, 0.36, 1) forwards;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #fafaf9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
+  background: #e7e5e4;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #10B981;
-}
-
-/* Interactive Feedback */
-.btn-press:active {
-  transform: scale(0.95);
+  background: #15803d;
 }

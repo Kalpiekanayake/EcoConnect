@@ -82,7 +82,7 @@ const MyRequests = () => {
       <main className="max-w-7xl mx-auto py-16 px-6 sm:px-8 pt-32">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-16 gap-8 animate-in fade-in slide-in-from-left-4 duration-700">
             <div>
-                <h1 className="text-5xl font-black text-dark-slate tracking-behance leading-tight">My Requests</h1>
+                <h1 className="text-5xl font-extrabold text-dark-slate tracking-behance leading-tight">My Requests</h1>
                 <p className="mt-3 text-xl text-muted-gray font-medium">Manage and track your active collection posts.</p>
             </div>
             <Link to="/browse-requests" className="flex items-center gap-3 px-10 py-5 bg-dark-slate text-white font-bold rounded-2xl hover:bg-black transition-all shadow-2xl hover:scale-105 active:scale-95 group">
@@ -95,7 +95,7 @@ const MyRequests = () => {
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100/50">
                <FileText className="h-10 w-10 text-gray-200" />
             </div>
-            <h3 className="text-3xl font-black text-dark-slate tracking-behance">Quiet Atmosphere</h3>
+            <h3 className="text-3xl font-extrabold text-dark-slate tracking-behance">Quiet Atmosphere</h3>
             <p className="text-muted-gray mt-3 font-medium mb-12 max-w-sm mx-auto leading-relaxed">You haven't posted any pickup requests yet. Start your journey towards zero waste today.</p>
             <Link to="/browse-requests" className="inline-flex items-center gap-3 px-12 py-6 bg-primary text-white font-bold rounded-2xl hover:bg-deep-forest transition-all shadow-xl shadow-primary/20 active:scale-95 text-lg">
               Post First Request <ChevronRight className="w-6 h-6" />

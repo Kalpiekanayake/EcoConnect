@@ -89,7 +89,7 @@ const MyBookings = () => {
       <Navbar />
       <main className="max-w-5xl mx-auto py-16 px-4 pt-32">
         <div className="mb-16 animate-in fade-in slide-in-from-left-4 duration-500">
-          <h1 className="text-4xl font-black text-dark-slate tracking-tight">My Bookings</h1>
+          <h1 className="text-4xl font-extrabold text-dark-slate tracking-tight">My Bookings</h1>
           <p className="mt-2 text-lg text-muted-gray font-medium">Track your scheduled pickups and completion status.</p> 
         </div>
 
@@ -114,7 +114,7 @@ const MyBookings = () => {
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100/50">
                <Truck className="h-10 w-10 text-gray-200" />
             </div>
-            <h3 className="text-2xl font-black text-dark-slate">No bookings yet</h3>
+            <h3 className="text-2xl font-extrabold text-dark-slate">No bookings yet</h3>
             <p className="text-muted-gray mt-2 font-medium mb-10 leading-relaxed max-w-sm mx-auto">You haven't claimed any pickups yet. Start earning now by browsing available jobs.</p>
             <Link to="/available-pickups" className="inline-flex items-center gap-3 px-10 py-5 bg-primary text-white font-bold rounded-xl hover:bg-deep-forest transition-all shadow-xl shadow-primary/20 active:scale-95">
               Browse Available Jobs <ChevronRight className="w-5 h-5" />
@@ -137,7 +137,7 @@ const MyBookings = () => {
                         bookings.filter(b => b.status === 'BOOKED').map(booking => (
                         <div key={booking.id} className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 group hover:border-primary/20 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5">
                             <div className="flex items-center gap-8 w-full">
-                                <div className="w-20 h-20 bg-soft-mint rounded-3xl flex items-center justify-center text-primary font-black shadow-inner group-hover:bg-primary group-hover:text-white transition-colors duration-500 group-hover:scale-105">
+                                <div className="w-20 h-20 bg-soft-mint rounded-3xl flex items-center justify-center text-primary font-extrabold shadow-inner group-hover:bg-primary group-hover:text-white transition-colors duration-500 group-hover:scale-105">
                                     #{booking.id}
                                 </div>
                                 <div className="flex-1">
