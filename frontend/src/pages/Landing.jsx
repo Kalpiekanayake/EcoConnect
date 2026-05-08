@@ -1,22 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Leaf, Truck, Calendar, ShieldCheck, ArrowRight, MapPin, Recycle, DollarSign, Search, CheckCircle, Users, Globe, BarChart3, Package, Sprout, Award, TrendingUp } from 'lucide-react';
+import { Leaf, ArrowRight, Truck, CheckCircle, Package, Sprout, ShieldCheck } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import { useState, useEffect } from 'react';
 import API from '../services/api';
-
-// --- Category Visual Mapping ---
-const getCategoryStyles = (name) => {
-  const styles = {
-    'Coconut Shells': { icon: '🥥' },
-    'Coconut Husks': { icon: '🌴' },
-    'Plastic': { icon: '🥤' },
-    'Glass': { icon: '🍾' },
-    'Paper/Cardboard': { icon: '📦' },
-    'Food Waste': { icon: '🍎' },
-    'General Disposal': { icon: '🗑️' },
-  };
-  return styles[name] || { icon: '♻️' };
-};
+import heroBg from '../assets/illustrations/hero-bg.png';
 
 const Landing = () => {
   const [categories, setCategories] = useState([]);
@@ -32,254 +19,167 @@ const Landing = () => {
         setCategories(catRes.data);
         setWastes(wasteRes.data);
       } catch (err) {
-        console.error("Failed to fetch landing page data", err);
+        console.error("Failed to fetch landing data", err);
       }
     };
     fetchData();
   }, []);
 
+  // Filter completed tasks for real stats
+  const completedPickups = wastes.filter(w => w.status === 'COLLECTED').length;
+  const activeRequests = wastes.filter(w => w.status === 'OPEN').length;
+
   return (
-    <div className="min-h-screen bg-off-white font-sans selection:bg-primary/10 selection:text-primary">
+    <div className="min-h-screen bg-bg-app font-sans">
       <Navbar />
       
-      {/* Hero Section - Clean Corporate Aesthetic */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        {/* Abstract Background Elements */}
-        <div className="absolute inset-0 bg-hero-gradient"></div>
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-soft-mint/30 blur-3xl rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-primary/5 blur-3xl rounded-full translate-y-1/4 -translate-x-1/4 pointer-events-none"></div>
-        
-        <div className="container-custom relative z-10">
+      {/* Hero Section - SaaS Premium Cinematic Style */}
+      <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden bg-slate-950">
+        {/* Full-width Background Image with Overlays */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={heroBg} 
+            alt="Eco-tech smart waste management" 
+            className="w-full h-full object-cover opacity-30 scale-105"
+          />
+          {/* Cinematic Overlays for Readability & Depth */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1px]"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 w-full relative z-10 py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div className="animate-fade-up">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-border-light text-primary text-xs font-bold uppercase tracking-widest mb-8">
-                <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
-                Leading Waste Management in Sri Lanka
+            <div className="animate-app-in">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-black uppercase tracking-[0.2em] mb-10 backdrop-blur-md">
+                <Sprout className="w-3.5 h-3.5" /> Next-Gen Waste Logistics
               </div>
               
-              <h1 className="text-5xl md:text-7xl font-extrabold text-dark-slate leading-[1.1] mb-8 tracking-tight">
-                Sustainable <br />
-                <span className="text-primary italic">Solutions</span> for <br />
-                Eco-Conscious Living.
+              <h1 className="text-6xl md:text-8xl font-black text-white leading-[0.95] tracking-tighter mb-10">
+                Smart. <br />
+                Connected. <br />
+                <span className="text-primary">Sustainable.</span>
               </h1>
               
-              <p className="text-lg md:text-xl text-muted-gray max-w-xl mb-12 leading-relaxed">
-                EcoConnect is the professional bridge between modern households and certified waste collectors, optimizing resource recovery through technology.
+              <p className="text-xl md:text-2xl text-slate-300 mb-14 max-w-xl font-medium leading-relaxed">
+                Bridging the gap between circular economy goals and real-world industrial recovery with intelligent data-driven logistics.
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center gap-5">
-                <Link to="/register" className="btn-primary w-full sm:w-auto text-lg py-5 px-10 shadow-corporate-lg">
-                  Get Started <ArrowRight className="w-5 h-5" />
+              <div className="flex flex-col sm:flex-row gap-6">
+                <Link to="/register" className="h-16 px-10 bg-primary text-white rounded-2xl text-lg font-black flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 hover:bg-primary-dark transition-all hover:-translate-y-1">
+                  Launch Request <ArrowRight className="w-5 h-5" />
                 </Link>
-                <Link to="/browse-requests" className="btn-secondary w-full sm:w-auto text-lg py-5 px-10">
-                  Browse Requests
+                <Link to="/browse-requests" className="h-16 px-10 bg-white/10 backdrop-blur-xl border border-white/20 text-white rounded-2xl text-lg font-black flex items-center justify-center hover:bg-white/20 transition-all hover:-translate-y-1">
+                  View Marketplace
                 </Link>
               </div>
 
-              <div className="mt-16 flex flex-wrap items-center gap-8 opacity-60">
-                 <div className="flex items-center gap-2 font-bold text-dark-slate text-sm"><Award className="w-5 h-5 text-primary" /> Verified Standards</div>
-                 <div className="flex items-center gap-2 font-bold text-dark-slate text-sm"><ShieldCheck className="w-5 h-5 text-primary" /> Secure Platform</div>
-                 <div className="flex items-center gap-2 font-bold text-dark-slate text-sm"><TrendingUp className="w-5 h-5 text-primary" /> Circular Economy</div>
+              <div className="mt-16 flex items-center gap-10">
+                  <div className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <ShieldCheck className="w-5 h-5 text-primary" /> Industrial Grade
+                  </div>
+                  <div className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <Truck className="w-5 h-5 text-primary" /> Real-time Tracking
+                  </div>
               </div>
             </div>
 
-            <div className="hidden lg:block relative animate-fade-up" style={{ animationDelay: '0.2s' }}>
-              <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-corporate-xl border-[12px] border-white">
-                <img 
-                  src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&q=80&w=1000" 
-                  alt="Professional Waste Management" 
-                  className="w-full h-[600px] object-cover"
-                />
-                <div className="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
-                <div className="absolute bottom-8 left-8 right-8 glass p-8 rounded-3xl border border-white/20">
-                   <div className="flex items-center gap-6">
-                      <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg">
-                        <Sprout className="w-8 h-8" />
+            {/* Right side remains open to showcase the cinematic background */}
+            <div className="hidden lg:block">
+                {/* Subtle Floating Impact Card */}
+                <div className="ml-auto w-fit bg-white/5 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl animate-float">
+                   <div className="flex items-center gap-6 mb-6">
+                      <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-primary/20">
+                         <Truck className="w-8 h-8" />
                       </div>
                       <div>
-                        <p className="text-dark-slate font-extrabold text-2xl tracking-tight">Eco Impact</p>
-                        <p className="text-muted-gray font-medium">Empowering local communities today.</p>
+                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Network Status</p>
+                         <p className="text-2xl font-black text-white leading-none">{activeRequests} Active Nodes</p>
                       </div>
                    </div>
+                   <div className="flex gap-2">
+                      {[1,2,3,4,5].map(i => (
+                         <div key={i} className="h-1 w-8 bg-primary/20 rounded-full overflow-hidden">
+                            <div className="h-full bg-primary animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}></div>
+                         </div>
+                      ))}
+                   </div>
                 </div>
-              </div>
-              {/* Decorative dots */}
-              <div className="absolute -top-12 -left-12 grid grid-cols-4 gap-4 opacity-20">
-                {[...Array(16)].map((_, i) => <div key={i} className="w-2 h-2 bg-primary rounded-full"></div>)}
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Impact Stats - Professional Report Style */}
-      <section className="py-24 bg-white border-y border-border-light relative overflow-hidden">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-16 md:gap-8">
+      {/* Categories Preview */}
+      <section className="py-24 bg-white border-y border-border-light relative z-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div className="max-w-xl">
+              <h2 className="text-[11px] font-black text-primary uppercase tracking-[0.3em] mb-4">Material Streams</h2>
+              <h3 className="text-3xl md:text-4xl font-extrabold text-dark-slate tracking-tight">Our circular economy sectors.</h3>
+            </div>
+            <Link to="/browse-requests" className="text-sm font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-2 group">
+              Browse All Categories <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6">
+            {categories.map((cat) => (
+              <Link key={cat.id} to={`/browse-requests/${cat.id}`} className="card-3d p-6 flex flex-col items-center text-center group">
+                 <div className="w-16 h-16 bg-bg-app rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-105 transition-transform">
+                    {cat.name.includes('Coconut Shells') ? '🥥' : 
+                     cat.name.includes('Coconut Husks') ? '🌴' :
+                     cat.name.includes('Plastic') ? '🥤' :
+                     cat.name.includes('Glass') ? '🍾' :
+                     cat.name.includes('Paper') ? '📦' :
+                     cat.name.includes('Food') ? '🍎' : '🗑️'}
+                 </div>
+                 <h4 className="text-[10px] font-black text-dark-slate uppercase tracking-wider mb-2 leading-tight">{cat.name}</h4>
+                 <span className="text-[9px] font-bold text-primary bg-emerald-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest">Real-time</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Real Impact Stats */}
+      <section className="py-24 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
              {[
-               { icon: <Package className="w-5 h-5" />, value: wastes.length, label: "Total Listings", desc: "Requests documented" },
-               { icon: <CheckCircle className="w-5 h-5" />, value: wastes.filter(w => w.status === 'COLLECTED').length, label: "Completed Jobs", desc: "Verified collections" },
-               { icon: <Recycle className="w-5 h-5" />, value: categories.length, label: "Material Streams", desc: "Diverse waste types" },
-               { icon: <Users className="w-5 h-5" />, value: "24/7", label: "Availability", desc: "Island-wide service" }
+               { label: "Documented Pickups", value: wastes.length, icon: <Package className="w-5 h-5" /> },
+               { label: "Verified Completed", value: completedPickups, icon: <CheckCircle className="w-5 h-5" /> },
+               { label: "Active Network Jobs", value: activeRequests, icon: <Truck className="w-5 h-5" /> }
              ].map((stat, i) => (
-               <div key={i} className="relative pl-8 md:pl-0">
-                  <div className="hidden md:block absolute -left-4 top-0 bottom-0 w-px bg-border-light"></div>
-                  <div className="flex items-center gap-3 text-primary mb-4 font-bold text-xs uppercase tracking-widest">
-                    {stat.icon} {stat.label}
+               <div key={i} className="p-10 rounded-3xl bg-white border border-border-light shadow-3d group hover:border-primary/20 transition-all">
+                  <div className="w-12 h-12 bg-bg-app rounded-xl flex items-center justify-center text-primary mb-8 transition-all group-hover:bg-primary group-hover:text-white">
+                    {stat.icon}
                   </div>
-                  <h4 className="text-5xl font-extrabold text-dark-slate mb-2 tracking-tighter">
+                  <h4 className="text-5xl font-extrabold text-dark-slate mb-3 tracking-tighter leading-none">
                     {stat.value}
                   </h4>
-                  <p className="text-muted-gray font-medium text-sm">{stat.desc}</p>
+                  <p className="text-muted-gray font-bold text-[11px] uppercase tracking-widest">{stat.label}</p>
                </div>
              ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works - Clean Service Steps */}
-      <section className="section-padding bg-off-white">
-        <div className="container-custom">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-primary font-bold uppercase tracking-[0.3em] text-sm mb-6">Service Excellence</h2>
-            <h3 className="text-4xl md:text-5xl font-extrabold text-dark-slate leading-tight tracking-tight">Modernizing the way we <br /> handle waste in Sri Lanka.</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {[
-              { 
-                step: "01",
-                title: "Digital Listing", 
-                desc: "Describe your recyclables, set your location, and specify availability through our intuitive portal.",
-                icon: <Package className="w-8 h-8" />
-              },
-              { 
-                step: "02",
-                title: "Collector Matching", 
-                desc: "Our ecosystem notifies specialized collectors in your area who meet your specific waste stream needs.",
-                icon: <Truck className="w-8 h-8" />
-              },
-              { 
-                step: "03",
-                title: "Impact Tracking", 
-                desc: "Secure pickup confirmation and detailed reporting on your contribution to environmental sustainability.",
-                icon: <ShieldCheck className="w-8 h-8" />
-              }
-            ].map((item, i) => (
-              <div key={i} className="group p-10 bg-white rounded-[2.5rem] border border-border-light shadow-sm hover:shadow-corporate-lg transition-all duration-500 relative overflow-hidden">
-                <div className="absolute top-8 right-10 text-6xl font-black text-primary/5 group-hover:text-primary/10 transition-colors">{item.step}</div>
-                <div className="w-16 h-16 bg-soft-mint text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                  {item.icon}
-                </div>
-                <h4 className="text-2xl font-extrabold text-dark-slate mb-4 tracking-tight">{item.title}</h4>
-                <p className="text-muted-gray font-medium leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Categories - Professional Service Cards */}
-      <section className="section-padding bg-white">
-        <div className="container-custom">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-            <div className="max-w-2xl">
-              <h2 className="text-primary font-bold uppercase tracking-[0.3em] text-sm mb-6">Material Streams</h2>
-              <h3 className="text-4xl md:text-5xl font-extrabold text-dark-slate tracking-tight">Comprehensive collection for <br /> every waste category.</h3>
+      {/* Footer */}
+      <footer className="py-20 px-6 bg-white border-t border-border-light">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-3d">
+              <Leaf className="w-5 h-5 fill-current" />
             </div>
-            <Link to="/browse-requests" className="btn-secondary">
-              Explore All Categories <ArrowRight className="w-4 h-4" />
-            </Link>
+            <span className="text-xl font-extrabold text-dark-slate tracking-tighter">EcoConnect</span>
           </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            {categories.length > 0 ? categories.map((item, i) => {
-              const count = wastes.filter(w => w.category_id === item.id && w.status === 'OPEN').length;
-              const style = getCategoryStyles(item.name);
-              return (
-                <Link key={i} to={`/browse-requests/${item.id}`} className="group p-6 rounded-3xl bg-off-white border border-border-light hover:bg-white hover:shadow-corporate hover:border-primary/20 transition-all duration-500 text-center">
-                  <div className="text-4xl mb-6 group-hover:scale-110 transition-transform duration-500">{style.icon}</div>
-                  <h4 className="font-extrabold text-dark-slate text-xs mb-3 uppercase tracking-wider group-hover:text-primary transition-colors leading-tight">{item.name}</h4>
-                  <span className="inline-block py-1 px-3 bg-white border border-border-light rounded-full text-[10px] font-bold text-muted-gray group-hover:text-primary group-hover:border-primary/20 transition-colors">
-                    {count} Active
-                  </span>
-                </Link>
-              );
-            }) : (
-              <div className="col-span-full py-20 text-center">
-                <div className="animate-spin text-primary mx-auto mb-4"><Recycle className="w-8 h-8" /></div>
-                <p className="text-muted-gray font-bold tracking-widest text-xs uppercase">Initializing Categories...</p>
-              </div>
-            )}
+          <div className="flex gap-10 text-[11px] font-bold text-muted-gray uppercase tracking-widest">
+             <span className="hover:text-primary cursor-pointer transition-colors">Marketplace</span>
+             <span className="hover:text-primary cursor-pointer transition-colors">Network</span>
+             <span className="hover:text-primary cursor-pointer transition-colors">Privacy</span>
           </div>
-        </div>
-      </section>
-
-      {/* CTA - Premium Action Section */}
-      <section className="pb-32 container-custom">
-        <div className="bg-corporate-gradient rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden shadow-corporate-xl">
-          {/* Decorative shapes */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
-          
-          <div className="relative z-10 max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-8 leading-[1.15] tracking-tight">
-              Join the future of Sri Lankan <br /> Waste Management.
-            </h2>
-            <p className="text-xl text-soft-mint/80 mb-12 max-w-2xl mx-auto font-medium">
-              Start making a professional impact today. Join thousands of households and businesses already integrated into the EcoConnect platform.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Link to="/register" className="w-full sm:w-auto px-12 py-5 bg-white text-primary font-bold rounded-full hover:bg-soft-mint transition-all shadow-xl active:scale-95 text-lg">
-                Create Account
-              </Link>
-              <Link to="/login" className="w-full sm:w-auto px-12 py-5 bg-primary-dark/30 border border-white/20 text-white font-bold rounded-full hover:bg-primary-dark/50 transition-all active:scale-95 text-lg">
-                Member Sign In
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer className="py-20 border-t border-border-light bg-white">
-        <div className="container-custom">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
-            <div>
-              <Link to="/" className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white">
-                  <Leaf className="w-5 h-5 fill-current" />
-                </div>
-                <span className="text-2xl font-black text-dark-slate tracking-tighter">EcoConnect</span>
-              </Link>
-              <p className="text-muted-gray text-sm font-medium max-w-xs leading-relaxed">
-                Professionalizing waste management ecosystems through digital connectivity and sustainable practices.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-12">
-              <div className="space-y-4">
-                <p className="text-[10px] font-bold text-dark-slate uppercase tracking-[0.2em]">Platform</p>
-                <Link to="/browse-requests" className="block text-sm font-medium text-muted-gray hover:text-primary transition-colors">Browse Marketplace</Link>
-                <Link to="/available-pickups" className="block text-sm font-medium text-muted-gray hover:text-primary transition-colors">Available Jobs</Link>
-              </div>
-              <div className="space-y-4">
-                <p className="text-[10px] font-bold text-dark-slate uppercase tracking-[0.2em]">Company</p>
-                <Link to="/" className="block text-sm font-medium text-muted-gray hover:text-primary transition-colors">About Us</Link>
-                <Link to="/" className="block text-sm font-medium text-muted-gray hover:text-primary transition-colors">Sustainability</Link>
-              </div>
-              <div className="space-y-4">
-                <p className="text-[10px] font-bold text-dark-slate uppercase tracking-[0.2em]">Account</p>
-                <Link to="/login" className="block text-sm font-medium text-muted-gray hover:text-primary transition-colors">Log In</Link>
-                <Link to="/register" className="block text-sm font-medium text-muted-gray hover:text-primary transition-colors">Get Started</Link>
-              </div>
-            </div>
-          </div>
-          <div className="mt-20 pt-8 border-t border-border-light flex flex-col sm:flex-row justify-between items-center gap-6">
-            <p className="text-[10px] font-bold text-muted-gray uppercase tracking-widest">© 2026 EcoConnect Platform • Colombo, Sri Lanka</p>
-            <div className="flex gap-6">
-              <span className="text-[10px] font-bold text-muted-gray hover:text-primary cursor-pointer transition-colors uppercase tracking-widest">Privacy Policy</span>
-              <span className="text-[10px] font-bold text-muted-gray hover:text-primary cursor-pointer transition-colors uppercase tracking-widest">Terms of Service</span>
-            </div>
-          </div>
+          <p className="text-[10px] font-bold text-muted-gray/50 uppercase tracking-[0.2em]">© 2026 Colombo Operations</p>
         </div>
       </footer>
     </div>
@@ -287,4 +187,3 @@ const Landing = () => {
 };
 
 export default Landing;
-
