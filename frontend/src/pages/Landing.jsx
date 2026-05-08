@@ -5,9 +5,29 @@ import { useState, useEffect } from 'react';
 import API from '../services/api';
 import heroBg from '../assets/illustrations/hero-bg.png';
 
+// Category Images
+import shellImg from '../assets/categories/coconut-shells.jpg';
+import huskImg from '../assets/categories/coconut-husks.jpg';
+import plasticImg from '../assets/categories/plastic.jpg';
+import glassImg from '../assets/categories/glass.jpg';
+import paperImg from '../assets/categories/paper.jpg';
+import foodImg from '../assets/categories/food.jpg';
+import generalImg from '../assets/categories/general.jpg';
+
 const Landing = () => {
   const [categories, setCategories] = useState([]);
   const [wastes, setWastes] = useState([]);
+
+  const categoryImageMap = {
+    'Coconut Shells': shellImg,
+    'Coconut Husks': huskImg,
+    'Plastic': plasticImg,
+    'Glass': glassImg,
+    'Paper': paperImg,
+    'Paper/Cardboard': paperImg,
+    'Food Waste': foodImg,
+    'General Disposal': generalImg,
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,78 +53,63 @@ const Landing = () => {
     <div className="min-h-screen bg-bg-app font-sans">
       <Navbar />
       
-      {/* Hero Section - SaaS Premium Cinematic Style */}
-      <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden bg-slate-950">
-        {/* Full-width Background Image with Overlays */}
+      {/* Hero Section - Clean SaaS Premium Cinematic Style */}
+      <section className="relative min-h-[95vh] flex items-center pt-20 overflow-hidden bg-slate-900">
+        {/* Full-width Background Image with Refined Overlays */}
         <div className="absolute inset-0 z-0">
           <img 
             src={heroBg} 
             alt="Eco-tech smart waste management" 
-            className="w-full h-full object-cover opacity-30 scale-105"
+            className="w-full h-full object-cover opacity-90 scale-100 transition-transform duration-1000"
           />
-          {/* Cinematic Overlays for Readability & Depth */}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
-          <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1px]"></div>
+          {/* Softer Cinematic Overlays for Sharp Visibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-slate-950/5"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 w-full relative z-10 py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="animate-app-in">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-black uppercase tracking-[0.2em] mb-10 backdrop-blur-md">
-                <Sprout className="w-3.5 h-3.5" /> Next-Gen Waste Logistics
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 border border-primary/30 text-white text-[10px] font-black uppercase tracking-[0.25em] mb-12 backdrop-blur-md">
+                <Sprout className="w-3.5 h-3.5 text-primary" /> EcoConnect Platform
               </div>
               
-              <h1 className="text-6xl md:text-8xl font-black text-white leading-[0.95] tracking-tighter mb-10">
+              <h1 className="text-6xl md:text-[5.5rem] font-black text-white leading-[0.9] tracking-tighter mb-10">
                 Smart. <br />
                 Connected. <br />
                 <span className="text-primary">Sustainable.</span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-slate-300 mb-14 max-w-xl font-medium leading-relaxed">
-                Bridging the gap between circular economy goals and real-world industrial recovery with intelligent data-driven logistics.
+              <p className="text-xl md:text-2xl text-slate-200 mb-14 max-w-xl font-medium leading-relaxed opacity-90">
+                Bridging the gap between circular economy goals and real-world waste collection through intelligent eco logistics.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6">
-                <Link to="/register" className="h-16 px-10 bg-primary text-white rounded-2xl text-lg font-black flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 hover:bg-primary-dark transition-all hover:-translate-y-1">
-                  Launch Request <ArrowRight className="w-5 h-5" />
+                <Link to="/register" className="h-16 px-10 bg-primary text-white rounded-2xl text-lg font-bold flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all hover:-translate-y-1">
+                  Request a Pickup <ArrowRight className="w-5 h-5" />
                 </Link>
-                <Link to="/browse-requests" className="h-16 px-10 bg-white/10 backdrop-blur-xl border border-white/20 text-white rounded-2xl text-lg font-black flex items-center justify-center hover:bg-white/20 transition-all hover:-translate-y-1">
+                <Link to="/browse-requests" className="h-16 px-10 bg-white/10 backdrop-blur-xl border border-white/20 text-white rounded-2xl text-lg font-bold flex items-center justify-center hover:bg-white/20 transition-all hover:-translate-y-1">
                   View Marketplace
                 </Link>
               </div>
 
-              <div className="mt-16 flex items-center gap-10">
-                  <div className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    <ShieldCheck className="w-5 h-5 text-primary" /> Industrial Grade
+              <div className="mt-20 flex flex-wrap items-center gap-x-12 gap-y-6">
+                  <div className="flex items-center gap-3 text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                    <ShieldCheck className="w-5 h-5 text-primary" /> Live Tracking
                   </div>
-                  <div className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    <Truck className="w-5 h-5 text-primary" /> Real-time Tracking
+                  <div className="flex items-center gap-3 text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                    <Package className="w-5 h-5 text-primary" /> Smart Analytics
+                  </div>
+                  <div className="flex items-center gap-3 text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                    <Leaf className="w-5 h-5 text-primary" /> Eco Friendly
                   </div>
               </div>
             </div>
 
-            {/* Right side remains open to showcase the cinematic background */}
-            <div className="hidden lg:block">
-                {/* Subtle Floating Impact Card */}
-                <div className="ml-auto w-fit bg-white/5 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl animate-float">
-                   <div className="flex items-center gap-6 mb-6">
-                      <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-primary/20">
-                         <Truck className="w-8 h-8" />
-                      </div>
-                      <div>
-                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Network Status</p>
-                         <p className="text-2xl font-black text-white leading-none">{activeRequests} Active Nodes</p>
-                      </div>
-                   </div>
-                   <div className="flex gap-2">
-                      {[1,2,3,4,5].map(i => (
-                         <div key={i} className="h-1 w-8 bg-primary/20 rounded-full overflow-hidden">
-                            <div className="h-full bg-primary animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}></div>
-                         </div>
-                      ))}
-                   </div>
-                </div>
+            {/* Right side left empty to showcase the cinematic background image */}
+            <div className="hidden lg:block h-full min-h-[400px]">
+                {/* No floating cards here to maintain a clean Sensoneo-style look */}
             </div>
           </div>
         </div>
@@ -125,17 +130,19 @@ const Landing = () => {
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6">
             {categories.map((cat) => (
-              <Link key={cat.id} to={`/browse-requests/${cat.id}`} className="card-3d p-6 flex flex-col items-center text-center group">
-                 <div className="w-16 h-16 bg-bg-app rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-105 transition-transform">
-                    {cat.name.includes('Coconut Shells') ? '🥥' : 
-                     cat.name.includes('Coconut Husks') ? '🌴' :
-                     cat.name.includes('Plastic') ? '🥤' :
-                     cat.name.includes('Glass') ? '🍾' :
-                     cat.name.includes('Paper') ? '📦' :
-                     cat.name.includes('Food') ? '🍎' : '🗑️'}
+              <Link key={cat.id} to={`/browse-requests/${cat.id}`} className="flex flex-col group">
+                 <div className="relative aspect-square rounded-3xl overflow-hidden border border-border-light shadow-sm mb-4 group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-1">
+                    <img 
+                      src={categoryImageMap[cat.name] || categoryImageMap['General Disposal']} 
+                      alt={cat.name} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                  </div>
-                 <h4 className="text-[10px] font-black text-dark-slate uppercase tracking-wider mb-2 leading-tight">{cat.name}</h4>
-                 <span className="text-[9px] font-bold text-primary bg-emerald-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest">Real-time</span>
+                 <div className="text-center">
+                    <h4 className="text-[10px] font-black text-dark-slate uppercase tracking-[0.15em] mb-1.5 leading-tight">{cat.name}</h4>
+                    <span className="text-[9px] font-bold text-primary bg-emerald-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest">Active</span>
+                 </div>
               </Link>
             ))}
           </div>
