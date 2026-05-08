@@ -149,23 +149,47 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Real Impact Stats */}
-      <section className="py-24 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Platform Ecosystem / Impact Section - Clean Sensoneo Style Row */}
+      <section className="relative py-24 overflow-hidden bg-gradient-to-br from-emerald-900 to-slate-950">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 items-start">
              {[
-               { label: "Documented Pickups", value: wastes.length, icon: <Package className="w-5 h-5" /> },
-               { label: "Verified Completed", value: completedPickups, icon: <CheckCircle className="w-5 h-5" /> },
-               { label: "Active Network Jobs", value: activeRequests, icon: <Truck className="w-5 h-5" /> }
-             ].map((stat, i) => (
-               <div key={i} className="p-10 rounded-3xl bg-white border border-border-light shadow-3d group hover:border-primary/20 transition-all">
-                  <div className="w-12 h-12 bg-bg-app rounded-xl flex items-center justify-center text-primary mb-8 transition-all group-hover:bg-primary group-hover:text-white">
-                    {stat.icon}
-                  </div>
-                  <h4 className="text-5xl font-extrabold text-dark-slate mb-3 tracking-tighter leading-none">
-                    {stat.value}
-                  </h4>
-                  <p className="text-muted-gray font-bold text-[11px] uppercase tracking-widest">{stat.label}</p>
+               { 
+                 title: "Smart Pickup", 
+                 desc: "Schedule household waste pickups with a simple request flow.",
+                 cta: "Schedule Pickup",
+                 link: "/register"
+               },
+               { 
+                 title: "Collector Network", 
+                 desc: "Connect with collectors who can accept and complete pickup jobs.",
+                 cta: "View Marketplace",
+                 link: "/browse-requests"
+               },
+               { 
+                 title: "Live Status", 
+                 desc: "Track requests from open to booked and collected.",
+                 cta: "View Requests",
+                 link: "/available-pickups"
+               },
+               { 
+                 title: "Sustainable Flow", 
+                 desc: "Organize sellable and non-sellable waste with clear categories.",
+                 cta: "Explore Categories",
+                 link: "/browse-requests"
+               }
+             ].map((feature, i) => (
+               <div key={feature.title} className="flex flex-col items-start text-left">
+                  <h4 className="text-3xl font-black text-white mb-4 tracking-tighter">{feature.title}</h4>
+                  <p className="text-emerald-100/70 font-medium leading-relaxed mb-8 text-sm max-w-[240px]">
+                    {feature.desc}
+                  </p>
+                  <Link 
+                    to={feature.link} 
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/20 text-[10px] font-black text-white hover:bg-white hover:text-emerald-900 transition-all uppercase tracking-widest group"
+                  >
+                    {feature.cta} <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                </div>
              ))}
           </div>
