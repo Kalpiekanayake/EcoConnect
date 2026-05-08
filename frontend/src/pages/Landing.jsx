@@ -150,7 +150,7 @@ const Landing = () => {
       </section>
 
       {/* Platform Ecosystem / Impact Section - Clean Sensoneo Style Row */}
-      <section className="relative py-24 overflow-hidden bg-gradient-to-br from-emerald-900 to-slate-950">
+      <section className="relative pt-24 pb-16 overflow-hidden bg-gradient-to-br from-emerald-900 to-slate-950">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 items-start">
              {[
@@ -195,6 +195,33 @@ const Landing = () => {
           </div>
         </div>
       </section>
+
+      {/* Clean Vertical Gap */}
+      <div className="h-12 md:h-20 bg-white"></div>
+
+      {/* New Statement Section - Compact & Professional Style */}
+      <section className="relative py-24 overflow-hidden bg-[#0b1020]">
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <div className="flex flex-col items-start justify-center">
+            <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-6 block">
+              EcoConnect Platform
+            </span>
+            
+            <h2 className="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight mb-6 max-w-3xl">
+              Smarter waste pickup for households and collectors
+            </h2>
+            
+            <p className="text-lg md:text-xl text-slate-300 font-medium leading-relaxed max-w-3xl">
+              EcoConnect helps households post pickup requests, organize waste by category, and connect with collectors through a simple digital workflow.
+            </p>
+          </div>
+        </div>
+        
+        {/* Subtle Ambient Glow */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none opacity-50"></div>
+      </section>
+
+      {/* Footer */}
 
       {/* Footer */}
       <footer className="py-20 px-6 bg-white border-t border-border-light">
