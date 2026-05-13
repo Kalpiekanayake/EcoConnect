@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Leaf, ArrowRight, Truck, CheckCircle, Package, Sprout, ShieldCheck } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import API from '../services/api';
 import heroBg from '../assets/illustrations/hero-bg.png';
+import smartWasteImg from '../assets/illustrations/smart-waste.png';
+import mascotImg from '../assets/illustrations/ecoconnect-mascot.png';
 
 // Category Images
 import shellImg from '../assets/categories/coconut-shells.jpg';
@@ -150,7 +152,7 @@ const Landing = () => {
       </section>
 
       {/* Platform Ecosystem / Impact Section - Clean Sensoneo Style Row */}
-      <section className="relative pt-24 pb-16 overflow-hidden bg-gradient-to-br from-emerald-900 to-slate-950">
+      <section className="relative pt-32 pb-16 mb-14 overflow-hidden bg-[#0A192F] border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 items-start">
              {[
@@ -181,12 +183,12 @@ const Landing = () => {
              ].map((feature, i) => (
                <div key={feature.title} className="flex flex-col items-start text-left">
                   <h4 className="text-3xl font-black text-white mb-4 tracking-tighter">{feature.title}</h4>
-                  <p className="text-emerald-100/70 font-medium leading-relaxed mb-8 text-sm max-w-[240px]">
+                  <p className="text-slate-300 font-medium leading-relaxed mb-8 text-sm max-w-[240px]">
                     {feature.desc}
                   </p>
                   <Link 
                     to={feature.link} 
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/20 text-[10px] font-black text-white hover:bg-white hover:text-emerald-900 transition-all uppercase tracking-widest group"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/20 text-[10px] font-black text-white hover:bg-white hover:text-[#0A192F] transition-all uppercase tracking-widest group"
                   >
                     {feature.cta} <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -196,29 +198,33 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Clean Vertical Gap */}
-      <div className="h-12 md:h-20 bg-white"></div>
-
       {/* New Statement Section - Compact & Professional Style */}
-      <section className="relative py-24 overflow-hidden bg-[#0b1020]">
+      <section className="relative py-24 overflow-hidden bg-white">
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <div className="flex flex-col items-start justify-center">
-            <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-6 block">
-              EcoConnect Platform
-            </span>
-            
-            <h2 className="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight mb-6 max-w-3xl">
-              Smarter waste pickup for households and collectors
-            </h2>
-            
-            <p className="text-lg md:text-xl text-slate-300 font-medium leading-relaxed max-w-3xl">
-              EcoConnect helps households post pickup requests, organize waste by category, and connect with collectors through a simple digital workflow.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div className="flex flex-col items-start justify-center">
+              <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-6 block">
+                EcoConnect Platform
+              </span>
+              
+              <h2 className="text-3xl md:text-5xl font-black text-dark-slate leading-tight tracking-tight mb-6 max-w-3xl">
+                Smarter waste pickup for households and collectors
+              </h2>
+              
+              <p className="text-lg md:text-xl text-muted-gray font-medium leading-relaxed max-w-3xl">
+                EcoConnect helps households post pickup requests, organize waste by category, and connect with collectors through a simple digital workflow.
+              </p>
+            </div>
+
+            <div className="flex justify-center md:justify-end">
+              <img 
+                src={mascotImg} 
+                alt="EcoConnect Mascot" 
+                className="w-full max-w-[320px] md:max-w-[400px] h-auto object-contain select-none pointer-events-none"
+              />
+            </div>
           </div>
         </div>
-        
-        {/* Subtle Ambient Glow */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none opacity-50"></div>
       </section>
 
       {/* Footer */}
