@@ -4,6 +4,7 @@ import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
 import { Truck, ListChecks, Calendar, Package, Clock, Award, Sprout, ArrowRight, TrendingUp } from 'lucide-react';
+import ecoLogo from '../assets/illustrations/eco-logo.png';
 
 const getCategoryStyles = (name) => {
   const styles = {
@@ -45,7 +46,12 @@ const Dashboard = () => {
 
   const getFilteredRequests = () => activeTab === 'ALL' ? requests : requests.filter(r => r.status === activeTab);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-bg-app font-sans italic font-bold text-primary opacity-50">Syncing Intelligence...</div>;
+  if (loading) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-bg-app gap-8">
+      <img src={ecoLogo} alt="Logo" className="h-24 w-auto opacity-30 animate-pulse" />
+      <div className="font-sans italic text-2xl font-black text-primary opacity-40 tracking-[0.2em] uppercase">EcoConnect</div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-bg-app font-sans">

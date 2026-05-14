@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../services/api';
-import { User, Mail, Lock, Loader2, AlertCircle, Phone, MapPin, Users } from 'lucide-react';
+import { User, Mail, Lock, Loader2, AlertCircle, Phone, MapPin, ArrowRight } from 'lucide-react';
+import ecoLogo from '../assets/illustrations/eco-logo.png';
 
 const Register = () => {
   const [formData, setFormData] = useState({ 
@@ -68,9 +69,13 @@ const Register = () => {
 
       <div className="max-w-2xl w-full space-y-10 bg-white/70 backdrop-blur-xl border border-white p-10 md:p-14 rounded-[4rem] shadow-2xl shadow-gray-200/50 relative z-10 animate-fade-up">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary text-white rounded-[2rem] mb-8 shadow-xl shadow-primary/20 transform hover:-rotate-12 transition-transform duration-500">
-             <Users className="w-10 h-10" />
-          </div>
+          <Link to="/" className="inline-flex items-center gap-3.5 mb-10 transform hover:scale-105 transition-transform duration-500">
+             <img src={ecoLogo} alt="EcoConnect" className="h-12 w-auto object-contain" />
+             <span className="text-3xl font-black tracking-tight flex items-center">
+                <span className="text-primary">Eco</span>
+                <span className="text-dark-slate">Connect</span>
+             </span>
+          </Link>
           <h2 className="text-4xl font-extrabold text-dark-slate tracking-behance leading-tight">Create <br /> Account.</h2>
           <p className="mt-4 text-muted-gray font-medium">Join the sustainable logistics network.</p>
         </div>

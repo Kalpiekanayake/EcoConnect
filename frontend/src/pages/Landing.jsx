@@ -6,6 +6,7 @@ import API from '../services/api';
 import heroBg from '../assets/illustrations/hero-bg.png';
 import smartWasteImg from '../assets/illustrations/smart-waste.png';
 import mascotImg from '../assets/illustrations/ecoconnect-mascot.png';
+import ecoLogo from '../assets/illustrations/eco-logo.png';
 
 // Category Images
 import shellImg from '../assets/categories/coconut-shells.jpg';
@@ -73,8 +74,8 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto px-6 w-full relative z-10 py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="animate-app-in">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 border border-primary/30 text-white text-[10px] font-black uppercase tracking-[0.25em] mb-12 backdrop-blur-md">
-                <Sprout className="w-3.5 h-3.5 text-primary" /> EcoConnect Platform
+              <div className="inline-flex items-center gap-4 px-6 py-3 rounded-full bg-primary/20 border border-primary/30 text-white text-[12px] font-black uppercase tracking-[0.25em] mb-12 backdrop-blur-md shadow-2xl shadow-primary/20">
+                <img src={ecoLogo} alt="" className="w-8 h-8 object-contain" /> EcoConnect Platform
               </div>
               
               <h1 className="text-6xl md:text-[5.5rem] font-black text-white leading-[0.9] tracking-tighter mb-10">
@@ -232,12 +233,13 @@ const Landing = () => {
       {/* Footer */}
       <footer className="py-20 px-6 bg-white border-t border-border-light">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-3d">
-              <Leaf className="w-5 h-5 fill-current" />
-            </div>
-            <span className="text-xl font-extrabold text-dark-slate tracking-tighter">EcoConnect</span>
-          </div>
+          <Link to="/" className="flex items-center gap-3.5 group">
+            <img src={ecoLogo} alt="EcoConnect" className="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
+            <span className="text-2xl font-black tracking-tight">
+              <span className="text-primary">Eco</span>
+              <span className="text-dark-slate">Connect</span>
+            </span>
+          </Link>
           <div className="flex gap-10 text-[11px] font-bold text-muted-gray uppercase tracking-widest">
              <span className="hover:text-primary cursor-pointer transition-colors">Marketplace</span>
              <span className="hover:text-primary cursor-pointer transition-colors">Network</span>

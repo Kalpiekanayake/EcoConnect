@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import { Loader2, X, CheckCircle2, Package, MapPin, PlusCircle, Map } from 'lucide-react';
 import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import ecoLogo from '../assets/illustrations/eco-logo.png';
 
 const getCategoryStyles = (name) => {
   const styles = {
@@ -58,7 +59,12 @@ const Waste = () => {
     setSubmitting(false);
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-bg-app font-bold text-primary">Accessing Terminal...</div>;
+  if (loading) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-bg-app gap-8">
+      <img src={ecoLogo} alt="Logo" className="h-24 w-auto opacity-30 animate-pulse" />
+      <div className="font-sans italic text-2xl font-black text-primary opacity-40 tracking-[0.2em] uppercase">EcoConnect</div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-bg-app font-sans">
