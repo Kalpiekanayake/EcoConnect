@@ -32,31 +32,31 @@ const Navbar = () => {
   const lightText = isLanding && !scrolled;
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-500 ${scrolled ? 'py-2' : 'py-4'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-500 ${scrolled ? 'py-2' : 'py-3'}`}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className={`px-5 py-2.5 rounded-2xl border transition-all duration-500 flex items-center justify-between ${
+        <div className={`px-4 py-2 rounded-2xl border transition-all duration-500 flex items-center justify-between ${
           scrolled 
             ? 'bg-[#0a1223]/90 backdrop-blur-xl border-white/10 shadow-2xl' 
             : 'bg-[#0a1223]/60 backdrop-blur-md border-white/5 shadow-lg'
         }`}>
-          <Link to="/" className="flex items-center gap-3.5 group">
-            <img src={ecoLogo} alt="EcoConnect" className="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
-            <span className="text-2xl font-black tracking-tight flex items-center">
+          <Link to="/" className="flex items-center gap-4 group">
+            <img src={ecoLogo} alt="EcoConnect" className="h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+            <span className="text-3xl font-black tracking-tight flex items-center">
               <span className="text-primary">Eco</span>
               <span className="text-white">Connect</span>
             </span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-1 ml-8">
+          <div className="hidden lg:flex items-center gap-1 ml-10">
             {token && <NavLink to="/dashboard" active={isActive('/dashboard')}>Dashboard</NavLink>}
             <NavLink to="/browse-requests" active={isActive('/browse-requests')}>Marketplace</NavLink>
             <NavLink to="/available-pickups" active={isActive('/available-pickups')}>Jobs</NavLink>
             {token && user?.role === 'HOUSEHOLD' && <NavLink to="/my-requests" active={isActive('/my-requests')}>History</NavLink>}
           </div>
 
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-8">
             {token ? (
-              <div className="flex items-center gap-4 pl-6 border-l border-white/10">
+              <div className="flex items-center gap-4 pl-8 border-l border-white/10">
                 <div className="text-right">
                   <p className="text-[9px] font-black uppercase tracking-widest leading-none mb-1 text-primary">{user?.role}</p>
                   <p className="text-xs font-bold leading-none text-white">{user?.full_name?.split(' ')[0]}</p>
@@ -69,9 +69,9 @@ const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-8">
                 <Link to="/login" className="text-[11px] font-black uppercase tracking-widest text-white/80 hover:text-white transition-colors">Login</Link>
-                <Link to="/register" className="py-2.5 px-6 text-[11px] font-black rounded-xl uppercase tracking-widest bg-white text-primary hover:bg-slate-100 transition-all shadow-xl shadow-primary/10">Join Now</Link>
+                <Link to="/register" className="py-2.5 px-8 text-[11px] font-black rounded-xl uppercase tracking-widest bg-white text-primary hover:bg-slate-100 transition-all shadow-xl shadow-primary/10">Join Now</Link>
               </div>
             )}
           </div>

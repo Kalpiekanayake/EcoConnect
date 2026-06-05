@@ -1,17 +1,26 @@
 import { X, Calendar, Clock, MapPin, Package, Tag, DollarSign, User, Truck, CheckCircle2, Info } from 'lucide-react';
 
+// Category Images
+import shellImg from '../assets/categories/coconut-shells.jpg';
+import huskImg from '../assets/categories/coconut-husks.jpg';
+import plasticImg from '../assets/categories/plastic.jpg';
+import glassImg from '../assets/categories/glass.jpg';
+import paperImg from '../assets/categories/paper.jpg';
+import foodImg from '../assets/categories/food.jpg';
+import generalImg from '../assets/categories/general.jpg';
+
 // --- Category Visual Mapping ---
 const getCategoryStyles = (name) => {
   const styles = {
-    'Coconut Shells': { icon: '🥥', color: 'bg-orange-50', border: 'border-orange-100', text: 'text-orange-700' },
-    'Coconut Husks': { icon: '🌴', color: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-700' },
-    'Plastic': { icon: '🥤', color: 'bg-blue-50', border: 'border-blue-100', text: 'text-blue-700' },
-    'Glass': { icon: '🍾', color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' },
-    'Paper/Cardboard': { icon: '📦', color: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-700' },
-    'Food Waste': { icon: '🍎', color: 'bg-red-50', border: 'border-red-100', text: 'text-red-700' },
-    'General Disposal': { icon: '🗑️', color: 'bg-gray-50', border: 'border-gray-100', text: 'text-gray-700' },
+    'Coconut Shells': { image: shellImg, color: 'bg-orange-50', border: 'border-orange-100', text: 'text-orange-700' },
+    'Coconut Husks': { image: huskImg, color: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-700' },
+    'Plastic': { image: plasticImg, color: 'bg-blue-50', border: 'border-blue-100', text: 'text-blue-700' },
+    'Glass': { image: glassImg, color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' },
+    'Paper/Cardboard': { image: paperImg, color: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-700' },
+    'Food Waste': { image: foodImg, color: 'bg-red-50', border: 'border-red-100', text: 'text-red-700' },
+    'General Disposal': { image: generalImg, color: 'bg-gray-50', border: 'border-gray-100', text: 'text-gray-700' },
   };
-  return styles[name] || { icon: '♻️', color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' };
+  return styles[name] || { image: generalImg, color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' };
 };
 
 const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
@@ -42,8 +51,8 @@ const RequestDetailsModal = ({ isOpen, onClose, request, categories }) => {
         {/* Header */}
         <div className="p-10 border-b border-gray-100 flex justify-between items-start bg-gray-50/30">
             <div className="flex items-center gap-8">
-                <div className={`w-24 h-24 ${style.color} rounded-3xl flex items-center justify-center text-5xl shadow-sm border border-white/50 group hover:rotate-3 transition-transform duration-500`}>
-                    {style.icon}
+                <div className="w-24 h-24 rounded-[12px] overflow-hidden shadow-sm border border-white/50 group hover:rotate-3 transition-transform duration-500 shrink-0">
+                    <img src={style.image} alt={category?.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
                     <h2 className="text-3xl font-extrabold text-dark-slate tracking-tight">{category?.name || 'Waste Request'}</h2>

@@ -3,20 +3,29 @@ import { Link } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Truck, ListChecks, Calendar, Package, Clock, Award, Sprout, ArrowRight, TrendingUp } from 'lucide-react';
+import { Package, TrendingUp } from 'lucide-react';
 import ecoLogo from '../assets/illustrations/eco-logo.png';
+
+// Category Images
+import shellImg from '../assets/categories/coconut-shells.jpg';
+import huskImg from '../assets/categories/coconut-husks.jpg';
+import plasticImg from '../assets/categories/plastic.jpg';
+import glassImg from '../assets/categories/glass.jpg';
+import paperImg from '../assets/categories/paper.jpg';
+import foodImg from '../assets/categories/food.jpg';
+import generalImg from '../assets/categories/general.jpg';
 
 const getCategoryStyles = (name) => {
   const styles = {
-    'Coconut Shells': { icon: '🥥', color: 'bg-orange-50/50', border: 'border-orange-100', text: 'text-orange-700' },
-    'Coconut Husks': { icon: '🌴', color: 'bg-emerald-50/50', border: 'border-emerald-100', text: 'text-emerald-700' },
-    'Plastic': { icon: '🥤', color: 'bg-blue-50/50', border: 'border-blue-100', text: 'text-blue-700' },
-    'Glass': { icon: '🍾', color: 'bg-emerald-50/50', border: 'border-emerald-100', text: 'text-emerald-700' },
-    'Paper/Cardboard': { icon: '📦', color: 'bg-indigo-50/50', border: 'border-indigo-100', text: 'text-indigo-700' },
-    'Food Waste': { icon: '🍎', color: 'bg-red-50/50', border: 'border-red-100', text: 'text-red-700' },
-    'General Disposal': { icon: '🗑️', color: 'bg-stone-50/50', border: 'border-stone-100', text: 'text-stone-700' },
+    'Coconut Shells': { image: shellImg, color: 'bg-orange-50/50', border: 'border-orange-100', text: 'text-orange-700' },
+    'Coconut Husks': { image: huskImg, color: 'bg-emerald-50/50', border: 'border-emerald-100', text: 'text-emerald-700' },
+    'Plastic': { image: plasticImg, color: 'bg-blue-50/50', border: 'border-blue-100', text: 'text-blue-700' },
+    'Glass': { image: glassImg, color: 'bg-emerald-50/50', border: 'border-emerald-100', text: 'text-emerald-700' },
+    'Paper/Cardboard': { image: paperImg, color: 'bg-indigo-50/50', border: 'border-indigo-100', text: 'text-indigo-700' },
+    'Food Waste': { image: foodImg, color: 'bg-red-50/50', border: 'border-red-100', text: 'text-red-700' },
+    'General Disposal': { image: generalImg, color: 'bg-stone-50/50', border: 'border-stone-100', text: 'text-stone-700' },
   };
-  return styles[name] || { icon: '♻️', color: 'bg-emerald-50/50', border: 'border-emerald-100', text: 'text-emerald-700' };
+  return styles[name] || { image: generalImg, color: 'bg-emerald-50/50', border: 'border-emerald-100', text: 'text-emerald-700' };
 };
 
 const Dashboard = () => {
@@ -73,10 +82,10 @@ const Dashboard = () => {
 
         {/* Tactile Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 animate-in">
-            <StatCard label="Total Impact" value={stats.total} icon={<Sprout className="w-6 h-6" />} color="bg-primary" highlight={true} />
-            <StatCard label="Pending" value={stats.open} icon={<Clock className="w-6 h-6" />} color="bg-white" />
-            <StatCard label="Active Logistics" value={stats.booked} icon={<Truck className="w-6 h-6" />} color="bg-white" />
-            <StatCard label="Verified Completed" value={stats.collected} icon={<Award className="w-6 h-6" />} color="bg-white" />
+            <StatCard label="Total Impact" value={stats.total} highlight={true} />
+            <StatCard label="Pending" value={stats.open} />
+            <StatCard label="Active Logistics" value={stats.booked} />
+            <StatCard label="Verified Completed" value={stats.collected} />
         </div>
 
         {/* Activity Table - Professional 3D Box */}
@@ -103,14 +112,21 @@ const Dashboard = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {getFilteredRequests().map((req) => {
-                            const style = getCategoryStyles(categories.find(c => c.id === req.category_id)?.name);
+                            const catName = categories.find(c => c.id === req.category_id)?.name;
+                            const style = getCategoryStyles(catName);
                             return (
                                 <tr key={req.id} className="hover:bg-slate-50 transition-colors group">
                                     <td className="px-10 py-8">
                                         <div className="flex items-center gap-5">
-                                            <div className={`w-12 h-12 ${style.color} rounded-xl flex items-center justify-center text-2xl border border-white shadow-3d group-hover:scale-105 transition-transform`}>{style.icon}</div>
+                                            <div className="w-12 h-12 rounded-[8px] overflow-hidden border border-white shadow-3d group-hover:scale-105 transition-transform shrink-0">
+                                                <img 
+                                                  src={style.image} 
+                                                  alt={catName} 
+                                                  className="w-full h-full object-cover"
+                                                />
+                                            </div>
                                             <div>
-                                                <p className="text-sm font-extrabold text-dark-slate leading-none mb-1">{categories.find(c => c.id === req.category_id)?.name}</p>
+                                                <p className="text-sm font-extrabold text-dark-slate leading-none mb-1">{catName}</p>
                                                 <p className="text-[10px] font-bold text-muted-gray uppercase">#EC-{req.id}</p>
                                             </div>
                                         </div>
@@ -125,7 +141,7 @@ const Dashboard = () => {
                                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest border ${req.status === 'OPEN' ? 'bg-white text-primary border-primary/20' : req.status === 'BOOKED' ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-dark-slate text-white border-transparent'}`}>{req.status}</span>
                                     </td>
                                     <td className="px-10 py-8 text-right">
-                                        <button onClick={() => { setSelectedRequest(req); setIsDetailsOpen(true); }} className="btn-tactile-secondary h-10 px-6 text-[10px] rounded-lg">Audit <ArrowRight className="w-3.5 h-3.5 ml-1" /></button>
+                                        <button onClick={() => { setSelectedRequest(req); setIsDetailsOpen(true); }} className="btn-tactile-secondary h-10 px-6 text-[10px] rounded-lg">Audit</button>
                                     </td>
                                 </tr>
                             );
@@ -140,16 +156,16 @@ const Dashboard = () => {
   );
 };
 
-const StatCard = ({ label, value, icon, highlight }) => (
-    <div className={`p-8 rounded-3xl border border-border-light shadow-3d flex flex-col justify-between h-52 transition-all duration-300 group hover:-translate-y-1 hover:shadow-3d-elevated ${highlight ? 'bg-primary text-white border-primary/20' : 'bg-white'}`}>
-        <div className="flex justify-between items-start">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${highlight ? 'bg-white/20 text-white shadow-3d' : 'bg-slate-50 text-primary border border-slate-100'}`}>{icon}</div>
-            <span className="text-5xl font-extrabold tracking-tighter leading-none">{value}</span>
-        </div>
+const StatCard = ({ label, value, highlight }) => (
+    <div className={`p-6 rounded-2xl border border-border-light shadow-sm flex flex-col justify-center h-36 transition-all duration-300 group hover:-translate-y-1 hover:shadow-md ${highlight ? 'bg-primary text-white border-primary/20' : 'bg-white'}`}>
         <div>
-            <p className={`text-[11px] font-extrabold uppercase tracking-[0.2em] mb-1.5 ${highlight ? 'text-white/80' : 'text-muted-gray'}`}>{label}</p>
-            <div className={`w-8 h-1 rounded-full transition-all group-hover:w-16 ${highlight ? 'bg-white/40' : 'bg-primary/20'}`}></div>
+            <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${highlight ? 'text-white/70' : 'text-muted-gray'}`}>{label}</p>
+            <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black tracking-tighter leading-none">{value}</span>
+                <div className={`w-1.5 h-1.5 rounded-full ${highlight ? 'bg-white/40' : 'bg-primary/40'}`}></div>
+            </div>
         </div>
+        <div className={`w-12 h-1 rounded-full mt-4 transition-all group-hover:w-20 ${highlight ? 'bg-white/20' : 'bg-primary/10'}`}></div>
     </div>
 );
 

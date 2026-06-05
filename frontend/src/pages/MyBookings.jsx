@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Truck, Loader2, Package, Calendar, Clock, MapPin, CheckCircle2, ChevronRight, AlertCircle, Eye } from 'lucide-react';
+import { Truck, Loader2, Package, Calendar, Clock, MapPin, CheckCircle2, AlertCircle, Eye } from 'lucide-react';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -117,7 +117,7 @@ const MyBookings = () => {
             <h3 className="text-2xl font-extrabold text-dark-slate">No bookings yet</h3>
             <p className="text-muted-gray mt-2 font-medium mb-10 leading-relaxed max-w-sm mx-auto">You haven't claimed any pickups yet. Start earning now by browsing available jobs.</p>
             <Link to="/available-pickups" className="inline-flex items-center gap-3 px-10 py-5 bg-primary text-white font-bold rounded-xl hover:bg-deep-forest transition-all shadow-xl shadow-primary/20 active:scale-95">
-              Browse Available Jobs <ChevronRight className="w-5 h-5" />
+              Browse Available Jobs
             </Link>
           </div>
         ) : (

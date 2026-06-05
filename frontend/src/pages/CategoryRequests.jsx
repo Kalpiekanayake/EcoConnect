@@ -3,20 +3,29 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Tag, Calendar, MapPin, Package, Clock, ArrowLeft, Loader2, DollarSign, Lock, Eye, Truck, CheckCircle2, Edit2, TrendingUp, Info } from 'lucide-react';
+import { Tag, Calendar, MapPin, Package, Clock, Loader2, DollarSign, Lock, Eye, Truck, CheckCircle2, Edit2, TrendingUp, Info } from 'lucide-react';
+
+// Category Images
+import shellImg from '../assets/categories/coconut-shells.jpg';
+import huskImg from '../assets/categories/coconut-husks.jpg';
+import plasticImg from '../assets/categories/plastic.jpg';
+import glassImg from '../assets/categories/glass.jpg';
+import paperImg from '../assets/categories/paper.jpg';
+import foodImg from '../assets/categories/food.jpg';
+import generalImg from '../assets/categories/general.jpg';
 
 // --- Category Visual Mapping ---
 const getCategoryStyles = (name) => {
   const styles = {
-    'Coconut Shells': { icon: '🥥', color: 'bg-orange-50/50', border: 'border-orange-100', text: 'text-orange-700' },
-    'Coconut Husks': { icon: '🌴', color: 'bg-amber-50/50', border: 'border-amber-100', text: 'text-amber-700' },
-    'Plastic': { icon: '🥤', color: 'bg-blue-50/50', border: 'border-blue-100', text: 'text-blue-700' },
-    'Glass': { icon: '🍾', color: 'bg-emerald-50/50', border: 'border-emerald-100', text: 'text-emerald-700' },
-    'Paper/Cardboard': { icon: '📦', color: 'bg-indigo-50/50', border: 'border-indigo-100', text: 'text-indigo-700' },
-    'Food Waste': { icon: '🍎', color: 'bg-red-50/50', border: 'border-red-100', text: 'text-red-700' },
-    'General Disposal': { icon: '🗑️', color: 'bg-stone-50/50', border: 'border-stone-100', text: 'text-stone-700' },
+    'Coconut Shells': { image: shellImg, color: 'bg-orange-50/50', border: 'border-orange-100', text: 'text-orange-700' },
+    'Coconut Husks': { image: huskImg, color: 'bg-amber-50/50', border: 'border-amber-100', text: 'text-amber-700' },
+    'Plastic': { image: plasticImg, color: 'bg-blue-50/50', border: 'border-blue-100', text: 'text-blue-700' },
+    'Glass': { image: glassImg, color: 'bg-emerald-50/50', border: 'border-emerald-100', text: 'text-emerald-700' },
+    'Paper/Cardboard': { image: paperImg, color: 'bg-indigo-50/50', border: 'border-indigo-100', text: 'text-indigo-700' },
+    'Food Waste': { image: foodImg, color: 'bg-red-50/50', border: 'border-red-100', text: 'text-red-700' },
+    'General Disposal': { image: generalImg, color: 'bg-stone-50/50', border: 'border-stone-100', text: 'text-stone-700' },
   };
-  return styles[name] || { icon: '♻️', color: 'bg-primary/5', border: 'border-primary/10', text: 'text-primary' };
+  return styles[name] || { image: generalImg, color: 'bg-primary/5', border: 'border-primary/10', text: 'text-primary' };
 };
 
 const CategoryRequests = () => {
@@ -123,13 +132,13 @@ const CategoryRequests = () => {
         {/* Header */}
         <div className="mb-16 animate-fade-up">
           <Link to="/browse-requests" className="inline-flex items-center text-xs font-bold text-muted-gray hover:text-primary transition-all gap-2 uppercase tracking-[0.2em] mb-12 group">
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Return to Material Streams
+            Return to Material Streams
           </Link>
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
             <div className="flex items-center gap-8">
-                <div className={`w-28 h-28 ${categoryStyle.color} rounded-[2.5rem] flex items-center justify-center text-6xl shadow-inner border border-border-light`}>
-                    {categoryStyle.icon}
+                <div className="w-28 h-28 rounded-[2rem] overflow-hidden shadow-inner border border-border-light shrink-0">
+                    <img src={categoryStyle.image} alt={category?.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
                     <h1 className="text-4xl md:text-5xl font-extrabold text-dark-slate tracking-tight leading-tight">{category?.name}</h1>
@@ -178,8 +187,11 @@ const CategoryRequests = () => {
                     <div key={waste.id} className="bg-white rounded-[3rem] p-10 border border-border-light shadow-corporate hover:shadow-corporate-lg transition-all duration-500 group flex flex-col h-full hover:border-primary/20 hover:-translate-y-1.5 relative overflow-hidden">
                         <div className="flex justify-between items-start mb-10">
                           <div className="flex flex-col gap-2">
-                              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-bold ${style.color} ${style.text} border border-border-light uppercase tracking-wider`}>
-                                  {style.icon} {category?.name}
+                              <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[9px] font-bold ${style.color} ${style.text} border border-border-light uppercase tracking-wider`}>
+                                  <div className="w-4 h-4 rounded-full overflow-hidden border border-white/50 shrink-0">
+                                      <img src={style.image} alt="" className="w-full h-full object-cover" />
+                                  </div>
+                                  {category?.name}
                               </span>
                               {waste.is_sellable ? (
                                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-bold bg-primary text-white uppercase tracking-wider shadow-sm">

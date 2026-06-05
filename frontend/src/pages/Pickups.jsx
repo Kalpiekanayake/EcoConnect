@@ -3,20 +3,29 @@ import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2, Eye, Package, PlusCircle, ArrowRight } from 'lucide-react';
+import { Truck, Loader2, AlertCircle, Tag, Calendar, FileText, MapPin, Clock, DollarSign, Lock, CheckCircle2, Eye, Package, PlusCircle } from 'lucide-react';
+
+// Category Images
+import shellImg from '../assets/categories/coconut-shells.jpg';
+import huskImg from '../assets/categories/coconut-husks.jpg';
+import plasticImg from '../assets/categories/plastic.jpg';
+import glassImg from '../assets/categories/glass.jpg';
+import paperImg from '../assets/categories/paper.jpg';
+import foodImg from '../assets/categories/food.jpg';
+import generalImg from '../assets/categories/general.jpg';
 
 // --- Category Visual Mapping ---
 const getCategoryStyles = (name) => {
   const styles = {
-    'Coconut Shells': { icon: '🥥', color: 'bg-orange-50', border: 'border-orange-100', text: 'text-orange-700' },
-    'Coconut Husks': { icon: '🌴', color: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-700' },
-    'Plastic': { icon: '🥤', color: 'bg-blue-50', border: 'border-blue-100', text: 'text-blue-700' },
-    'Glass': { icon: '🍾', color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' },
-    'Paper/Cardboard': { icon: '📦', color: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-700' },
-    'Food Waste': { icon: '🍎', color: 'bg-red-50', border: 'border-red-100', text: 'text-red-700' },
-    'General Disposal': { icon: '🗑️', color: 'bg-gray-50', border: 'border-gray-100', text: 'text-gray-700' },
+    'Coconut Shells': { image: shellImg, color: 'bg-orange-50', border: 'border-orange-100', text: 'text-orange-700' },
+    'Coconut Husks': { image: huskImg, color: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-700' },
+    'Plastic': { image: plasticImg, color: 'bg-blue-50', border: 'border-blue-100', text: 'text-blue-700' },
+    'Glass': { image: glassImg, color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' },
+    'Paper/Cardboard': { image: paperImg, color: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-700' },
+    'Food Waste': { image: foodImg, color: 'bg-red-50', border: 'border-red-100', text: 'text-red-700' },
+    'General Disposal': { image: generalImg, color: 'bg-gray-50', border: 'border-gray-100', text: 'text-gray-700' },
   };
-  return styles[name] || { icon: '♻️', color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' };
+  return styles[name] || { image: generalImg, color: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' };
 };
 
 const Pickups = () => {
@@ -156,7 +165,9 @@ const Pickups = () => {
                 <div key={pickup.id} className="bg-white rounded-[3.5rem] p-12 border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 group flex flex-col h-full hover:border-primary/20 hover:-translate-y-2">
                   <div className="flex justify-between items-start mb-10">
                     <span className={`flex items-center gap-3 ${style.color} ${style.text} px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] border ${style.border}/50 shadow-inner group-hover:scale-105 transition-transform`}>
-                      <span className="text-2xl">{style.icon}</span> {catName}
+                      <div className="w-6 h-6 rounded-full overflow-hidden border border-white/50 shrink-0">
+                          <img src={style.image} alt="" className="w-full h-full object-cover" />
+                      </div> {catName}
                     </span>
                     {pickup.is_sellable ? (
                       <div className="bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center shadow-lg shadow-primary/20">

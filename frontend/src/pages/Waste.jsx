@@ -7,17 +7,26 @@ import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import ecoLogo from '../assets/illustrations/eco-logo.png';
 
+// Category Images
+import shellImg from '../assets/categories/coconut-shells.jpg';
+import huskImg from '../assets/categories/coconut-husks.jpg';
+import plasticImg from '../assets/categories/plastic.jpg';
+import glassImg from '../assets/categories/glass.jpg';
+import paperImg from '../assets/categories/paper.jpg';
+import foodImg from '../assets/categories/food.jpg';
+import generalImg from '../assets/categories/general.jpg';
+
 const getCategoryStyles = (name) => {
   const styles = {
-    'Coconut Shells': { icon: '🥥', color: 'bg-orange-50', text: 'text-orange-700' },
-    'Coconut Husks': { icon: '🌴', color: 'bg-emerald-50', text: 'text-emerald-700' },
-    'Plastic': { icon: '🥤', color: 'bg-blue-50', text: 'text-blue-700' },
-    'Glass': { icon: '🍾', color: 'bg-purple-50', text: 'text-purple-700' },
-    'Paper/Cardboard': { icon: '📦', color: 'bg-yellow-50', text: 'text-yellow-700' },
-    'Food Waste': { icon: '🍎', color: 'bg-red-50', text: 'text-red-700' },
-    'General Disposal': { icon: '🗑️', color: 'bg-slate-50', text: 'text-slate-700' },
+    'Coconut Shells': { image: shellImg, color: 'bg-orange-50', text: 'text-orange-700' },
+    'Coconut Husks': { image: huskImg, color: 'bg-emerald-50', text: 'text-emerald-700' },
+    'Plastic': { image: plasticImg, color: 'bg-blue-50', text: 'text-blue-700' },
+    'Glass': { image: glassImg, color: 'bg-purple-50', text: 'text-purple-700' },
+    'Paper/Cardboard': { image: paperImg, color: 'bg-yellow-50', text: 'text-yellow-700' },
+    'Food Waste': { image: foodImg, color: 'bg-red-50', text: 'text-red-700' },
+    'General Disposal': { image: generalImg, color: 'bg-slate-50', text: 'text-slate-700' },
   };
-  return styles[name] || { icon: '♻️', color: 'bg-slate-50', text: 'text-primary' };
+  return styles[name] || { image: generalImg, color: 'bg-slate-50', text: 'text-primary' };
 };
 
 const MapController = ({ setPosition }) => {
@@ -86,7 +95,9 @@ const Waste = () => {
             const style = getCategoryStyles(cat.name);
             return (
               <Link key={cat.id} to={`/browse-requests/${cat.id}`} className="p-8 rounded-2xl bg-white border border-border-light shadow-3d group hover:-translate-y-1 hover:shadow-3d-elevated transition-all flex flex-col items-center text-center">
-                <div className={`w-20 h-20 ${style.color} rounded-2xl flex items-center justify-center text-4xl mb-5 shadow-3d group-hover:scale-105 transition-transform`}>{style.icon}</div>
+                <div className="w-20 h-20 rounded-2xl overflow-hidden mb-5 shadow-3d group-hover:scale-105 transition-transform shrink-0">
+                    <img src={style.image} alt={cat.name} className="w-full h-full object-cover" />
+                </div>
                 <h3 className="text-[11px] font-extrabold text-dark-slate uppercase tracking-widest">{cat.name}</h3>
                 <span className="text-[9px] font-bold text-primary mt-2 uppercase">{wastes.filter(w => w.category_id === cat.id && w.status === 'OPEN').length} Active</span>
               </Link>

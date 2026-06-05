@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Leaf, ArrowRight, Truck, CheckCircle, Package, Sprout, ShieldCheck } from 'lucide-react';
+import { Leaf, Truck, CheckCircle, Package, Sprout, ShieldCheck } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import { useState, useEffect, useRef } from 'react';
 import API from '../services/api';
@@ -90,7 +90,7 @@ const Landing = () => {
               
               <div className="flex flex-col sm:flex-row gap-6">
                 <Link to="/register" className="h-16 px-10 bg-primary text-white rounded-2xl text-lg font-bold flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all hover:-translate-y-1">
-                  Request a Pickup <ArrowRight className="w-5 h-5" />
+                  Request a Pickup
                 </Link>
                 <Link to="/browse-requests" className="h-16 px-10 bg-white/10 backdrop-blur-xl border border-white/20 text-white rounded-2xl text-lg font-bold flex items-center justify-center hover:bg-white/20 transition-all hover:-translate-y-1">
                   View Marketplace
@@ -127,7 +127,7 @@ const Landing = () => {
               <h3 className="text-3xl md:text-4xl font-extrabold text-dark-slate tracking-tight">Our circular economy sectors.</h3>
             </div>
             <Link to="/browse-requests" className="text-sm font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-2 group">
-              Browse All Categories <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              Browse All Categories
             </Link>
           </div>
           
@@ -191,7 +191,7 @@ const Landing = () => {
                     to={feature.link} 
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/20 text-[10px] font-black text-white hover:bg-white hover:text-[#0A192F] transition-all uppercase tracking-widest group"
                   >
-                    {feature.cta} <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    {feature.cta}
                   </Link>
                </div>
              ))}
@@ -233,9 +233,9 @@ const Landing = () => {
       {/* Footer */}
       <footer className="py-20 px-6 bg-white border-t border-border-light">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <Link to="/" className="flex items-center gap-3.5 group">
-            <img src={ecoLogo} alt="EcoConnect" className="h-10 w-auto object-contain transition-transform group-hover:scale-110" />
-            <span className="text-2xl font-black tracking-tight">
+          <Link to="/" className="flex items-center gap-4 group">
+            <img src={ecoLogo} alt="EcoConnect" className="h-14 w-auto object-contain transition-transform group-hover:scale-105" />
+            <span className="text-3xl font-black tracking-tight">
               <span className="text-primary">Eco</span>
               <span className="text-dark-slate">Connect</span>
             </span>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../services/api';
-import { User, Mail, Lock, Loader2, AlertCircle, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, Loader2, AlertCircle, Phone, MapPin } from 'lucide-react';
 import ecoLogo from '../assets/illustrations/eco-logo.png';
 
 const Register = () => {
@@ -235,7 +235,7 @@ const Register = () => {
                 Validating...
               </>
             ) : (
-              <span className="flex items-center gap-2 text-lg">Create Free Account <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
+              <span className="flex items-center gap-2 text-lg">Create Free Account</span>
             )}
           </button>
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import API from '../services/api';
-import { Mail, Lock, Loader2, AlertCircle, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 import ecoLogo from '../assets/illustrations/eco-logo.png';
 
 const Login = () => {
@@ -138,7 +138,7 @@ const Login = () => {
             {loading ? (
               <Loader2 className="animate-spin h-6 w-6" />
             ) : (
-              <span className="flex items-center gap-2">Sign In <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></span>
+              <span className="flex items-center gap-2">Sign In</span>
             )}
           </button>
 

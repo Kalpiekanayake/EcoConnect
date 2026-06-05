@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { FileText, Loader2, Package, Calendar, Edit2, Trash2, PlusCircle, ChevronRight, CheckCircle2, Clock, Eye, ArrowRight } from 'lucide-react';
+import { FileText, Loader2, Package, Calendar, Edit2, Trash2, PlusCircle, CheckCircle2, Clock, Eye } from 'lucide-react';
 
 const MyRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -98,7 +98,7 @@ const MyRequests = () => {
             <h3 className="text-3xl font-extrabold text-dark-slate tracking-behance">Quiet Atmosphere</h3>
             <p className="text-muted-gray mt-3 font-medium mb-12 max-w-sm mx-auto leading-relaxed">You haven't posted any pickup requests yet. Start your journey towards zero waste today.</p>
             <Link to="/browse-requests" className="inline-flex items-center gap-3 px-12 py-6 bg-primary text-white font-bold rounded-2xl hover:bg-deep-forest transition-all shadow-xl shadow-primary/20 active:scale-95 text-lg">
-              Post First Request <ChevronRight className="w-6 h-6" />
+              Post First Request
             </Link>
           </div>
         ) : (
