@@ -52,6 +52,7 @@ const Navbar = () => {
             <NavLink to="/browse-requests" active={isActive('/browse-requests')}>Marketplace</NavLink>
             <NavLink to="/available-pickups" active={isActive('/available-pickups')}>Jobs</NavLink>
             {token && user?.role === 'HOUSEHOLD' && <NavLink to="/my-requests" active={isActive('/my-requests')}>History</NavLink>}
+            {token && user?.role === 'COLLECTOR' && <NavLink to="/my-bookings" active={isActive('/my-bookings')}>My Bookings</NavLink>}
           </div>
 
           <div className="hidden lg:flex items-center gap-8">

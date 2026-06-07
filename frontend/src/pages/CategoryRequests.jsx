@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import RequestDetailsModal from '../components/RequestDetailsModal';
-import { Tag, Calendar, MapPin, Package, Clock, Loader2, DollarSign, Lock, Eye, Truck, CheckCircle2, Edit2, TrendingUp, Info } from 'lucide-react';
+import { Tag, Calendar, MapPin, Package, Clock, Loader2, DollarSign, Lock, Eye, Truck, CheckCircle2, Edit2, TrendingUp, Info, PlusCircle, AlertCircle } from 'lucide-react';
 
 // Category Images
 import shellImg from '../assets/categories/coconut-shells.jpg';
@@ -103,7 +103,7 @@ const CategoryRequests = () => {
     return (
       <div className="min-h-screen bg-off-white">
         <Navbar />
-        <main className="container-custom py-16 pt-40">
+        <main className="max-w-7xl mx-auto px-6 lg:px-12 py-16 pt-40">
           <div className="mb-12">
              <div className="h-6 w-32 bg-stone-100 rounded animate-pulse mb-8"></div>
              <div className="flex gap-8 items-center">
@@ -128,7 +128,7 @@ const CategoryRequests = () => {
     <div className="min-h-screen bg-off-white font-sans">
       <Navbar />
       
-      <main className="container-custom py-16 pt-40">
+      <main className="max-w-7xl mx-auto px-6 lg:px-12 py-16 pt-40">
         {/* Header */}
         <div className="mb-16 animate-fade-up">
           <Link to="/browse-requests" className="inline-flex items-center text-xs font-bold text-muted-gray hover:text-primary transition-all gap-2 uppercase tracking-[0.2em] mb-12 group">
@@ -214,7 +214,7 @@ const CategoryRequests = () => {
 
                         <div className="flex-1">
                             <h3 className="text-xl font-extrabold text-dark-slate tracking-tight leading-snug mb-4 group-hover:text-primary transition-colors line-clamp-2">
-                                {waste.description || 'Standard material stream collection request.'}
+                                {waste.description}
                             </h3>
                             
                             <div className="grid grid-cols-2 gap-3 mb-8">

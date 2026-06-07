@@ -43,7 +43,19 @@ const Waste = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [formData, setFormData] = useState({ description: '', category_id: '', quantity: '', unit: 'kg', pickup_date: '', startTime: '', endTime: '', address_line: '', latitude: 6.9271, longitude: 79.8612 });
+  const [formData, setFormData] = useState({ 
+    description: '', 
+    category_id: '', 
+    quantity: '', 
+    unit: 'kg', 
+    pickup_date: '', 
+    time_slot: '',
+    is_sellable: false,
+    price: '',
+    address_line: '', 
+    latitude: 6.9271, 
+    longitude: 79.8612 
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -54,17 +66,40 @@ const Waste = () => {
       setLoading(false);
     };
     load();
-    if (location.state?.editRequest) { setFormData(location.state.editRequest); setIsFormOpen(true); }
+    if (location.state?.editRequest) { 
+      const req = location.state.editRequest;
+      setFormData({
+        ...req,
+        category_id: req.category_id.toString(),
+        quantity: req.quantity.toString(),
+        price: req.price?.toString() || ''
+      }); 
+      setIsFormOpen(true); 
+    }
   }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    
+    // Validate and format data
+    const payload = {
+      ...formData,
+      category_id: parseInt(formData.category_id),
+      quantity: parseFloat(formData.quantity),
+      price: formData.is_sellable ? parseFloat(formData.price) : null,
+      pickup_date: formData.pickup_date, // Should be YYYY-MM-DD
+      time_slot: formData.time_slot
+    };
+
     try {
-      if (formData.id) await API.put(`/wastes/${formData.id}`, formData);
-      else await API.post('/wastes', formData);
+      if (formData.id) await API.put(`/wastes/${formData.id}`, payload);
+      else await API.post('/wastes', payload);
       setIsFormOpen(false); navigate('/dashboard');
-    } catch (err) { alert('Error processing request'); }
+    } catch (err) { 
+      console.error(err);
+      alert('Error processing request: ' + (err.response?.data?.detail?.[0]?.msg || err.response?.data?.detail || 'Unknown error')); 
+    }
     setSubmitting(false);
   };
 
@@ -135,9 +170,38 @@ const Waste = () => {
                     </select>
                   </div>
                 </div>
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-extrabold text-muted-gray uppercase tracking-widest ml-3">Pickup Date</label>
+                    <input type="date" className="input-app w-full" value={formData.pickup_date} onChange={e => setFormData({...formData, pickup_date: e.target.value})} required />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-extrabold text-muted-gray uppercase tracking-widest ml-3">Time Slot</label>
+                    <select className="input-app w-full" value={formData.time_slot} onChange={e => setFormData({...formData, time_slot: e.target.value})} required>
+                      <option value="">Select Slot</option>
+                      <option value="Morning (8AM - 12PM)">Morning (8AM - 12PM)</option>
+                      <option value="Afternoon (12PM - 4PM)">Afternoon (12PM - 4PM)</option>
+                      <option value="Evening (4PM - 8PM)">Evening (4PM - 8PM)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-6">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-extrabold text-dark-slate uppercase tracking-widest">Marketable Listing</label>
+                    <input type="checkbox" className="w-5 h-5 accent-primary" checked={formData.is_sellable} onChange={e => setFormData({...formData, is_sellable: e.target.checked})} />
+                  </div>
+                  {formData.is_sellable && (
+                    <div className="space-y-3 animate-in">
+                      <label className="text-[11px] font-extrabold text-muted-gray uppercase tracking-widest ml-3">Valuation (LKR)</label>
+                      <input type="number" className="input-app w-full" placeholder="0.00" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} required={formData.is_sellable} />
+                    </div>
+                  )}
+                </div>
+
                 <div className="space-y-3">
                   <label className="text-[11px] font-extrabold text-muted-gray uppercase tracking-widest ml-3">Logistics Address</label>
-                  <input type="text" className="input-app w-full" placeholder="Specify coordinates..." value={formData.address_line} onChange={e => setFormData({...formData, address_line: e.target.value})} />
+                  <input type="text" className="input-app w-full" placeholder="Specify coordinates..." value={formData.address_line} onChange={e => setFormData({...formData, address_line: e.target.value})} required />
                 </div>
                 <button type="submit" disabled={submitting} className="btn-tactile w-full text-lg uppercase tracking-widest mt-6">
                   {submitting ? <Loader2 className="animate-spin" /> : <CheckCircle2 />} {formData.id ? "Update Request" : "Confirm Stream"}
