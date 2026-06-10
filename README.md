@@ -42,6 +42,35 @@ The platform allows users to register, submit waste pickup requests, browse recy
 
 ---
 
+## 📸 Screenshots
+
+### Home Page
+
+<img width="1339" height="634" alt="image" src="https://github.com/user-attachments/assets/0a9de21d-3fb9-47f7-9d57-dd3ccc67761b" />
+
+### Circular Economy Categories
+
+<img width="1333" height="624" alt="image" src="https://github.com/user-attachments/assets/d2243c5e-8595-4073-9dcf-a70843bbb9a3" />
+
+### Collector Dashboard
+
+<img width="1341" height="626" alt="image" src="https://github.com/user-attachments/assets/445f1f47-7ebd-469a-a8d4-73524749ae89" />
+
+### Householder Dashboard
+
+<img width="1341" height="631" alt="image" src="https://github.com/user-attachments/assets/a00f2b71-bd2c-4c2c-a044-ea07cadf46aa" />
+
+### Marketplace
+
+<img width="1341" height="626" alt="image" src="https://github.com/user-attachments/assets/7985c3df-9a81-42ce-bf24-64411007f108" />
+<img width="1334" height="637" alt="image" src="https://github.com/user-attachments/assets/a5c66940-602c-4ac8-a99b-0671d1c4b344" />
+
+### Bookings
+
+<img width="1344" height="639" alt="image" src="https://github.com/user-attachments/assets/ba38d7b2-6647-45df-9bd2-a618fd1e3f4f" />
+
+---
+
 ## 🛠 Tech Stack
 
 ### Frontend
