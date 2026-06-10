@@ -1,39 +1,48 @@
-# EcoConnect 🌱
+# 🌱 EcoConnect
 
-EcoConnect is a smart waste management and logistics platform that connects households, collectors, and buyers to promote sustainable waste collection and recycling.
+EcoConnect is a smart waste management and recycling platform that connects households with waste collectors to encourage sustainable waste disposal and resource recovery.
 
-## Features
+The platform allows users to register, submit waste pickup requests, browse recyclable waste categories, and track collection activities through a modern web interface.
 
-### Householder
-- User registration and login
-- Submit waste collection requests
-- Browse waste categories
-- Track request status
-- View collection history
+---
 
-### Collector
-- Collector dashboard
-- View available requests
-- Accept collection jobs
-- Update collection status
-- Activity tracking
+## 🚀 Features
 
-### Marketplace
-- Browse recyclable materials
-- View material streams
-- Connect waste suppliers and collectors
+### 👤 User Authentication
+- User Registration
+- Secure Login
+- JWT Authentication
+- Role-Based Access Control
 
-## Waste Categories
+### 🏠 Household Features
+- Create Waste Pickup Requests
+- View Personal Requests
+- Track Request Status
+- Manage Recyclable Waste
 
+### 🚛 Collector Features
+- Browse Available Pickup Requests
+- Accept Collection Requests
+- Manage Assigned Pickups
+- Update Collection Status
+
+### ♻ Waste Categories
 - Coconut Shells
 - Coconut Husks
-- Glass
 - Plastic
-- Paper & Cardboard
+- Glass
+- Paper / Cardboard
 - Food Waste
 - General Disposal
 
-## Technology Stack
+### 📊 Dashboard
+- Request Overview
+- Pickup Statistics
+- Waste Tracking
+
+---
+
+## 🛠 Tech Stack
 
 ### Frontend
 - React
@@ -41,53 +50,157 @@ EcoConnect is a smart waste management and logistics platform that connects hous
 - Tailwind CSS
 - React Router
 - Axios
-- React Leaflet
 
 ### Backend
 - FastAPI
 - SQLAlchemy
+- Pydantic
 - JWT Authentication
-- Uvicorn
 
 ### Database
 - SQLite
 
-## Project Structure
+---
 
+## 📂 Project Structure
+
+```text
+EcoConnect
+│
+├── frontend/
+│   ├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+│
+├── backend/
+│   ├── app/
+│   │   ├── routes/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   └── database/
+│   │
+│   ├── main.py
+│   └── requirements.txt
+│
+└── README.md
 ```
-frontend/
-backend/
-```
 
-## Installation
+---
 
-### Frontend
+## ⚙ Installation
+
+### Clone Repository
 
 ```bash
-cd frontend
-npm install
-npm run dev
+git clone https://github.com/Kalpiekanayake/EcoConnect.git
 ```
 
-### Backend
+---
+
+### Backend Setup
 
 ```bash
 cd backend
+
+python -m venv venv
+
+venv\Scripts\activate
+
 pip install -r requirements.txt
-python main.py
+
+uvicorn main:app --reload
 ```
 
+Backend runs on:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+### Frontend Setup
+
+```bash
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+Frontend runs on:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## API Endpoints
+
+### Authentication
+
+```text
+POST /auth/register
+POST /auth/login
+```
+
+### Users
+
+```text
+GET /users
+POST /users
+```
+
+### Categories
+
+```text
+GET /categories
+POST /categories
+POST /categories/seed
+```
+
+### Waste Requests
+
+```text
+GET /wastes
+POST /wastes
+```
+
+---
 
 ## Future Improvements
 
-- Mobile Application
+- Google Maps Integration
 - Real-time Notifications
-- Advanced Analytics Dashboard
-- Payment Integration
-- AI-powered Waste Classification
+- Mobile Application
+- Collector Route Optimization
+- Waste Analytics Dashboard
+- Cloud Database Deployment
+
+---
+
+## Learning Outcomes
+
+This project helped strengthen skills in:
+
+- Full Stack Development
+- REST API Design
+- Authentication & Authorization
+- Database Design
+- Frontend Routing
+- State Management
+- Software Architecture
+
+---
 
 ## Author
 
-Kalpani Ekanayake
+**Kalpani Ekanayake**
 
 Software Engineering Undergraduate
+
+GitHub:
+https://github.com/Kalpiekanayake
